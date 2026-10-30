@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAIKARI SELL | অ্যাকাউন্ট ভেরিফিকেশন</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#FF6B35">
+    <link rel="icon" type="image/png" href="https://paikarisell.ghotimarket.com/photo/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { brand: { primary: '#FF6B35', secondary: '#FF6A00', bg: '#FFF7F2', text: '#171717', muted: '#6B7280', border: '#E5E7EB', success: '#16A34A', error: '#DC2626' } } } } }
+    </script>
+    <style>body{background:#FFF7F2;font-family:'Hind Siliguri',Inter,sans-serif} .bg-orange-gradient{background:linear-gradient(135deg,#FF6B35 0%,#FF6A00 100%)} .shadow-card{box-shadow:0 10px 25px -5px rgba(255,107,53,.05)} .strength-bar{transition:width .3s ease,background-color .3s ease}</style>
+</head>
+<body class="flex flex-col justify-between items-center min-h-screen p-4">
+    <header class="w-full max-w-md flex justify-end mb-4">
+        <button id="configToggleBtn" class="text-xs text-brand-muted border bg-white px-2.5 py-1 rounded-lg">Firebase (Active)</button>
+    </header>
+    <main class="w-full max-w-[440px] my-auto">
+        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-orange-100 shadow-card">
+            <div class="text-center mb-8">
+                <img src="https://paikarisell.ghotimarket.com/photo/logo.png" alt="PAIKARI SELL" class="h-12 mx-auto mb-3" onerror="this.style.display='none'">
+                <div class="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-50 text-brand-primary border">A Product of GHOTI MARKET</div>
+            </div>
+            <div id="alertBanner" class="hidden mb-6 p-4 rounded-xl text-sm flex gap-3 border"></div>
+
+            <!-- MODE 1: Request Reset -->
+            <div id="requestResetMode">
+                <div class="text-center mb-6">
+                    <h1 class="text-2xl font-bold mb-2">পাসওয়ার্ড ভুলে গেছেন?</h1>
+                    <p class="text-sm text-brand-muted">আপনার ইমেইল লিখুন, আমরা রিসেট লিংক পাঠাব।</p>
+                </div>
+                <form id="requestResetForm" class="space-y-5" novalidate>
+                    <input type="email" id="email" required placeholder="আপনার ইমেইল লিখুন" class="w-full px-4 py-3 border rounded-xl text-sm focus:outline-none focus:border-brand-primary">
+                    <button type="submit" id="sendBtn" class="w-full bg-orange-gradient text-white py-3.5 rounded-xl font-semibold text-sm">রিসেট লিংক পাঠান</button>
+                </form>
+                <div class="mt-6 text-center"><a href="login.html" class="text-sm font-semibold text-brand-primary">লগইন পেজে ফিরে যান</a></div>
+            </div>
+
+            <!-- MODE 2: Confirm Reset -->
+            <div id="confirmResetMode" class="hidden">
+                <div class="text-center mb-6">
+                    <h1 class="text-2xl font-bold mb-1">নতুন পাসওয়ার্ড দিন</h1>
+                    <p id="userAccountEmail" class="text-xs text-brand-primary"></p>
+                </div>
+                <form id="confirmResetForm" class="space-y-4">
+                    <div>
+                        <input type="password" id="newPassword" required placeholder="কমপক্ষে ৬টি অক্ষর" class="w-full px-4 py-3 border rounded-xl text-sm focus:outline-none">
+                        <div class="mt-2 h-1.5 bg-gray-200 rounded-full"><div id="strengthBar" class="strength-bar h-full w-0 bg-red-500"></div></div>
+                        <span id="strengthText" class="text-[11px]">শক্তি: দুর্বল</span>
+                    </div>
+                    <input type="password" id="confirmPassword" required placeholder="পাসওয়ার্ড পুনরায় লিখুন" class="w-full px-4 py-3 border rounded-xl text-sm focus:outline-none">
+                    <button type="submit" id="updatePasswordBtn" class="w-full bg-orange-gradient text-white py-3.5 rounded-xl font-semibold text-sm">পাসওয়ার্ড হালনাগাদ করুন</button>
+                </form>
+            </div>
+
+            <!-- MODE 3: Verify Email Success -->
+            <div id="verifyEmailMode" class="hidden text-center py-4">
+                <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">✓</div>
+                <h2 id="verifyTitle" class="text-xl font-bold mb-2">যাচাই করা হচ্ছে...</h2>
+                <p id="verifyDescription" class="text-sm text-brand-muted mb-6">অনুগ্রহ করে অপেক্ষা করুন।</p>
+                <a href="login.html" class="block w-full bg-orange-gradient text-white py-3 rounded-xl font-semibold text-sm text-center">লগইন করুন</a>
+            </div>
+
+            <!-- Success State -->
+            <div id="successState" class="hidden text-center py-4">
+                <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">✓</div>
+                <h2 id="successTitle" class="text-xl font-bold mb-2">ইমেইল পাঠানো হয়েছে!</h2>
+                <p id="successDescription" class="text-sm text-brand-muted mb-6">ইনবক্স অথবা স্প্যাম চেক করুন।</p>
+                <a href="/login" class="block w-full bg-orange-gradient text-white py-3 rounded-xl font-semibold text-sm text-center">লগইন পেজে যান</a>
+            </div>
+        </div>
+    </main>
+
+<script type="module">
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset, applyActionCode } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDCIRWmozT0XcEXuXtQ6RDiDo6vtT1T9mU",
+  authDomain: "paikarisell-ghotimarket.firebaseapp.com",
+  projectId: "paikarisell-ghotimarket",
+  storageBucket: "paikarisell-ghotimarket.firebasestorage.app",
+  messagingSenderId: "464086432830",
+  appId: "1:464086432830:web:a10fdd9884954e380e656f",
+  measurementId: "G-E3HR2F9TC5"
+};
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+let authInstance = getAuth(app);
+let oobCode = null;
+
+const requestResetMode = document.getElementById('requestResetMode');
+const confirmResetMode = document.getElementById('confirmResetMode');
+const verifyEmailMode = document.getElementById('verifyEmailMode');
+const successState = document.getElementById('successState');
+const alertBanner = document.getElementById('alertBanner');
+document.getElementById('configToggleBtn').textContent = "Firebase (Active)";
+
+// URL Mode Detect
+window.addEventListener('DOMContentLoaded', async () => {
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get('mode');
+    oobCode = params.get('oobCode');
+    if (!mode || !oobCode) return;
+
+    if (mode === 'resetPassword') {
+        requestResetMode.classList.add('hidden');
+        confirmResetMode.classList.remove('hidden');
+        try {
+            const email = await verifyPasswordResetCode(authInstance, oobCode);
+            document.getElementById('userAccountEmail').textContent = email;
+        } catch(e){ showBanner('লিংকটি অকার্যকর বা মেয়াদ শেষ।','error'); }
+    }
+    if (mode === 'verifyEmail') {
+        requestResetMode.classList.add('hidden');
+        verifyEmailMode.classList.remove('hidden');
+        try {
+            await applyActionCode(authInstance, oobCode);
+            document.getElementById('verifyTitle').textContent = "ইমেইল ভেরিফাইড!";
+            document.getElementById('verifyDescription').textContent = "আপনার ইমেইল সফলভাবে ভেরিফাই হয়েছে। এখন লগইন করতে পারবেন।";
+        } catch(e){
+            document.getElementById('verifyTitle').textContent = "ভেরিফিকেশন ব্যর্থ!";
+            document.getElementById('verifyDescription').textContent = "লিংকটি অকার্যকর বা আগেই ব্যবহার করা হয়েছে।";
+            showBanner(e.message,'error');
+        }
+    }
+});
+
+function showBanner(msg,type='error'){
+    alertBanner.textContent = msg;
+    alertBanner.className = `mb-6 p-4 rounded-xl text-sm flex gap-3 border ${type==='error' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-green-50 text-green-700 border-green-200'}`;
+    alertBanner.classList.remove('hidden');
+}
+
+// Request Reset
+document.getElementById('requestResetForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    if(!email) return;
+    try{
+        await sendPasswordResetEmail(authInstance, email, { url: window.location.origin + window.location.pathname, handleCodeInApp: true });
+        requestResetMode.classList.add('hidden');
+        successState.classList.remove('hidden');
+    }catch(err){
+        if(err.code==='auth/user-not-found'){
+            requestResetMode.classList.add('hidden');
+            successState.classList.remove('hidden');
+        }else{ showBanner('সমস্যা হয়েছে, আবার চেষ্টা করুন।'); }
+    }
+});
+
+// Confirm Reset
+document.getElementById('newPassword').addEventListener('input', (e)=>{
+    const val = e.target.value; let score=0;
+    if(val.length>=6) score+=25; if(val.length>=10) score+=25; if(/[A-Z]/.test(val) && /[a-z]/.test(val)) score+=25; if(/[0-9]/.test(val)) score+=25;
+    const bar = document.getElementById('strengthBar');
+    bar.style.width=score+'%';
+    bar.className='strength-bar h-full '+(score<=25?'bg-red-500':score<=50?'bg-amber-500':score<=75?'bg-blue-500':'bg-green-500');
+});
+document.getElementById('confirmResetForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const p1=document.getElementById('newPassword').value, p2=document.getElementById('confirmPassword').value;
+    if(p1.length<6) return showBanner('পাসওয়ার্ড ৬ অক্ষরের বেশি হতে হবে।');
+    if(p1!==p2) return showBanner('পাসওয়ার্ড মিলছে না।');
+    try{
+        await confirmPasswordReset(authInstance, oobCode, p1);
+        confirmResetMode.classList.add('hidden');
+        document.getElementById('successTitle').textContent="পাসওয়ার্ড পরিবর্তন হয়েছে!";
+        document.getElementById('successDescription').textContent="নতুন পাসওয়ার্ড দিয়ে লগইন করুন।";
+        successState.classList.remove('hidden');
+    }catch(err){ showBanner('লিংকটির মেয়াদ শেষ। নতুন লিংক নিন।'); }
+});
+</script>
+</body>
+</html>
