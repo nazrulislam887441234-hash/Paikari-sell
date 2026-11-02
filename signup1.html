@@ -44,17 +44,42 @@
   </div>
 
   <script type="module">
-    import { auth, db, showCustomError } from '.signup.js';
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    // Firebase Configuration
+    const firebaseConfig = {
+  apiKey: "AIzaSyDCIRWmozT0XcEXuXtQ6RDiDo6vtT1T9mU",
+  authDomain: "paikarisell-ghotimarket.firebaseapp.com",
+  projectId: "paikarisell-ghotimarket",
+  storageBucket: "paikarisell-ghotimarket.firebasestorage.app",
+  messagingSenderId: "464086432830",
+  appId: "1:464086432830:web:a10fdd9884954e380e656f",
+  measurementId: "G-E3HR2F9TC5"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Custom Error Function
+    function showCustomError(elementId, message) {
+      const alertBox = document.getElementById(elementId);
+      alertBox.textContent = message;
+      alertBox.style.display = 'block';
+    }
+
+    // Authentication Check
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = '/signup';
         return;
       }
+
       try {
         const docSnap = await getDoc(doc(db, "supplyers", user.uid));
+
         if (docSnap.exists()) {
           window.location.href = '/dashboard';
         }
@@ -63,14 +88,18 @@
       }
     });
 
+    // Form Submission
     const form = document.getElementById('step1Form');
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+
       const name = document.getElementById('fullName').value.trim();
       const whatsapp = document.getElementById('whatsapp').value.trim();
       const phone = document.getElementById('phone').value.trim();
 
       const bdPhoneRegex = /^01[3-9]\d{8}$/;
+
       if (!bdPhoneRegex.test(whatsapp) || !bdPhoneRegex.test(phone)) {
         showCustomError('errorAlert', 'সঠিক বাংলাদেশি মোবাইল নম্বর প্রদান করুন।');
         return;
