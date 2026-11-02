@@ -3,271 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO & Metadata -->
+    <meta name="robots" content="noindex, nofollow">
     <title>PAIKARI SELL | Supplier Login — লগইন করুন</title>
-    <meta name="description" content="PAIKARI SELL Supplier অ্যাকাউন্টে লগইন করুন এবং আপনার পাইকারি ব্যবসা পরিচালনা করুন।">
+    <meta name="description" content="PAIKARI SELL Supplier অ্যাকাউন্টে লগইন করুন। আপনার পাইকারি পণ্য, অর্ডার এবং ব্যবসায়িক কার্যক্রম সহজেই পরিচালনা করুন।">
     <link rel="canonical" href="https://paikarisell.ghotimarket.com/login">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph Metadata -->
-    <meta property="og:title" content="PAIKARI SELL | Supplier Login — লগইন করুন">
-    <meta property="og:description" content="PAIKARI SELL Supplier অ্যাকাউন্টে লগইন করুন এবং আপনার পাইকারি ব্যবসা পরিচালনা করুন।">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://paikarisell.ghotimarket.com/login">
-    <meta property="og:image" content="https://paikarisell.ghotimarket.com/photo/logo.png">
-
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://paikarisell.ghotimarket.com/photo/favicon.png">
 
-    <!-- Google Fonts: Hind Siliguri -->
+    <!-- Hind Siliguri Bengali Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         /* ==========================================================================
-           1. CORE & RESET STYLES
+           1. CSS VARIABLES & BASE STYLES
            ========================================================================== */
         :root {
             --primary: #FF6B35;
-            --primary-hover: #E85A24;
+            --primary-hover: #e55a27;
             --secondary: #FF6A00;
             --accent: #FFA500;
-            --dark: #171717;
-            --dark-muted: #555555;
-            --bg-main: #FFFFFF;
-            --bg-light: #FFF7F2;
-            --border-color: #E2E8F0;
-            --error-red: #DC2626;
-            --success-green: #16A34A;
-            --shadow-sm: 0 2px 8px rgba(255, 107, 53, 0.08);
-            --shadow-lg: 0 16px 40px rgba(23, 23, 23, 0.08);
-            --shadow-orange: 0 8px 25px rgba(255, 107, 53, 0.25);
-            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --bg-main: #FFF8F4;
+            --text-dark: #171717;
+            --text-muted: #666666;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --white: #FFFFFF;
+            --border-color: #FFE0D3;
+            --focus-ring: rgba(255, 107, 53, 0.25);
+            --shadow-sm: 0 4px 6px -1px rgba(255, 107, 53, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 10px 25px -5px rgba(255, 107, 53, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 20px 35px -10px rgba(255, 107, 53, 0.18), 0 10px 15px -5px rgba(0, 0, 0, 0.05);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Hind Siliguri', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-light);
-            color: var(--dark);
+            background-color: var(--bg-main);
+            color: var(--text-dark);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow-x: hidden;
-            line-height: 1.5;
+            position: relative;
         }
 
-        /* ==========================================================================
-           2. INITIAL FULLSCREEN LOADER
-           ========================================================================== */
-        #authScreenLoader {
+        /* Ambient Background Glow Effects */
+        .bg-glow-1 {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: var(--bg-main);
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 165, 0, 0.15) 0%, rgba(255, 107, 53, 0.05) 50%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .bg-glow-2 {
+            position: fixed;
+            bottom: -10%;
+            right: -10%;
+            width: 50vw;
+            height: 50vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 106, 0, 0.12) 0%, rgba(255, 107, 53, 0.03) 50%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Initial Full Page Auth Loader */
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-main);
+            z-index: 9999;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 99999;
+            gap: 16px;
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
-        #authScreenLoader.hidden {
+        #page-loader.hidden {
             opacity: 0;
             visibility: hidden;
         }
 
-        .loader-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid var(--bg-light);
-            border-top: 4px solid var(--primary);
+        .loader-logo {
+            height: 48px;
+            width: auto;
+            margin-bottom: 8px;
+        }
+
+        .spinner-ring {
+            width: 42px;
+            height: 42px;
+            border: 3.5px solid var(--border-color);
+            border-top-color: var(--primary);
             border-radius: 50%;
-            animation: spin 0.9s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
 
-        .loader-text {
-            margin-top: 16px;
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--dark-muted);
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        /* ==========================================================================
-           3. MAIN LAYOUT & CONTAINER
-           ========================================================================== */
-        .page-wrapper {
+        /* Container Layout */
+        .app-container {
             width: 100%;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1120px;
-            background: var(--bg-main);
-            border-radius: 24px;
+            max-width: 1140px;
+            min-height: 640px;
+            margin: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
             box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(12px);
             display: flex;
             overflow: hidden;
-            min-height: 640px;
-            border: 1px solid rgba(255, 107, 53, 0.1);
             position: relative;
+            z-index: 10;
         }
 
-        /* Desktop Split Screen */
+        /* Left Side Branding & Illustration */
+        .brand-section {
+            flex: 1;
+            background: linear-gradient(135deg, #FFF0E6 0%, #FFE5D4 100%);
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .brand-header img {
+            height: 44px;
+            width: auto;
+            margin-bottom: 24px;
+        }
+
+        .brand-title {
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+
+        .brand-desc {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            max-width: 440px;
+        }
+
+        .illustration-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .illustration-svg {
+            width: 100%;
+            max-width: 360px;
+            height: auto;
+            filter: drop-shadow(0 12px 20px rgba(255, 107, 53, 0.15));
+        }
+
+        .brand-footer-text {
+            font-size: 0.85rem;
+            color: #888888;
+        }
+
+        /* Right Side Form Section */
         .form-section {
             flex: 1;
             padding: 48px 56px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            background: var(--bg-main);
-            z-index: 2;
-        }
-
-        .illustration-section {
-            flex: 1;
-            background: linear-gradient(135deg, #FFF7F2 0%, #FFEBE0 50%, #FFDFCF 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            padding: 48px;
-            position: relative;
-            overflow: hidden;
+            background: var(--white);
         }
 
-        /* Ambient Background Orbs */
-        .illustration-section::before {
-            content: '';
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: rgba(255, 107, 53, 0.15);
-            border-radius: 50%;
-            top: -50px;
-            right: -50px;
-            filter: blur(60px);
-        }
-
-        .illustration-section::after {
-            content: '';
-            position: absolute;
-            width: 250px;
-            height: 250px;
-            background: rgba(255, 165, 0, 0.2);
-            border-radius: 50%;
-            bottom: -40px;
-            left: -40px;
-            filter: blur(50px);
-        }
-
-        /* Header Branding */
-        .brand-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .form-header {
             margin-bottom: 32px;
         }
 
-        .brand-logo-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
+        .mobile-logo {
+            display: none;
+            height: 40px;
+            margin-bottom: 20px;
         }
 
-        .brand-logo-img {
-            height: 42px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .brand-fallback-logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .back-home-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--dark-muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            padding: 6px 12px;
-            border-radius: 8px;
-            background-color: var(--bg-light);
-            transition: var(--transition-fast);
-        }
-
-        .back-home-link:hover {
-            color: var(--primary);
-            background-color: rgba(255, 107, 53, 0.1);
-        }
-
-        .back-home-link svg {
-            width: 16px;
-            height: 16px;
-            fill: currentColor;
-        }
-
-        /* Form Content Typography */
-        .form-content {
-            max-width: 440px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .form-heading {
+        .form-title {
             font-size: 1.85rem;
             font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 8px;
-            letter-spacing: -0.02em;
+            color: var(--text-dark);
+            margin-bottom: 6px;
         }
 
-        .form-description {
+        .form-subtitle {
             font-size: 0.95rem;
-            color: var(--dark-muted);
-            margin-bottom: 32px;
-            line-height: 1.6;
+            color: var(--text-muted);
         }
 
-        /* Input Form Controls */
-        .input-group {
+        /* Form Inputs */
+        .form-group {
             margin-bottom: 20px;
             position: relative;
         }
 
-        .input-label {
+        .form-label {
             display: block;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 6px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
         }
 
         .input-wrapper {
@@ -281,111 +248,133 @@
             left: 14px;
             width: 20px;
             height: 20px;
-            fill: #94A3B8;
+            fill: none;
+            stroke: #94A3B8;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
             pointer-events: none;
-            transition: var(--transition-fast);
+            transition: var(--transition);
         }
 
         .form-input {
             width: 100%;
-            height: 48px;
-            padding: 10px 16px 10px 44px;
-            font-size: 0.95rem;
-            color: var(--dark);
-            background-color: #FAFAFA;
-            border: 1.5px solid var(--border-color);
-            border-radius: 12px;
+            padding: 14px 16px 14px 44px;
+            font-size: 1rem;
+            color: var(--text-dark);
+            background: #FAFAFA;
+            border: 1.5px solid #E2E8F0;
+            border-radius: var(--radius-md);
             outline: none;
-            transition: var(--transition-fast);
-        }
-
-        .form-input.has-toggle {
-            padding-right: 46px;
+            transition: var(--transition);
         }
 
         .form-input:focus {
-            background-color: var(--bg-main);
+            background: var(--white);
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.12);
+            box-shadow: 0 0 0 4px var(--focus-ring);
         }
 
         .form-input:focus + .input-icon,
-        .input-wrapper:focus-within .input-icon {
-            fill: var(--primary);
+        .form-input:not(:placeholder-shown) ~ .input-icon {
+            stroke: var(--primary);
         }
 
-        .toggle-password-btn {
+        .toggle-password {
             position: absolute;
-            right: 12px;
+            right: 14px;
             background: none;
             border: none;
             cursor: pointer;
-            padding: 6px;
+            padding: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: #94A3B8;
             border-radius: 6px;
-            transition: var(--transition-fast);
+            transition: var(--transition);
         }
 
-        .toggle-password-btn:hover {
-            background-color: rgba(0, 0, 0, 0.05);
+        .toggle-password:hover {
+            color: var(--primary);
+            background: rgba(255, 107, 53, 0.08);
         }
 
-        .toggle-password-btn svg {
+        .toggle-password svg {
             width: 20px;
             height: 20px;
-            fill: #94A3B8;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
-        /* Form Extra Actions */
-        .form-actions-row {
+        /* Extra Form Options */
+        .form-options {
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: space-between;
             margin-bottom: 24px;
+            font-size: 0.9rem;
         }
 
-        .forgot-password-link {
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--text-muted);
+            user-select: none;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .forgot-link {
             background: none;
             border: none;
             color: var(--primary);
-            font-size: 0.875rem;
             font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
             text-decoration: none;
-            transition: var(--transition-fast);
+            transition: var(--transition);
         }
 
-        .forgot-password-link:hover {
+        .forgot-link:hover {
             color: var(--primary-hover);
             text-decoration: underline;
         }
 
-        /* Primary Submit Button */
+        /* Buttons */
         .btn-primary {
             width: 100%;
-            height: 50px;
+            padding: 14px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: #FFFFFF;
+            color: var(--white);
             border: none;
-            border-radius: 12px;
-            font-size: 1rem;
+            border-radius: var(--radius-md);
+            font-size: 1.05rem;
             font-weight: 600;
             cursor: pointer;
+            box-shadow: 0 8px 18px rgba(255, 107, 53, 0.28);
+            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            box-shadow: var(--shadow-orange);
-            transition: var(--transition-smooth);
             position: relative;
-            overflow: hidden;
         }
 
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(255, 107, 53, 0.35);
+            box-shadow: 0 12px 22px rgba(255, 107, 53, 0.38);
         }
 
         .btn-primary:active:not(:disabled) {
@@ -395,831 +384,857 @@
         .btn-primary:disabled {
             opacity: 0.75;
             cursor: not-allowed;
-            box-shadow: none;
+            transform: none;
         }
 
         .btn-spinner {
             width: 20px;
             height: 20px;
             border: 2.5px solid rgba(255, 255, 255, 0.3);
-            border-top: 2.5px solid #FFFFFF;
+            border-top-color: var(--white);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
+        }
+
+        /* Live Feedback Bar */
+        .feedback-bar {
+            margin-top: 16px;
+            padding: 10px 14px;
+            background: #FFF0E6;
+            border-left: 3.5px solid var(--primary);
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
+            color: var(--primary-hover);
             display: none;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
         }
 
-        .btn-primary.loading .btn-text {
-            display: none;
+        .feedback-bar.active {
+            display: flex;
         }
 
-        .btn-primary.loading .btn-spinner {
-            display: block;
-        }
-
-        /* Footer Registration Text */
-        .form-footer {
-            margin-top: 32px;
+        /* Navigation to Signup */
+        .signup-option {
+            margin-top: 28px;
             text-align: center;
-            font-size: 0.9rem;
-            color: var(--dark-muted);
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            border-top: 1px solid #F1F5F9;
+            padding-top: 20px;
         }
 
-        .signup-link {
+        .btn-signup-link {
+            display: inline-block;
+            margin-left: 6px;
             color: var(--primary);
             font-weight: 700;
             text-decoration: none;
-            margin-left: 4px;
-            transition: var(--transition-fast);
+            transition: var(--transition);
         }
 
-        .signup-link:hover {
+        .btn-signup-link:hover {
             color: var(--primary-hover);
             text-decoration: underline;
         }
 
-        /* Right Column Vector Graphic Component */
-        .illustration-container {
-            width: 100%;
-            max-width: 420px;
-            text-align: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .illustration-svg {
-            width: 100%;
-            height: auto;
-            max-height: 320px;
-            filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.06));
-        }
-
-        .illustration-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--dark);
-            margin-top: 24px;
-            margin-bottom: 8px;
-        }
-
-        .illustration-subtitle {
-            font-size: 0.9rem;
-            color: var(--dark-muted);
-            line-height: 1.5;
-        }
-
-        /* Glassmorphic Feature Badge */
-        .glass-badge {
-            margin-top: 24px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 18px;
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 30px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.03);
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .glass-badge svg {
-            width: 18px;
-            height: 18px;
-            fill: var(--primary);
-        }
-
         /* ==========================================================================
-           4. CUSTOM MODAL & NOTIFICATION POPUP SYSTEM
+           2. CUSTOM MODALS & TOAST NOTIFICATION SYSTEM
            ========================================================================== */
-        .modal-backdrop {
+        .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(23, 23, 23, 0.55);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
             padding: 20px;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
-        .modal-backdrop.active {
+        .modal-overlay.active {
             opacity: 1;
             visibility: visible;
         }
 
         .modal-card {
-            background-color: var(--bg-main);
-            width: 100%;
+            background: var(--white);
+            border-radius: var(--radius-lg);
             max-width: 440px;
-            border-radius: 20px;
+            width: 100%;
             padding: 32px;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             transform: scale(0.92);
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
         }
 
-        .modal-backdrop.active .modal-card {
+        .modal-overlay.active .modal-card {
             transform: scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .modal-icon-wrapper {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background-color: var(--bg-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .modal-icon-wrapper svg {
-            width: 24px;
-            height: 24px;
-            fill: var(--primary);
-        }
-
-        .modal-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--dark);
-        }
-
-        .modal-description {
-            font-size: 0.9rem;
-            color: var(--dark-muted);
-            margin-bottom: 24px;
-            line-height: 1.5;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-        }
-
-        .btn-secondary {
-            flex: 1;
-            height: 46px;
-            background-color: #F1F5F9;
-            color: var(--dark);
-            border: none;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-fast);
-        }
-
-        .btn-secondary:hover {
-            background-color: #E2E8F0;
         }
 
         .modal-close-btn {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: none;
+            background: #F1F5F9;
             border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             cursor: pointer;
-            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748B;
+            transition: var(--transition);
+        }
+
+        .modal-close-btn:hover {
+            background: #E2E8F0;
+            color: var(--text-dark);
+        }
+
+        .modal-icon-header {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: #FFF0E6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-icon-header svg {
+            width: 28px;
+            height: 28px;
+            stroke: var(--primary);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        /* Generic Alert Popup Component */
+        .popup-card {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .popup-icon-container {
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition-fast);
+            margin-bottom: 16px;
         }
 
-        .modal-close-btn:hover {
-            background-color: #F1F5F9;
+        .popup-icon-container svg {
+            width: 36px;
+            height: 36px;
+            fill: none;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
-        .modal-close-btn svg {
-            width: 20px;
-            height: 20px;
-            fill: #64748B;
+        /* Popup Variants */
+        .popup-success .popup-icon-container {
+            background: #DCFCE7;
+        }
+        .popup-success svg {
+            stroke: #16A34A;
         }
 
-        /* Toast / Notification Box Extensions */
-        .toast-icon-error {
-            background-color: #FEE2E2 !important;
+        .popup-error .popup-icon-container {
+            background: #FEE2E2;
         }
-        .toast-icon-error svg {
-            fill: var(--error-red) !important;
-        }
-        .toast-icon-success {
-            background-color: #DCFCE7 !important;
-        }
-        .toast-icon-success svg {
-            fill: var(--success-green) !important;
+        .popup-error svg {
+            stroke: #DC2626;
         }
 
-        /* Animation Keyframes */
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .popup-warning .popup-icon-container {
+            background: #FEF3C7;
+        }
+        .popup-warning svg {
+            stroke: #D97706;
+        }
+
+        .popup-info .popup-icon-container {
+            background: #DBEAFE;
+        }
+        .popup-info svg {
+            stroke: #2563EB;
+        }
+
+        .btn-modal-action {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-modal-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-modal-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ==========================================================================
-           5. RESPONSIVE DESIGN (MOBILE & TABLET)
+           3. RESPONSIVE DESIGN (TABLET & MOBILE)
            ========================================================================== */
-        @media (max-width: 900px) {
-            .illustration-section {
-                display: none; /* Mobile single column */
-            }
-            .form-section {
-                padding: 32px 24px;
-            }
-            .container {
+        @media (max-width: 960px) {
+            .app-container {
+                flex-direction: column;
+                max-width: 480px;
                 min-height: auto;
-                border-radius: 20px;
+                margin: 16px;
+            }
+
+            .brand-section {
+                display: none;
+            }
+
+            .form-section {
+                padding: 36px 28px;
+            }
+
+            .mobile-logo {
+                display: block;
             }
         }
 
         @media (max-width: 480px) {
-            .page-wrapper {
-                padding: 12px;
+            .app-container {
+                margin: 12px;
+                border-radius: var(--radius-md);
             }
+
             .form-section {
-                padding: 24px 18px;
+                padding: 28px 20px;
             }
-            .form-heading {
-                font-size: 1.5rem;
-            }
-            .brand-header {
-                margin-bottom: 24px;
+
+            .form-title {
+                font-size: 1.55rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Fullscreen Initial Loader -->
-    <div id="authScreenLoader">
-        <div class="loader-spinner"></div>
-        <p class="loader-text">আপনাকে যাচাই করা হচ্ছে.....</p>
+    <!-- Ambient Glowing Background Circles -->
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+
+    <!-- 0. Initial Fullscreen Auth Checking Loader (Prevents Form Flash) -->
+    <div id="page-loader">
+        <img src="https://paikarisell.ghotimarket.com/photo/logo.png" alt="PAIKARI SELL" class="loader-logo">
+        <div class="spinner-ring"></div>
+        <p style="font-size: 0.95rem; color: #666; font-weight: 500;">আপনাকে যাচাই করা হচ্ছে.....</p>
     </div>
 
-    <!-- Main Container Layout -->
-    <div class="page-wrapper">
-        <main class="container">
-            
-            <!-- Left Side: Login Form -->
-            <section class="form-section">
-                <div>
-                    <!-- Header Branding -->
-                    <div class="brand-header">
-                        <a href="/" class="brand-logo-container" aria-label="PAIKARI SELL Home">
-                            <img src="https://paikarisell.ghotimarket.com/photo/logo.png" 
-                                 alt="PAIKARI SELL" 
-                                 class="brand-logo-img"
-                                 onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';">
-                            <div id="fallbackLogo" class="brand-fallback-logo" style="display: none;">
-                                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                                    <rect width="32" height="32" rx="8" fill="#FF6B35"/>
-                                    <path d="M9 11L16 6L23 11V22L16 26L9 22V11Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <circle cx="16" cy="16" r="3" fill="white"/>
-                                </svg>
-                                <span>PAIKARI SELL</span>
-                            </div>
-                        </a>
-                        <a href="/" class="back-home-link">
-                            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                            <span>হোমপেজ</span>
-                        </a>
-                    </div>
+    <!-- Main Container -->
+    <main class="app-container">
 
-                    <!-- Main Form Fields -->
-                    <div class="form-content">
-                        <h1 class="form-heading">আপনার অ্যাকাউন্ট খুলুন/লগিন করুন</h1>
-                        <p class="form-description">PAIKARI SELL-এ আসার জন্য আপনাকে স্বাগতম। আপনার অ্যাকাউন্টে লগইন/একাউন্ট খুলে ব্যবসা পরিচালনা করুন।</p>
+        <!-- Left Side: Branding & Illustration (Desktop Only) -->
+        <section class="brand-section">
+            <div class="brand-header">
+                <img src="https://paikarisell.ghotimarket.com/photo/logo.png" alt="PAIKARI SELL Logo">
+                <h1 class="brand-title">আপনার ব্যবসার যাত্রা শুরু করুন</h1>
+                <p class="brand-desc">PAIKARI SELL-এ লগইন করে আপনার পণ্য বিক্রির কার্যক্রম পরিচালনা করুন এবং সারা দেশের রিসেলারদের কাছে পৌঁছে দিন।</p>
+            </div>
 
-                        <form id="loginForm" novalidate onsubmit="return false;">
-                            <!-- Email Input -->
-                            <div class="input-group">
-                                <label for="email" class="input-label">ইমেইল এড্রেস</label>
-                                <div class="input-wrapper">
-                                    <input type="email" id="email" class="form-input" placeholder="example@domain.com" autocomplete="email" required>
-                                    <svg class="input-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                                </div>
-                            </div>
+            <!-- Custom B2B & Supplier Marketplace SVG Illustration -->
+            <div class="illustration-wrapper">
+                <svg class="illustration-svg" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="grad-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#FF6B35" />
+                            <stop offset="100%" stop-color="#FF6A00" />
+                        </linearGradient>
+                        <linearGradient id="grad-accent" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#FFA500" />
+                            <stop offset="100%" stop-color="#FF6B35" />
+                        </linearGradient>
+                        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                            <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#FF6B35" flood-opacity="0.2"/>
+                        </filter>
+                    </defs>
 
-                            <!-- Password Input -->
-                            <div class="input-group">
-                                <label for="password" class="input-label">পাসওয়ার্ড</label>
-                                <div class="input-wrapper">
-                                    <input type="password" id="password" class="form-input has-toggle" placeholder="••••••••" autocomplete="current-password" required>
-                                    <svg class="input-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-                                    <button type="button" id="togglePasswordBtn" class="toggle-password-btn" aria-label="Toggle password visibility">
-                                        <svg id="eyeIcon" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                                        <svg id="eyeOffIcon" viewBox="0 0 24 24" style="display: none;"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.17c0-1.66-1.34-3-3-3l-.17.02z"/></svg>
-                                    </button>
-                                </div>
-                            </div>
+                    <!-- Background Circle Platform -->
+                    <ellipse cx="200" cy="240" rx="160" ry="35" fill="#FFE5D4"/>
 
-                            <!-- Extra Links Row -->
-                            <div class="form-actions-row">
-                                <button type="button" id="forgotPasswordTrigger" class="forgot-password-link">পাসওয়ার্ড ভুলে গেছেন?</button>
-                            </div>
+                    <!-- Supplier Dashboard Window -->
+                    <rect x="50" y="40" width="220" height="150" rx="12" fill="#FFFFFF" filter="url(#shadow)" stroke="#FFE0D3" stroke-width="2"/>
+                    <rect x="50" y="40" width="220" height="28" rx="12" fill="#FFF0E6"/>
+                    <circle cx="68" cy="54" r="4" fill="#FF6B35"/>
+                    <circle cx="82" cy="54" r="4" fill="#FFA500"/>
+                    <circle cx="96" cy="54" r="4" fill="#10B981"/>
 
-                            <!-- Primary Submit Button -->
-                            <button type="submit" id="loginBtn" class="btn-primary">
-                                <span class="btn-text">লগইন/সাইনআপ করুন</span>
-                                <div class="btn-spinner"></div>
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                    <!-- Internal Charts & Bars -->
+                    <rect x="70" y="85" width="25" height="75" rx="4" fill="#FFE0D3"/>
+                    <rect x="70" y="110" width="25" height="50" rx="4" fill="url(#grad-primary)"/>
 
-                <!-- Footer Sign up Link -->
-                <div class="form-footer">
-                    <span>নতুন Supplier?</span>
-                    <a href="/signup" class="signup-link">Supplier অ্যাকাউন্ট খুলুন</a>
-                </div>
-            </section>
+                    <rect x="105" y="85" width="25" height="75" rx="4" fill="#FFE0D3"/>
+                    <rect x="105" y="95" width="25" height="65" rx="4" fill="url(#grad-accent)"/>
 
-            <!-- Right Side: SVG Business Illustration (Desktop Split Screen) -->
-            <section class="illustration-section">
-                <div class="illustration-container">
-                    <!-- Detailed Premium SVG B2B Wholesale Commerce Graphic -->
-                    <svg class="illustration-svg" viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Background Circle Gradients -->
-                        <circle cx="250" cy="200" r="160" fill="url(#circleGrad)" opacity="0.6"/>
-                        <!-- Grid Floor -->
-                        <path d="M100 320 H400 M130 350 H370" stroke="#FF6B35" stroke-opacity="0.2" stroke-width="2"/>
-                        
-                        <!-- Main Warehouse / Digital B2B Store Hub -->
-                        <rect x="150" y="140" width="200" height="150" rx="16" fill="#FFFFFF" filter="drop-shadow(0px 12px 24px rgba(255,107,53,0.15))"/>
-                        <path d="M150 156 C150 147.163 157.163 140 166 140 H334 C342.837 140 350 147.163 350 156 V180 H150 V156 Z" fill="#FF6B35"/>
-                        <circle cx="180" cy="160" r="6" fill="#FFFFFF"/>
-                        <circle cx="200" cy="160" r="6" fill="rgba(255,255,255,0.5)"/>
-                        <circle cx="220" cy="160" r="6" fill="rgba(255,255,255,0.5)"/>
-                        
-                        <!-- Wholesale Packages & Delivery Boxes -->
-                        <rect x="180" y="210" width="50" height="50" rx="8" fill="#FF6A00" opacity="0.9"/>
-                        <path d="M180 225 L205 235 L230 225 L205 215 Z" fill="#FFA500"/>
-                        <path d="M205 235 V260" stroke="#FFFFFF" stroke-width="2"/>
-                        
-                        <rect x="250" y="195" width="65" height="65" rx="8" fill="#FFF7F2" stroke="#FF6B35" stroke-width="2"/>
-                        <path d="M250 215 H315 M282.5 215 V260" stroke="#FF6B35" stroke-width="1.5" stroke-dasharray="3 3"/>
-                        
-                        <!-- Growth Bar Chart -->
-                        <rect x="370" y="180" width="18" height="80" rx="4" fill="#FF6B35"/>
-                        <rect x="395" y="130" width="18" height="130" rx="4" fill="#FF6A00"/>
-                        <path d="M360 210 L380 170 L405 120" stroke="#16A34A" stroke-width="4" stroke-linecap="round"/>
-                        <circle cx="405" cy="120" r="6" fill="#16A34A"/>
-                        
-                        <!-- Analytics Mobile Device Floating -->
-                        <rect x="90" y="160" width="50" height="90" rx="10" fill="#171717"/>
-                        <rect x="95" y="170" width="40" height="70" rx="6" fill="#FFFFFF"/>
-                        <path d="M100 185 H130 M100 195 H120 M100 205 H125" stroke="#FF6B35" stroke-width="3" stroke-linecap="round"/>
-                        
-                        <!-- Floating Shield Security Icon -->
-                        <g filter="drop-shadow(0px 8px 16px rgba(0,0,0,0.1))">
-                            <circle cx="250" cy="100" r="28" fill="#FFFFFF"/>
-                            <path d="M250 86 L262 92 V102 C262 109 257 114 250 116 C243 114 238 109 238 102 V92 L250 86 Z" fill="#FF6B35"/>
-                            <path d="M246 101 L249 104 L255 98" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </g>
+                    <rect x="140" y="85" width="25" height="75" rx="4" fill="#FFE0D3"/>
+                    <rect x="140" y="125" width="25" height="35" rx="4" fill="url(#grad-primary)"/>
 
-                        <!-- SVG Gradients -->
-                        <defs>
-                            <linearGradient id="circleGrad" x1="90" y1="40" x2="410" y2="360" gradientUnits="userSpaceOnUse">
-                                <stop stop-color="#FF6B35" stop-opacity="0.3"/>
-                                <stop offset="1" stop-color="#FFA500" stop-opacity="0.05"/>
-                            </linearGradient>
-                        </defs>
-                    </svg>
+                    <!-- Analytics Growth Line -->
+                    <path d="M70 130 Q 110 80, 150 100 T 230 70" fill="none" stroke="#FF6B35" stroke-width="3.5" stroke-linecap="round"/>
+                    <circle cx="230" cy="70" r="5" fill="#FF6B35"/>
 
-                    <h2 class="illustration-title">পাইকারি বাণিজ্যের বিশ্বস্ত প্ল্যাটফর্ম</h2>
-                    <p class="illustration-subtitle">সহজেই আপনার Supplier অ্যাকাউন্ট পরিচালনা করুন, অর্ডার ট্র্যাক করুন এবং দ্রুত ব্যবসা প্রসারিত করুন।</p>
+                    <!-- Marketplace Package Box -->
+                    <g transform="translate(220, 130)" filter="url(#shadow)">
+                        <polygon points="50,0 100,25 50,50 0,25" fill="#FFA500"/>
+                        <polygon points="0,25 50,50 50,110 0,85" fill="#FF6B35"/>
+                        <polygon points="50,50 100,25 100,85 50,110" fill="#E55A27"/>
+                        <path d="M50 50 L50 20 M25 37.5 L75 12.5" stroke="#FFFFFF" stroke-width="2.5" opacity="0.8"/>
+                    </g>
 
-                    <div class="glass-badge">
-                        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                        <span>নিরাপদ ও এনক্রিপ্টেড পেমেন্ট ও ডাটা সিস্টেম</span>
+                    <!-- Trust Shield SVG Floating Badge -->
+                    <g transform="translate(70, 180)" filter="url(#shadow)">
+                        <circle cx="30" cy="30" r="28" fill="#FFFFFF"/>
+                        <path d="M30 14 L42 20 V30 C42 38 30 44 30 44 C30 44 18 38 18 30 V20 L30 14 Z" fill="url(#grad-primary)"/>
+                        <path d="M26 29 L29 32 L35 26" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="brand-footer-text">
+                &copy; PAIKARI SELL. সর্বস্বত্ব সংরক্ষিত। Powered by Ghoti Market.
+            </div>
+        </section>
+
+        <!-- Right Side: Login Form -->
+        <section class="form-section">
+            <div class="form-header">
+                <img src="https://paikarisell.ghotimarket.com/photo/logo.png" alt="PAIKARI SELL Logo" class="mobile-logo">
+                <h2 class="form-title">আপনার অ্যাকাউন্টে লগইন করুন</h2>
+                <p class="form-subtitle">আপনার নিবন্ধিত ইমেইল ও পাসওয়ার্ড দিয়ে প্রবেশ করুন।</p>
+            </div>
+
+            <form id="login-form" novalidate>
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="email" class="form-label">ইমেইল ঠিকানা</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" class="form-input" placeholder="example@domain.com" required autocomplete="email">
+                        <!-- Email SVG Icon -->
+                        <svg class="input-icon" viewBox="0 0 24 24">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
                     </div>
                 </div>
-            </section>
-        </main>
-    </div>
 
-    <!-- Custom Animated Modal: Forgot Password & Universal Dialog -->
-    <div id="customModalBackdrop" class="modal-backdrop" aria-hidden="true">
-        <div class="modal-card">
-            <button type="button" id="closeModalBtn" class="modal-close-btn" aria-label="Close modal">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-
-            <!-- Reset Password Inner State -->
-            <div id="modalResetState">
-                <div class="modal-header">
-                    <div class="modal-icon-wrapper">
-                        <svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
-                    </div>
-                    <h3 class="modal-title">পাসওয়ার্ড রিসেট করুন</h3>
-                </div>
-                <p class="modal-description">আপনার অ্যাকাউন্টের ইমেইল ঠিকানা লিখুন। আমরা পাসওয়ার্ড পরিবর্তনের জন্য একটি নিরাপদ লিংক পাঠাব।</p>
-                
-                <form id="forgotPasswordForm" novalidate onsubmit="return false;">
-                    <div class="input-group">
-                        <label for="resetEmail" class="input-label">ইমেইল ঠিকানা</label>
-                        <div class="input-wrapper">
-                            <input type="email" id="resetEmail" class="form-input" placeholder="example@domain.com" autocomplete="email" required>
-                            <svg class="input-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                        </div>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="button" id="cancelResetBtn" class="btn-secondary">বাতিল</button>
-                        <button type="submit" id="sendResetBtn" class="btn-primary" style="flex: 1.5;">
-                            <span class="btn-text">রিসেট লিংক পাঠান</span>
-                            <div class="btn-spinner"></div>
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="password" class="form-label">পাসওয়ার্ড</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+                        <!-- Lock SVG Icon -->
+                        <svg class="input-icon" viewBox="0 0 24 24">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <!-- Show / Hide Toggle Button -->
+                        <button type="button" id="toggle-password-btn" class="toggle-password" title="পাসওয়ার্ড দেখুন/লুকান" aria-label="Toggle Password Visibility">
+                            <!-- Eye Icon SVG (Default) -->
+                            <svg id="eye-icon" viewBox="0 0 24 24">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <!-- Eye Off Icon SVG (Hidden) -->
+                            <svg id="eye-off-icon" viewBox="0 0 24 24" style="display: none;">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
                         </button>
                     </div>
-                </form>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="remember-me">
+                        <span>মনে রাখুন</span>
+                    </label>
+                    <button type="button" id="open-forgot-modal-btn" class="forgot-link">পাসওয়ার্ড ভুলে গেছেন?</button>
+                </div>
+
+                <!-- Primary Submit Button -->
+                <button type="submit" id="login-submit-btn" class="btn-primary">
+                    <span id="btn-text">লগইন করুন</span>
+                    <span id="btn-spinner-icon" class="btn-spinner" style="display: none;"></span>
+                </button>
+
+                <!-- Step-by-Step Live Feedback Bar -->
+                <div id="feedback-bar" class="feedback-bar">
+                    <div class="btn-spinner" style="width: 14px; height: 14px; border-width: 2px; border-top-color: var(--primary);"></div>
+                    <span id="feedback-text">যাচাই করা হচ্ছে...</span>
+                </div>
+            </form>
+
+            <!-- Navigation to Signup -->
+            <div class="signup-option">
+                <span>PAIKARI SELL-এ নতুন?</span>
+                <a href="/signup" class="btn-signup-link">নতুন অ্যাকাউন্ট খুলুন</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==========================================================================
+       4. FORGOT PASSWORD MODAL
+       ========================================================================== -->
+    <div id="forgot-password-modal" class="modal-overlay" role="dialog" aria-hidden="true">
+        <div class="modal-card">
+            <button type="button" class="modal-close-btn" id="close-forgot-modal-btn" aria-label="Close Modal">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+
+            <div class="modal-icon-header">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
             </div>
 
-            <!-- Reset Password Success Inner State -->
-            <div id="modalSuccessState" style="display: none;">
-                <div class="modal-header">
-                    <div class="modal-icon-wrapper toast-icon-success">
-                        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                    </div>
-                    <h3 class="modal-title">পাসওয়ার্ড রিসেট লিংক পাঠানো হয়েছে!</h3>
-                </div>
-                <p class="modal-description">আপনার ইমেইলে একটি পাসওয়ার্ড রিসেট লিংক পাঠানো হয়েছে। অনুগ্রহ করে আপনার Inbox এবং Spam/Junk Folder চেক করুন। ইমেইলে পাঠানো লিংকে ক্লিক করে নতুন পাসওয়ার্ড সেট করুন।</p>
-                <button type="button" id="closeSuccessModalBtn" class="btn-primary">ঠিক আছে</button>
-            </div>
+            <h3 class="modal-title">পাসওয়ার্ড রিসেট করুন</h3>
+            <p class="modal-desc">আপনার অ্যাকাউন্টে নিবন্ধিত ইমেইল ঠিকানাটি লিখুন। আমরা সেখানে পাসওয়ার্ড পরিবর্তনের একটি নিরাপদ লিংক পাঠাব।</p>
 
-            <!-- Custom Notification Dialog Inner State (Replacing browser Alert) -->
-            <div id="modalNotificationState" style="display: none;">
-                <div class="modal-header">
-                    <div id="notifIconWrapper" class="modal-icon-wrapper">
-                        <svg id="notifIcon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <form id="reset-password-form" novalidate>
+                <div class="form-group">
+                    <label for="reset-email" class="form-label">ইমেইল ঠিকানা</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="reset-email" class="form-input" placeholder="example@domain.com" required autocomplete="email">
+                        <svg class="input-icon" viewBox="0 0 24 24">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
                     </div>
-                    <h3 id="notifTitle" class="modal-title">বিজ্ঞপ্তি</h3>
                 </div>
-                <p id="notifMessage" class="modal-description"></p>
-                <button type="button" id="closeNotifModalBtn" class="btn-primary">ঠিক আছে</button>
-            </div>
+
+                <button type="submit" id="reset-submit-btn" class="btn-primary" style="margin-top: 12px;">
+                    <span id="reset-btn-text">রিসেট লিংক পাঠান</span>
+                    <span id="reset-btn-spinner" class="btn-spinner" style="display: none;"></span>
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- Firebase SDK Setup (Modular Web v9+ with Compatibility for Instant Native Script Executions) -->
+    <!-- ==========================================================================
+       5. UNIVERSAL CUSTOM POPUP / NOTIFICATION MODAL SYSTEM
+       ========================================================================== -->
+    <div id="custom-popup" class="modal-overlay" role="dialog" aria-hidden="true">
+        <div class="modal-card popup-card" id="popup-card-theme">
+            <!-- Dynamic Icon Box -->
+            <div class="popup-icon-container" id="popup-icon-wrapper">
+                <!-- SVG injected via JavaScript -->
+            </div>
+
+            <h3 class="modal-title" id="popup-title">মেসেজ নোটিফিকেশন</h3>
+            <p class="modal-desc" id="popup-desc">এখানে নোটিফিকেশন বার্তা প্রদর্শিত হবে।</p>
+
+            <button type="button" id="popup-action-btn" class="btn-modal-action btn-modal-primary">বুঝেছি</button>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       6. FIREBASE V10/V11 MODULAR SDK & VANILLA JS APP LOGIC
+       ========================================================================== -->
     <script type="module">
-        import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        // Import Firebase Modular SDK Modules from Firebase CDN
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
             getAuth, 
+            onAuthStateChanged, 
             signInWithEmailAndPassword, 
-            sendPasswordResetEmail, 
-            onAuthStateChanged 
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+            sendPasswordResetEmail 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { 
             getFirestore, 
             doc, 
             getDoc 
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Detect or fallback existing Firebase Config safely
-        let firebaseConfig = window.firebaseConfig;
-        if (!firebaseConfig && typeof __firebase_config !== 'undefined') {
-            try {
-                firebaseConfig = JSON.parse(__firebase_config);
-            } catch(e) {
-                console.error("Config parse error", e);
-            }
-        }
+        // Provided Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDCIRWmozT0XcEXuXtQ6RDiDo6vtT1T9mU",
+            authDomain: "paikarisell-ghotimarket.firebaseapp.com",
+            projectId: "paikarisell-ghotimarket",
+            storageBucket: "paikarisell-ghotimarket.firebasestorage.app",
+            messagingSenderId: "464086432830",
+            appId: "1:464086432830:web:a10fdd9884954e380e656f",
+            measurementId: "G-E3HR2F9TC5"
+        };
 
-        // Standard Default Fallback configuration container structure
-        if (!firebaseConfig) {
-            firebaseConfig = {
-  apiKey: "AIzaSyDCIRWmozT0XcEXuXtQ6RDiDo6vtT1T9mU",
-  authDomain: "paikarisell-ghotimarket.firebaseapp.com",
-  projectId: "paikarisell-ghotimarket",
-  storageBucket: "paikarisell-ghotimarket.firebasestorage.app",
-  messagingSenderId: "464086432830",
-  appId: "1:464086432830:web:a10fdd9884954e380e656f",
-  measurementId: "G-E3HR2F9TC5"
-};
-        }
-
-        // Initialize App & Services smoothly without duplicate instantiation
-        const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+        // Initialize Firebase safely without re-initialization error
+        const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Export modules to global window context for smooth vanilla integration
-        window.fbAuth = auth;
-        window.fbDb = db;
-        window.fbSignIn = signInWithEmailAndPassword;
-        window.fbResetEmail = sendPasswordResetEmail;
-        window.fbOnAuth = onAuthStateChanged;
-        window.fbDoc = doc;
-        window.fbGetDoc = getDoc;
+        // Target Routes
+        const ROUTE_DASHBOARD = "/dashboard";
+        const ROUTE_SIGNUP = "/signup";
+        const FIRESTORE_COLLECTION_SUPPLIERS = "supplyers"; // Strict Requirement
 
-        // Signal Firebase ready to DOM controller
-        document.dispatchEvent(new Event('FirebaseReady'));
-    </script>
+        // DOM Elements
+        const pageLoader = document.getElementById("page-loader");
+        const loginForm = document.getElementById("login-form");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const togglePasswordBtn = document.getElementById("toggle-password-btn");
+        const eyeIcon = document.getElementById("eye-icon");
+        const eyeOffIcon = document.getElementById("eye-off-icon");
+        const loginSubmitBtn = document.getElementById("login-submit-btn");
+        const btnText = document.getElementById("btn-text");
+        const btnSpinnerIcon = document.getElementById("btn-spinner-icon");
+        const feedbackBar = document.getElementById("feedback-bar");
+        const feedbackText = document.getElementById("feedback-text");
 
-    <!-- UI & Authentication Application Engine -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Elements Reference
-            const authLoader = document.getElementById('authScreenLoader');
-            const loginForm = document.getElementById('loginForm');
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-            const togglePasswordBtn = document.getElementById('togglePasswordBtn');
-            const eyeIcon = document.getElementById('eyeIcon');
-            const eyeOffIcon = document.getElementById('eyeOffIcon');
-            const loginBtn = document.getElementById('loginBtn');
+        // Forgot Modal Elements
+        const openForgotModalBtn = document.getElementById("open-forgot-modal-btn");
+        const forgotPasswordModal = document.getElementById("forgot-password-modal");
+        const closeForgotModalBtn = document.getElementById("close-forgot-modal-btn");
+        const resetPasswordForm = document.getElementById("reset-password-form");
+        const resetEmailInput = document.getElementById("reset-email");
+        const resetSubmitBtn = document.getElementById("reset-submit-btn");
+        const resetBtnText = document.getElementById("reset-btn-text");
+        const resetBtnSpinner = document.getElementById("reset-btn-spinner");
 
-            // Modal System Elements
-            const modalBackdrop = document.getElementById('customModalBackdrop');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            const forgotPasswordTrigger = document.getElementById('forgotPasswordTrigger');
-            
-            const modalResetState = document.getElementById('modalResetState');
-            const forgotPasswordForm = document.getElementById('forgotPasswordForm');
-            const resetEmailInput = document.getElementById('resetEmail');
-            const cancelResetBtn = document.getElementById('cancelResetBtn');
-            const sendResetBtn = document.getElementById('sendResetBtn');
-            
-            const modalSuccessState = document.getElementById('modalSuccessState');
-            const closeSuccessModalBtn = document.getElementById('closeSuccessModalBtn');
-            
-            const modalNotificationState = document.getElementById('modalNotificationState');
-            const notifTitle = document.getElementById('notifTitle');
-            const notifMessage = document.getElementById('notifMessage');
-            const notifIconWrapper = document.getElementById('notifIconWrapper');
-            const closeNotifModalBtn = document.getElementById('closeNotifModalBtn');
+        // Custom Popup Elements
+        const customPopup = document.getElementById("custom-popup");
+        const popupCardTheme = document.getElementById("popup-card-theme");
+        const popupIconWrapper = document.getElementById("popup-icon-wrapper");
+        const popupTitle = document.getElementById("popup-title");
+        const popupDesc = document.getElementById("popup-desc");
+        const popupActionBtn = document.getElementById("popup-action-btn");
 
-            let isRedirecting = false; // Prevent race conditions
+        /* ==========================================================================
+           7. CUSTOM POPUP SYSTEM IMPLEMENTATION (Zero alert/confirm)
+           ========================================================================== */
+        const SVG_ICONS = {
+            success: `<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
+            error: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
+            warning: `<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
+            info: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`
+        };
 
-            // Helper: Email Validation Regex
-            function isValidEmail(email) {
-                const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-                return re.test(String(email).toLowerCase());
+        /**
+         * Custom Popup Notification Display
+         * @param {'success'|'error'|'warning'|'info'} type 
+         * @param {string} title 
+         * @param {string} description 
+         * @param {Function} [onClose] 
+         */
+        function showCustomPopup(type, title, description, onClose = null) {
+            popupCardTheme.className = "modal-card popup-card popup-" + type;
+            popupIconWrapper.innerHTML = SVG_ICONS[type] || SVG_ICONS.info;
+            popupTitle.textContent = title;
+            popupDesc.textContent = description;
+
+            customPopup.classList.add("active");
+            customPopup.setAttribute("aria-hidden", "false");
+
+            const handleClose = () => {
+                customPopup.classList.remove("active");
+                customPopup.setAttribute("aria-hidden", "true");
+                popupActionBtn.removeEventListener("click", handleClose);
+                if (onClose && typeof onClose === "function") onClose();
+            };
+
+            popupActionBtn.onclick = handleClose;
+        }
+
+        /* ==========================================================================
+           8. HELPERS & UTILITIES
+           ========================================================================== */
+        function isValidEmail(email) {
+            const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        function setFeedback(text) {
+            if (text) {
+                feedbackText.textContent = text;
+                feedbackBar.classList.add("active");
+            } else {
+                feedbackBar.classList.remove("active");
             }
+        }
 
-            // Helper: Show Custom Notification Dialog (Replaces Browser alert)
-            function showNotification(title, message, isError = true) {
-                modalResetState.style.display = 'none';
-                modalSuccessState.style.display = 'none';
-                modalNotificationState.style.display = 'block';
+        function togglePasswordVisibility() {
+            const isPassword = passwordInput.type === "password";
+            passwordInput.type = isPassword ? "text" : "password";
+            eyeIcon.style.display = isPassword ? "none" : "block";
+            eyeOffIcon.style.display = isPassword ? "block" : "none";
+            setFeedback(isPassword ? "পাসওয়ার্ড দেখা যাচ্ছে" : "পাসওয়ার্ড লুকানো হয়েছে");
+            setTimeout(() => setFeedback(null), 2000);
+        }
 
-                notifTitle.textContent = title;
-                notifMessage.textContent = message;
+        togglePasswordBtn.addEventListener("click", togglePasswordVisibility);
 
-                if (isError) {
-                    notifIconWrapper.className = 'modal-icon-wrapper toast-icon-error';
+        /* ==========================================================================
+           9. ALREADY LOGGED IN USER CHECK & ROUTING LOGIC
+           ========================================================================== */
+        let authListenerUnsubscribe = null;
+
+        /**
+         * Checks Firestore for Supplier Record and performs safe routing
+         * @param {object} user - Firebase Auth User Object
+         */
+        async function verifySupplierAndRedirect(user) {
+            try {
+                setFeedback("আপনার অ্যাকাউন্টের তথ্য খোঁজা হচ্ছে...");
+                
+                // Firestore lookup: supplyers/{uid}
+                const supplierRef = doc(db, FIRESTORE_COLLECTION_SUPPLIERS, user.uid);
+                const supplierSnap = await getDoc(supplierRef);
+
+                if (supplierSnap.exists()) {
+                    setFeedback("ড্যাশবোর্ড প্রস্তুত হচ্ছে...");
+                    window.location.href = ROUTE_DASHBOARD;
                 } else {
-                    notifIconWrapper.className = 'modal-icon-wrapper toast-icon-success';
+                    setFeedback("নতুন রেজিস্ট্রেশন নিশ্চিত করা হচ্ছে...");
+                    window.location.href = ROUTE_SIGNUP;
                 }
+            } catch (error) {
+                console.error("Firestore Verification Error:", error);
+                pageLoader.classList.add("hidden"); // Reveal UI if blocked by loader
+                resetLoginButtonState();
 
-                modalBackdrop.classList.add('active');
-                modalBackdrop.setAttribute('aria-hidden', 'false');
+                let errorMsg = "আপনার তথ্যের জন্য ডাটাবেজ অনুসন্ধান সফল হয়নি। অনুগ্রহ করে পুনরায় চেষ্টা করুন।";
+                if (error.code === 'permission-denied') {
+                    errorMsg = "ডাটাবেজ এক্সেস করার অনুমতি নেই। (Permission Denied)";
+                } else if (error.code === 'unavailable') {
+                    errorMsg = "নেটওয়ার্ক সংযোগের সমস্যা বা ডাটাবেজ সাময়িকভাবে অকার্যকর।";
+                }
+                
+                showCustomPopup("error", "ডাটাবেজ ত্রুটি", errorMsg);
+            }
+        }
+
+        // On Page Load Authentication State Verification
+        authListenerUnsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // User is signed in, check Firestore immediately before showing form
+                await verifySupplierAndRedirect(user);
+            } else {
+                // User is not signed in, hide page loader and show login page UI
+                pageLoader.classList.add("hidden");
+            }
+        });
+
+        /* ==========================================================================
+           10. LOGIN FORM SUBMISSION HANDLER
+           ========================================================================== */
+        function setLoginButtonLoading(loading, text = "") {
+            if (loading) {
+                loginSubmitBtn.disabled = true;
+                btnSpinnerIcon.style.display = "inline-block";
+                btnText.textContent = text || "লগইন হচ্ছে...";
+            } else {
+                loginSubmitBtn.disabled = false;
+                btnSpinnerIcon.style.display = "none";
+                btnText.textContent = "লগইন করুন";
+            }
+        }
+
+        function resetLoginButtonState() {
+            setLoginButtonLoading(false);
+            setFeedback(null);
+        }
+
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            // Step 1: Input Validation
+            if (!email) {
+                showCustomPopup("warning", "ইমেইল প্রয়োজন", "অনুগ্রহ করে আপনার ইমেইল ঠিকানাটি লিখুন।");
+                return;
             }
 
-            // Helper: Translate Firebase Error Codes into Clear Bengali
-            function getBengaliErrorMessage(errorCode) {
-                switch (errorCode) {
+            if (!isValidEmail(email)) {
+                showCustomPopup("warning", "অকার্যকর ইমেইল", "অনুগ্রহ করে একটি সঠিক ইমেইল ঠিকানা ব্যবহার করুন।");
+                return;
+            }
+
+            if (!password) {
+                showCustomPopup("warning", "পাসওয়ার্ড প্রয়োজন", "অনুগ্রহ করে আপনার অ্যাকাউন্টের পাসওয়ার্ডটি লিখুন।");
+                return;
+            }
+
+            // Prevent double click and update button UI
+            setLoginButtonLoading(true, "লগইন হচ্ছে...");
+            setFeedback("অ্যাকাউন্ট যাচাই করা হচ্ছে...");
+
+            try {
+                // Step 2: Firebase Modular Auth Login
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Step 3, 4 & 5: Check Firestore document supplyers/{uid}
+                await verifySupplierAndRedirect(user);
+
+            } catch (error) {
+                console.error("Firebase Auth Error:", error);
+                resetLoginButtonState();
+
+                // Step 11 Bengali Custom Error Translations
+                let title = "লগইন ব্যর্থ হয়েছে";
+                let message = "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। আবার চেষ্টা করুন।";
+
+                switch (error.code) {
                     case 'auth/invalid-credential':
                     case 'auth/user-not-found':
                     case 'auth/wrong-password':
-                        return 'ইমেইল বা পাসওয়ার্ড ভুল হয়েছে। সঠিক তথ্য দিয়ে আবার চেষ্টা করুন।';
-                    case 'auth/invalid-email':
-                        return 'ইমেইল ঠিকানার ফরম্যাট সঠিক নয়।';
+                        title = "ভুল তথ্য প্রদান করা হয়েছে";
+                        message = "আপনার প্রদানকৃত ইমেইল অথবা পাসওয়ার্ডটি সঠিক নয়। সঠিক তথ্য প্রদান করুন।";
+                        break;
                     case 'auth/user-disabled':
-                        return 'আপনার এই অ্যাকাউন্টটি নিষ্ক্রিয় করা হয়েছে। কর্তৃপক্ষের সাথে যোগাযোগ করুন।';
+                        title = "অ্যাকাউন্ট নিষ্ক্রিয়";
+                        message = "আপনার অ্যাকাউন্টটি সাময়িকভাবে স্থগিত বা নিষ্ক্রিয় করা হয়েছে। কর্তৃপক্ষের সাথে যোগাযোগ করুন।";
+                        break;
                     case 'auth/too-many-requests':
-                        return 'অতিরিক্ত ভুল চেষ্টার কারণে সাময়িকভাবে সুবিধাটি বন্ধ আছে। কিছুক্ষণ পর আবার চেষ্টা করুন।';
+                        title = "অতিরিক্ত অনুরোধ";
+                        message = "একাধিকবার ভুল চেষ্টার কারণে লগইন ব্লক করা হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর চেষ্টা করুন।";
+                        break;
                     case 'auth/network-request-failed':
-                        return 'নেটওয়ার্ক সংযোগ বিচ্ছিন্ন হয়েছে। আপনার ইন্টারনেট সংযোগ চেক করুন।';
+                        title = "নেটওয়ার্ক সমস্যা";
+                        message = "আপনার ইন্টারনেট সংযোগটি পরীক্ষা করে আবার চেষ্টা করুন।";
+                        break;
+                    case 'auth/invalid-email':
+                        title = "অকার্যকর ইমেইল";
+                        message = "প্রদানকৃত ইমেইল ঠিকানাটির বিন্যাস সঠিক নয়।";
+                        break;
+                    case 'auth/missing-password':
+                        title = "পাসওয়ার্ড অনুপস্থিত";
+                        message = "অনুগ্রহ করে আপনার অ্যাকাউন্টের পাসওয়ার্ড প্রদান করুন।";
+                        break;
                     default:
-                        return 'একটি সমস্যা হয়েছে (' + errorCode + ')। পুনরায় চেষ্টা করুন।';
-                }
-            }
-
-            // Modal Controls
-            function openForgotModal() {
-                modalNotificationState.style.display = 'none';
-                modalSuccessState.style.display = 'none';
-                modalResetState.style.display = 'block';
-                resetEmailInput.value = emailInput.value || '';
-                modalBackdrop.classList.add('active');
-                modalBackdrop.setAttribute('aria-hidden', 'false');
-            }
-
-            function closeModal() {
-                modalBackdrop.classList.remove('active');
-                modalBackdrop.setAttribute('aria-hidden', 'true');
-            }
-
-            forgotPasswordTrigger.addEventListener('click', openForgotModal);
-            closeModalBtn.addEventListener('click', closeModal);
-            cancelResetBtn.addEventListener('click', closeModal);
-            closeSuccessModalBtn.addEventListener('click', closeModal);
-            closeNotifModalBtn.addEventListener('click', closeModal);
-
-            modalBackdrop.addEventListener('click', (e) => {
-                if (e.target === modalBackdrop) closeModal();
-            });
-
-            // Password Visibility Toggle
-            togglePasswordBtn.addEventListener('click', () => {
-                const isPassword = passwordInput.type === 'password';
-                passwordInput.type = isPassword ? 'text' : 'password';
-                eyeIcon.style.display = isPassword ? 'none' : 'block';
-                eyeOffIcon.style.display = isPassword ? 'block' : 'none';
-            });
-
-            // Core Supplier Document Lookup Function
-            async function verifySupplierDocumentAndRedirect(user) {
-                if (isRedirecting) return;
-                try {
-                    const db = window.fbDb;
-                    const docFn = window.fbDoc;
-                    const getDocFn = window.fbGetDoc;
-
-                    if (!db || !user) {
-                        authLoader.classList.add('hidden');
-                        return;
-                    }
-
-                    // Strict Target Collection: "supplyers" & Document ID: UID
-                    const supplierRef = docFn(db, "supplyers", user.uid);
-                    let supplierSnap;
-                    
-                    try {
-                        supplierSnap = await getDocFn(supplierRef);
-                    } catch (firestoreErr) {
-                        console.error("Firestore error:", firestoreErr);
-                        authLoader.classList.add('hidden');
-                        loginBtn.classList.remove('loading');
-                        loginBtn.disabled = false;
-                        showNotification("অনুমতি ত্রুটি", "সিস্টেমে ডাটাবেজ এক্সেস পারমিশন সমস্যা হয়েছে। অনুগ্রহ করে সাপোর্ট টিমে যোগাযোগ করুন।");
-                        return;
-                    }
-
-                    isRedirecting = true;
-                    if (supplierSnap.exists()) {
-                        window.location.replace("/dashboard");
-                    } else {
-                        window.location.replace("/signup1");
-                    }
-
-                } catch (err) {
-                    console.error("Lookup error:", err);
-                    authLoader.classList.add('hidden');
-                    loginBtn.classList.remove('loading');
-                    loginBtn.disabled = false;
-                    showNotification("ত্রুটি", "অ্যাকাউন্ট যাচাই করতে সমস্যা হয়েছে।");
-                }
-            }
-
-            // Initialize Authentication Event Listeners once Firebase Script Module Loads
-            document.addEventListener('FirebaseReady', () => {
-                const auth = window.fbAuth;
-                const onAuthFn = window.fbOnAuth;
-
-                // 1. Authentication State Check on Page Load
-                if (auth && onAuthFn) {
-                    onAuthFn(auth, (user) => {
-                        if (user && !isRedirecting) {
-                            verifySupplierDocumentAndRedirect(user);
-                        } else {
-                            authLoader.classList.add('hidden');
-                        }
-                    });
-                } else {
-                    authLoader.classList.add('hidden');
+                        message = error.message || message;
                 }
 
-                // 2. Primary Login Form Submit Action
-                loginForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    
-                    const email = emailInput.value.trim();
-                    const password = passwordInput.value;
+                showCustomPopup("error", title, message);
+            }
+        });
 
-                    // Validation
-                    if (!email) {
-                        showNotification("ইনপুট ত্রুটি", "অনুগ্রহ করে আপনার ইমেইল ঠিকানা লিখুন।");
-                        emailInput.focus();
-                        return;
-                    }
+        /* ==========================================================================
+           11. FORGOT PASSWORD MODAL LOGIC
+           ========================================================================== */
+        openForgotModalBtn.addEventListener("click", () => {
+            forgotPasswordModal.classList.add("active");
+            forgotPasswordModal.setAttribute("aria-hidden", "false");
+            resetEmailInput.value = emailInput.value; // Pre-fill email if entered
+        });
 
-                    if (!isValidEmail(email)) {
-                        showNotification("ইনপুট ত্রুটি", "সঠিক ইমেইল ঠিকানা প্রবেশ করান।");
-                        emailInput.focus();
-                        return;
-                    }
+        function closeForgotModal() {
+            forgotPasswordModal.classList.remove("active");
+            forgotPasswordModal.setAttribute("aria-hidden", "true");
+        }
 
-                    if (!password) {
-                        showNotification("ইনপুট ত্রুটি", "অনুগ্রহ করে পাসওয়ার্ড প্রবেশ করান।");
-                        passwordInput.focus();
-                        return;
-                    }
+        closeForgotModalBtn.addEventListener("click", closeForgotModal);
 
-                    // UI Loading Lock State
-                    loginBtn.classList.add('loading');
-                    loginBtn.disabled = true;
+        // Close Modal when clicking outside the card
+        forgotPasswordModal.addEventListener("click", (e) => {
+            if (e.target === forgotPasswordModal) {
+                closeForgotModal();
+            }
+        });
 
-                    try {
-                        const signInFn = window.fbSignIn;
-                        
-                        // Execute Auth Sign In
-                        const credential = await signInFn(auth, email, password);
-                        const user = credential.user;
+        resetPasswordForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const resetEmail = resetEmailInput.value.trim();
 
-                        // Check Firestore Database
-                        await verifySupplierDocumentAndRedirect(user);
+            if (!resetEmail) {
+                showCustomPopup("warning", "ইমেইল প্রয়োজন", "পাসওয়ার্ড রিসেট করতে ইমেইল ঠিকানা প্রদান করুন।");
+                return;
+            }
 
-                    } catch (error) {
-                        loginBtn.classList.remove('loading');
-                        loginBtn.disabled = false;
+            if (!isValidEmail(resetEmail)) {
+                showCustomPopup("warning", "অকার্যকর ইমেইল", "অনুগ্রহ করে একটি সঠিক ইমেইল ঠিকানা ব্যবহার করুন।");
+                return;
+            }
 
-                        // If Firebase keys aren't live in testing sandbox, provide smooth fallback preview confirmation
-                        if (error.code === 'auth/api-key-not-valid' || error.code === 'auth/invalid-api-key') {
-                            showNotification("টেস্ট মোড", "Firebase API কীয়ের সংযোগ সফল হয়েছে। প্রোডাকশন ডোমেইনে আপনার সঠিক Auth Credentials দিয়ে সম্পূর্ণ প্রক্রিয়া সম্পন্ন হবে।");
-                            return;
-                        }
+            // Loading state for Reset button
+            resetSubmitBtn.disabled = true;
+            resetBtnSpinner.style.display = "inline-block";
+            resetBtnText.textContent = "রিসেট লিংক পাঠানো হচ্ছে...";
 
-                        const banglaMsg = getBengaliErrorMessage(error.code || '');
-                        showNotification("লগইন ব্যর্থ হয়েছে", banglaMsg);
-                    }
-                });
+            try {
+                await sendPasswordResetEmail(auth, resetEmail);
 
-                // 3. Password Reset Form Submit Action
-                forgotPasswordForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    
-                    const resetEmail = resetEmailInput.value.trim();
+                // Reset button state
+                resetSubmitBtn.disabled = false;
+                resetBtnSpinner.style.display = "none";
+                resetBtnText.textContent = "রিসেট লিংক পাঠান";
 
-                    if (!resetEmail) {
-                        showNotification("ইনপুট ত্রুটি", "অনুগ্রহ করে ইমেইল ঠিকানাটি লিখুন।");
-                        return;
-                    }
+                closeForgotModal();
 
-                    if (!isValidEmail(resetEmail)) {
-                        showNotification("ইনপুট ত্রুটি", "সঠিক ইমেইল ঠিকানা লিখুন।");
-                        return;
-                    }
+                // Email Enumeration Protection Compliant Generic Success Feedback
+                showCustomPopup(
+                    "success",
+                    "রিসেট লিংক পাঠানো হয়েছে!",
+                    "আপনার ইমেইল ঠিকানায় পাসওয়ার্ড পরিবর্তনের একটি লিংক পাঠানো হয়েছে। অনুগ্রহ করে আপনার Inbox এবং Spam Folder চেক করুন। ইমেইলে থাকা লিংকে ক্লিক করে নতুন পাসওয়ার্ড সেট করুন।"
+                );
 
-                    sendResetBtn.classList.add('loading');
-                    sendResetBtn.disabled = true;
+            } catch (error) {
+                console.error("Password Reset Error:", error);
 
-                    try {
-                        const resetFn = window.fbResetEmail;
-                        await resetFn(auth, resetEmail);
+                resetSubmitBtn.disabled = false;
+                resetBtnSpinner.style.display = "none";
+                resetBtnText.textContent = "রিসেট লিংক পাঠান";
 
-                        sendResetBtn.classList.remove('loading');
-                        sendResetBtn.disabled = false;
+                let title = "পাসওয়ার্ড রিসেট ব্যর্থ";
+                let message = "ইমেইল পাঠাতে সমস্যা হয়েছে। কিছুক্ষণ পর আবার চেষ্টা করুন।";
 
-                        // Switch Inner Modal State to Success State
-                        modalResetState.style.display = 'none';
-                        modalSuccessState.style.display = 'block';
-
-                    } catch (error) {
-                        sendResetBtn.classList.remove('loading');
-                        sendResetBtn.disabled = false;
-
-                        if (error.code === 'auth/api-key-not-valid' || error.code === 'auth/invalid-api-key') {
-                            modalResetState.style.display = 'none';
-                            modalSuccessState.style.display = 'block';
-                            return;
-                        }
-
-                        const msg = getBengaliErrorMessage(error.code || '');
-                        showNotification("রিসেট লিংক পাঠানো যায়নি", msg);
-                    }
-                });
-            });
-
-            // Timeout safety fallback for loader if network drops
-            setTimeout(() => {
-                if (authLoader && !authLoader.classList.contains('hidden') && !isRedirecting) {
-                    authLoader.classList.add('hidden');
+                if (error.code === 'auth/invalid-email') {
+                    message = "প্রদানকৃত ইমেইল ঠিকানাটির বিন্যাস সঠিক নয়।";
+                } else if (error.code === 'auth/network-request-failed') {
+                    message = "ইন্টারনেট সংযোগ বিচ্ছিন্ন। সংযোগ পরীক্ষা করুন।";
                 }
-            }, 4000);
+
+                showCustomPopup("error", title, message);
+            }
         });
     </script>
 </body>
