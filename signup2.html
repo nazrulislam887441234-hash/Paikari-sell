@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supplier Registration - Step 3 | PAIKARI SELL</title>
+  <link rel="icon" href="https://paikarisell.ghotimarket.com/photo/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="brand-header">
+      <img src="https://paikarisell.ghotimarket.com/photo/logo.png" alt="Logo">
+      <h1>পরিচয় যাচাই ও বিবরণ</h1>
+      <p>NID কার্ডের ছবি আপলোড করুন এবং পণ্যের বিবরণ দিন।</p>
+    </div>
+
+    <div class="progress-box">
+      <span>Step 03: পরিচয় যাচাই</span>
+      <span>ধাপ ৩/৩</span>
+    </div>
+
+    <div id="errorAlert" class="alert-box alert-error"></div>
+
+    <form id="step2Form">
+      <div class="form-group">
+        <label>কী ধরনের পণ্য বিক্রি করবেন?</label>
+        <textarea id="description" class="form-control" required placeholder="যেমন: পোশাক, কসমেটিকস, ইলেকট্রনিক্স ইত্যাদি"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>NID কার্ডের সামনের অংশ</label>
+        <div class="upload-area" onclick="document.getElementById('nidFront').click()">
+          <span id="frontLabel">ফাইল নির্বাচন করতে ক্লিক করুন (JPEG/PNG)</span>
+          <input type="file" id="nidFront" accept="image/jpeg,image/png,image/webp" style="display:none" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>NID কার্ডের পেছনের অংশ</label>
+        <div class="upload-area" onclick="document.getElementById('nidBack').click()">
+          <span id="backLabel">ফাইল নির্বাচন করুন (JPEG/PNG)</span>
+          <input type="file" id="nidBack" accept="image/jpeg,image/png,image/webp" style="display:none" required>
+        </div>
+      </div>
+
+      <button type="submit" id="completeBtn" class="btn-primary">আবেদন সম্পন্ন করুন</button>
+    </form>
+  </div>
+
+  <script type="module">
+    import { auth, db, showCustomError } from 'signup.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = '/signup';
+        return;
+      }
+      currentUser = user;
+      const docSnap = await getDoc(doc(db, "supplyers", user.uid));
+      if (docSnap.exists()) {
+        window.location.href = '/dashboard';
+      }
+      if (!localStorage.getItem('name')) {
+        window.location.href = '/signup1';
+      }
+    });
+
+    document.getElementById('nidFront').addEventListener('change', (e) => {
+      if(e.target.files[0]) document.getElementById('frontLabel').innerText = e.target.files[0].name;
+    });
+
+    document.getElementById('nidBack').addEventListener('change', (e) => {
+      if(e.target.files[0]) document.getElementById('backLabel').innerText = e.target.files[0].name;
+    });
+
+    const form = document.getElementById('step2Form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('completeBtn');
+      btn.disabled = true;
+      btn.innerText = 'আপলোড ও সংরক্ষণ হচ্ছে...';
+
+      const description = document.getElementById('description').value.trim();
+      const frontFile = document.getElementById('nidFront').files[0];
+      const backFile = document.getElementById('nidBack').files[0];
+
+      if (!frontFile || !backFile) {
+        showCustomError('errorAlert', 'উভয় পাশের NID ছবি আপলোড করুন।');
+        btn.disabled = false;
+        btn.innerText = 'আবেদন সম্পন্ন করুন';
+        return;
+      }
+
+      try {
+        const token = await currentUser.getIdToken();
+        const uploadFile = async (file) => {
+          const formData = new FormData();
+          formData.append('file', file);
+          const res = await fetch('nid-upload.ghotimarket.com/upload', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${token}` },
+            body: formData
+          });
+          const data = await res.json();
+          if (!data.success) throw new Error('Upload failed');
+          return data.key;
+        };
+
+        const nidFrontKey = await uploadFile(frontFile);
+        const nidBackKey = await uploadFile(backFile);
+
+        const supplierData = {
+          name: localStorage.getItem('name'),
+          email: currentUser.email,
+          uid: currentUser.uid,
+          nidBack: nidBackKey,
+          nidFront: nidFrontKey,
+          description: description,
+          phone: localStorage.getItem('phone'),
+          whatsApp: localStorage.getItem('whatsApp'),
+          balance: 0,
+          product: 0,
+          activeProduct: 0,
+          active: false,
+          verified: false,
+          profileUnlockedUntil: 0,
+          createdAt: serverTimestamp()
+        };
+
+        await setDoc(doc(db, "supplyers", currentUser.uid), supplierData);
+
+        // Trigger Telegram Worker Notification
+        fetch('https://telegram-notification.ghotimarket.com/notify', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ uid: currentUser.uid })
+        }).catch(err => console.error(err));
+
+        localStorage.clear();
+        window.location.href = '/complete';
+
+      } catch (err) {
+        showCustomError('errorAlert', 'তথ্য সংরক্ষণে সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।');
+        btn.disabled = false;
+        btn.innerText = 'আবেদন সম্পন্ন করুন';
+      }
+    });
+  </script>
+</body>
+</html>
