@@ -1,15 +1,397 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#FF6B35">
   <title>Supplier Registration - Step 3 | PAIKARI SELL</title>
+
   <link rel="icon" href="https://paikarisell.ghotimarket.com/photo/favicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="signup.css">
+
+  <style>
+    :root {
+      --primary: #FF6B35;
+      --secondary: #FF6A00;
+      --accent: #FFA500;
+      --dark: #171717;
+      --bg: #FFF8F4;
+      --white: #FFFFFF;
+      --gray-light: #F3F3F3;
+      --gray-border: #E5E5E5;
+      --text-main: #2D2D2D;
+      --text-muted: #666666;
+      --error: #D32F2F;
+      --success: #2E7D32;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Hind Siliguri', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      margin: 40px auto;
+      background: var(--white);
+      padding: 36px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(255, 107, 53, 0.08);
+      border: 1px solid rgba(255, 107, 53, 0.12);
+    }
+
+    .brand-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .brand-header img {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+      margin-bottom: 12px;
+    }
+
+    .brand-header h1 {
+      font-size: 24px;
+      color: var(--dark);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .brand-header p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .progress-box {
+      background: var(--bg);
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--secondary);
+      border: 1px dashed var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--gray-border);
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.3s ease;
+      background: var(--white);
+      color: var(--text-main);
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.12);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.1s ease;
+      box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Upload Area */
+
+    .upload-area {
+      border: 2px dashed var(--gray-border);
+      padding: 25px 15px;
+      text-align: center;
+      border-radius: 10px;
+      background: var(--bg);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 135px;
+    }
+
+    .upload-area:hover {
+      border-color: var(--primary);
+      background: #FFF0E8;
+    }
+
+    .upload-icon {
+      width: 42px;
+      height: 42px;
+      color: var(--primary);
+    }
+
+    .upload-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+      word-break: break-word;
+    }
+
+    .upload-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Terms & Conditions */
+
+    .terms-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 15px;
+      background: #FFF8F4;
+      border: 1px solid #FFE0D1;
+      border-radius: 9px;
+      margin-bottom: 20px;
+    }
+
+    .terms-box input {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      margin-top: 3px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .terms-text {
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text-main);
+    }
+
+    .terms-text a {
+      color: var(--secondary);
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .terms-text a:hover {
+      text-decoration: underline;
+    }
+
+    .alert-box {
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .alert-error {
+      background: #FFEBEE;
+      color: var(--error);
+      border: 1px solid #FFCDD2;
+    }
+
+    .alert-success {
+      background: #E8F5E9;
+      color: var(--success);
+      border: 1px solid #C8E6C9;
+    }
+
+    /* Legal Document Overlay */
+
+    .legal-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    .legal-overlay.active {
+      display: flex;
+    }
+
+    .legal-modal {
+      width: 100%;
+      max-width: 850px;
+      height: 90vh;
+      max-height: 850px;
+      background: #FFFFFF;
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 15px 60px rgba(0,0,0,0.25);
+      animation: modalOpen 0.2s ease;
+    }
+
+    @keyframes modalOpen {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .legal-header {
+      min-height: 60px;
+      padding: 12px 18px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--gray-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .legal-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .legal-close {
+      width: 38px;
+      height: 38px;
+      min-width: 38px;
+      border: none;
+      border-radius: 8px;
+      background: #FFEBEE;
+      color: #D32F2F;
+      font-size: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .legal-close:hover {
+      background: #FFD8DC;
+    }
+
+    .legal-body {
+      flex: 1;
+      min-height: 0;
+      background: #F7F7F7;
+    }
+
+    .legal-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #FFFFFF;
+    }
+
+    .legal-footer {
+      padding: 10px 15px;
+      border-top: 1px solid var(--gray-border);
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .legal-footer a {
+      color: var(--secondary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    @media(max-width: 600px) {
+      .container {
+        margin: 15px;
+        padding: 20px;
+        border-radius: 12px;
+        width: auto;
+      }
+
+      .legal-overlay {
+        padding: 0;
+      }
+
+      .legal-modal {
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+      }
+
+      .legal-header {
+        padding: 12px 15px;
+      }
+    }
+  </style>
 </head>
+
 <body>
+
   <div class="container">
+
     <div class="brand-header">
       <img src="https://paikarisell.ghotimarket.com/photo/logo.png" alt="Logo">
       <h1>পরিচয় যাচাই ও বিবরণ</h1>
@@ -24,136 +406,602 @@
     <div id="errorAlert" class="alert-box alert-error"></div>
 
     <form id="step2Form">
+
       <div class="form-group">
         <label>কী ধরনের পণ্য বিক্রি করবেন?</label>
-        <textarea id="description" class="form-control" required placeholder="যেমন: পোশাক, কসমেটিকস, ইলেকট্রনিক্স ইত্যাদি"></textarea>
+        <textarea
+          id="description"
+          class="form-control"
+          required
+          placeholder="যেমন: পোশাক, কসমেটিকস, ইলেকট্রনিক্স ইত্যাদি"
+        ></textarea>
       </div>
+
+      <!-- NID Front Upload -->
 
       <div class="form-group">
         <label>NID কার্ডের সামনের অংশ</label>
+
         <div class="upload-area" onclick="document.getElementById('nidFront').click()">
-          <span id="frontLabel">ফাইল নির্বাচন করতে ক্লিক করুন (JPEG/PNG)</span>
-          <input type="file" id="nidFront" accept="image/jpeg,image/png,image/webp" style="display:none" required>
+
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.7"
+            stroke-linecap="round" stroke-linejoin="round">
+
+            <path d="M12 16V4"/>
+            <path d="M7 9L12 4L17 9"/>
+            <path d="M4 16.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5"/>
+
+          </svg>
+
+          <span id="frontLabel" class="upload-text">
+            ফাইল নির্বাচন করতে ক্লিক করুন
+          </span>
+
+          <span class="upload-hint">
+            JPEG / PNG / WEBP
+          </span>
+
+          <input
+            type="file"
+            id="nidFront"
+            accept="image/jpeg,image/png,image/webp"
+            style="display:none"
+          >
+
         </div>
       </div>
+
+      <!-- NID Back Upload -->
 
       <div class="form-group">
         <label>NID কার্ডের পেছনের অংশ</label>
+
         <div class="upload-area" onclick="document.getElementById('nidBack').click()">
-          <span id="backLabel">ফাইল নির্বাচন করুন (JPEG/PNG)</span>
-          <input type="file" id="nidBack" accept="image/jpeg,image/png,image/webp" style="display:none" required>
+
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.7"
+            stroke-linecap="round" stroke-linejoin="round">
+
+            <path d="M12 16V4"/>
+            <path d="M7 9L12 4L17 9"/>
+            <path d="M4 16.5V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5"/>
+
+          </svg>
+
+          <span id="backLabel" class="upload-text">
+            ফাইল নির্বাচন করুন
+          </span>
+
+          <span class="upload-hint">
+            JPEG / PNG / WEBP
+          </span>
+
+          <input
+            type="file"
+            id="nidBack"
+            accept="image/jpeg,image/png,image/webp"
+            style="display:none"
+          >
+
         </div>
       </div>
 
-      <button type="submit" id="completeBtn" class="btn-primary">আবেদন সম্পন্ন করুন</button>
+      <!-- Terms & Privacy Acceptance -->
+
+      <div class="terms-box">
+
+        <input
+          type="checkbox"
+          id="termsAccept"
+          required
+        >
+
+        <div class="terms-text">
+          আমি PAIKARI SELL-এর
+
+          <a href="https://paikarisell.ghotimarket.com/terms"
+             onclick="openLegal(event, 'terms')">
+            Terms & Conditions
+          </a>
+
+          এবং
+
+          <a href="https://paikarisell.ghotimarket.com/privacy-policy"
+             onclick="openLegal(event, 'privacy')">
+            Privacy Policy
+          </a>
+
+          পড়েছি এবং উভয়ের শর্তাবলিতে সম্মতি প্রদান করছি।
+        </div>
+
+      </div>
+
+      <button type="submit" id="completeBtn" class="btn-primary">
+        আবেদন সম্পন্ন করুন
+      </button>
+
     </form>
+
   </div>
 
+
+  <!-- Legal Document Overlay -->
+
+  <div class="legal-overlay" id="legalOverlay">
+
+    <div class="legal-modal">
+
+      <div class="legal-header">
+
+        <h2 id="legalTitle">Terms & Conditions</h2>
+
+        <button
+          type="button"
+          class="legal-close"
+          onclick="closeLegal()"
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+      </div>
+
+      <div class="legal-body">
+
+        <iframe
+          id="legalFrame"
+          src="about:blank"
+          title="PAIKARI SELL Legal Document"
+        ></iframe>
+
+      </div>
+
+      <div class="legal-footer">
+        পেজটি দেখতে সমস্যা হলে
+        <a id="legalExternalLink" href="#" target="_blank" rel="noopener">
+          নতুন ট্যাবে খুলুন
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+
   <script type="module">
-    import { auth, db, showCustomError } from 'signup.js';
-    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // ==========================================
+    // FIREBASE CONFIGURATION
+    // ==========================================
+
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDCIRWmozT0XcEXuXtQ6RDiDo6vtT1T9mU",
+      authDomain: "paikarisell-ghotimarket.firebaseapp.com",
+      projectId: "paikarisell-ghotimarket",
+      storageBucket: "paikarisell-ghotimarket.firebasestorage.app",
+      messagingSenderId: "464086432830",
+      appId: "1:464086432830:web:a10fdd9884954e380e656f",
+      measurementId: "G-E3HR2F9TC5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+
+    // ==========================================
+    // CUSTOM ERROR
+    // ==========================================
+
+    function showCustomError(elementId, message) {
+
+      const alertBox = document.getElementById(elementId);
+
+      alertBox.textContent = message;
+      alertBox.style.display = 'block';
+
+    }
+
+
+    // ==========================================
+    // LEGAL DOCUMENT OVERLAY
+    // ==========================================
+
+    const legalOverlay = document.getElementById('legalOverlay');
+    const legalFrame = document.getElementById('legalFrame');
+    const legalTitle = document.getElementById('legalTitle');
+    const legalExternalLink = document.getElementById('legalExternalLink');
+
+    const legalUrls = {
+      terms: 'https://paikarisell.ghotimarket.com/terms',
+      privacy: 'https://paikarisell.ghotimarket.com/privacy-policy'
+    };
+
+    window.openLegal = function(event, type) {
+
+      event.preventDefault();
+
+      const url = legalUrls[type];
+
+      if (!url) return;
+
+      legalTitle.textContent =
+        type === 'terms'
+          ? 'Terms & Conditions'
+          : 'Privacy Policy';
+
+      legalFrame.src = url;
+      legalExternalLink.href = url;
+
+      legalOverlay.classList.add('active');
+
+      document.body.style.overflow = 'hidden';
+
+    };
+
+
+    window.closeLegal = function() {
+
+      legalOverlay.classList.remove('active');
+
+      document.body.style.overflow = '';
+
+      legalFrame.src = 'about:blank';
+
+    };
+
+
+    // Overlay outside click
+
+    legalOverlay.addEventListener('click', (event) => {
+
+      if (event.target === legalOverlay) {
+        window.closeLegal();
+      }
+
+    });
+
+
+    // Escape key
+
+    document.addEventListener('keydown', (event) => {
+
+      if (event.key === 'Escape' &&
+          legalOverlay.classList.contains('active')) {
+
+        window.closeLegal();
+
+      }
+
+    });
+
+
+    // ==========================================
+    // AUTHENTICATION CHECK
+    // ==========================================
 
     let currentUser = null;
-
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = '/signup';
-        return;
-      }
-      currentUser = user;
-      const docSnap = await getDoc(doc(db, "supplyers", user.uid));
-      if (docSnap.exists()) {
-        window.location.href = '/dashboard';
-      }
-      if (!localStorage.getItem('name')) {
-        window.location.href = '/signup1';
-      }
-    });
-
-    document.getElementById('nidFront').addEventListener('change', (e) => {
-      if(e.target.files[0]) document.getElementById('frontLabel').innerText = e.target.files[0].name;
-    });
-
-    document.getElementById('nidBack').addEventListener('change', (e) => {
-      if(e.target.files[0]) document.getElementById('backLabel').innerText = e.target.files[0].name;
-    });
+    let authReady = false;
 
     const form = document.getElementById('step2Form');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('completeBtn');
-      btn.disabled = true;
-      btn.innerText = 'আপলোড ও সংরক্ষণ হচ্ছে...';
+    const completeBtn = document.getElementById('completeBtn');
 
-      const description = document.getElementById('description').value.trim();
-      const frontFile = document.getElementById('nidFront').files[0];
-      const backFile = document.getElementById('nidBack').files[0];
+    completeBtn.disabled = true;
 
-      if (!frontFile || !backFile) {
-        showCustomError('errorAlert', 'উভয় পাশের NID ছবি আপলোড করুন।');
-        btn.disabled = false;
-        btn.innerText = 'আবেদন সম্পন্ন করুন';
+    onAuthStateChanged(auth, async (user) => {
+
+      if (!user) {
+
+        window.location.href = '/signup';
         return;
+
       }
+
+      currentUser = user;
 
       try {
-        const token = await currentUser.getIdToken();
-        const uploadFile = async (file) => {
-          const formData = new FormData();
-          formData.append('file', file);
-          const res = await fetch('nid-upload.ghotimarket.com/upload', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${token}` },
-            body: formData
-          });
-          const data = await res.json();
-          if (!data.success) throw new Error('Upload failed');
-          return data.key;
-        };
 
-        const nidFrontKey = await uploadFile(frontFile);
-        const nidBackKey = await uploadFile(backFile);
+        const docSnap = await getDoc(
+          doc(db, "supplyers", user.uid)
+        );
 
-        const supplierData = {
-          name: localStorage.getItem('name'),
-          email: currentUser.email,
-          uid: currentUser.uid,
-          nidBack: nidBackKey,
-          nidFront: nidFrontKey,
-          description: description,
-          phone: localStorage.getItem('phone'),
-          whatsApp: localStorage.getItem('whatsApp'),
-          balance: 0,
-          product: 0,
-          activeProduct: 0,
-          active: false,
-          verified: false,
-          profileUnlockedUntil: 0,
-          createdAt: serverTimestamp()
-        };
+        if (docSnap.exists()) {
 
-        await setDoc(doc(db, "supplyers", currentUser.uid), supplierData);
+          window.location.href = '/dashboard';
+          return;
 
-        // Trigger Telegram Worker Notification
-        fetch('https://telegram-notification.ghotimarket.com/notify', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ uid: currentUser.uid })
-        }).catch(err => console.error(err));
+        }
 
-        localStorage.clear();
-        window.location.href = '/complete';
+        if (!localStorage.getItem('name')) {
 
-      } catch (err) {
-        showCustomError('errorAlert', 'তথ্য সংরক্ষণে সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।');
+          window.location.href = '/signup1';
+          return;
+
+        }
+
+        authReady = true;
+        completeBtn.disabled = false;
+
+      } catch (e) {
+
+        showCustomError(
+          'errorAlert',
+          'ডেটা যাচাইকরণে সমস্যা হয়েছে।'
+        );
+
+      }
+
+    });
+
+
+    // ==========================================
+    // NID FRONT FILE SELECTION
+    // ==========================================
+
+    document.getElementById('nidFront')
+      .addEventListener('change', (e) => {
+
+        if (e.target.files[0]) {
+
+          document.getElementById('frontLabel').innerText =
+            e.target.files[0].name;
+
+        }
+
+      });
+
+
+    // ==========================================
+    // NID BACK FILE SELECTION
+    // ==========================================
+
+    document.getElementById('nidBack')
+      .addEventListener('change', (e) => {
+
+        if (e.target.files[0]) {
+
+          document.getElementById('backLabel').innerText =
+            e.target.files[0].name;
+
+        }
+
+      });
+
+
+    // ==========================================
+    // FORM SUBMISSION
+    // ==========================================
+
+    form.addEventListener('submit', async (e) => {
+
+      e.preventDefault();
+
+      const btn = document.getElementById('completeBtn');
+
+      if (!authReady || !currentUser) {
+
+        showCustomError(
+          'errorAlert',
+          'আপনার অ্যাকাউন্ট যাচাই হচ্ছে। কিছুক্ষণ অপেক্ষা করুন।'
+        );
+
+        return;
+
+      }
+
+
+      // Terms Validation
+
+      const termsAccepted =
+        document.getElementById('termsAccept').checked;
+
+      if (!termsAccepted) {
+
+        showCustomError(
+          'errorAlert',
+          'আবেদন করতে Terms & Conditions এবং Privacy Policy গ্রহণ করুন।'
+        );
+
+        return;
+
+      }
+
+
+      btn.disabled = true;
+
+      btn.innerText = 'আপলোড ও সংরক্ষণ হচ্ছে...';
+
+
+      const description =
+        document.getElementById('description').value.trim();
+
+      const frontFile =
+        document.getElementById('nidFront').files[0];
+
+      const backFile =
+        document.getElementById('nidBack').files[0];
+
+
+      // NID Validation
+
+      if (!frontFile || !backFile) {
+
+        showCustomError(
+          'errorAlert',
+          'উভয় পাশের NID ছবি আপলোড করুন।'
+        );
+
         btn.disabled = false;
         btn.innerText = 'আবেদন সম্পন্ন করুন';
+
+        return;
+
       }
+
+
+      try {
+
+        const token = await currentUser.getIdToken();
+
+
+        // ==========================================
+        // FILE UPLOAD
+        // ==========================================
+
+        const uploadFile = async (file) => {
+
+          const formData = new FormData();
+
+          formData.append('file', file);
+
+          const res = await fetch(
+            'https://nid-upload.ghotimarket.com/upload',
+            {
+              method: 'POST',
+
+              headers: {
+                'Authorization': `Bearer ${token}`
+              },
+
+              body: formData
+            }
+          );
+
+          if (!res.ok) {
+            throw new Error('Upload request failed');
+          }
+
+          const data = await res.json();
+
+          if (!data.success) {
+            throw new Error('Upload failed');
+          }
+
+          return data.key;
+
+        };
+
+
+        const nidFrontKey = await uploadFile(frontFile);
+
+        const nidBackKey = await uploadFile(backFile);
+
+
+        // ==========================================
+        // SUPPLIER FIRESTORE DATA
+        // ==========================================
+
+        const supplierData = {
+
+          name: localStorage.getItem('name'),
+
+          email: currentUser.email,
+
+          uid: currentUser.uid,
+
+          nidBack: nidBackKey,
+
+          nidFront: nidFrontKey,
+
+          description: description,
+
+          phone: localStorage.getItem('phone'),
+
+          whatsApp: localStorage.getItem('whatsApp'),
+
+          balance: 0,
+
+          product: 0,
+
+          activeProduct: 0,
+
+          active: false,
+
+          verified: false,
+
+          profileUnlockedUntil: 0,
+
+          createdAt: serverTimestamp()
+
+        };
+
+
+        await setDoc(
+          doc(db, "supplyers", currentUser.uid),
+          supplierData
+        );
+
+
+        // ==========================================
+        // TELEGRAM WORKER NOTIFICATION
+        // ==========================================
+
+        fetch(
+          'https://telegram-notification.ghotimarket.com/notify',
+          {
+            method: 'POST',
+
+            headers: {
+
+              'Content-Type': 'application/json',
+
+              'Authorization': `Bearer ${token}`
+
+            },
+
+            body: JSON.stringify({
+              uid: currentUser.uid
+            })
+
+          }
+        ).catch(err => console.error(err));
+
+
+        // ==========================================
+        // COMPLETE REGISTRATION
+        // ==========================================
+
+        localStorage.clear();
+
+        window.location.href = '/complete';
+
+
+      } catch (err) {
+
+        console.error('Supplier Registration Error:', err);
+
+        showCustomError(
+          'errorAlert',
+          'তথ্য সংরক্ষণে সমস্যা হয়েছে। পুনরায় চেষ্টা করুন।'
+        );
+
+        btn.disabled = false;
+
+        btn.innerText = 'আবেদন সম্পন্ন করুন';
+
+      }
+
     });
+
   </script>
+
 </body>
 </html>
