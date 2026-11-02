@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supplier Registration - Step 2 | PAIKARI SELL</title>
+  <link rel="icon" href="https://paikarisell.ghotimarket.com/photo/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="brand-header">
+      <img src="https://paikarisell.ghotimarket.com/photo/logo.png" alt="Logo">
+      <h1>ব্যক্তিগত তথ্য প্রদান করুন</h1>
+      <p>আপনার পরিচয় যাচাইয়ের জন্য সঠিক তথ্য দিন।</p>
+    </div>
+
+    <div class="progress-box">
+      <span>Step 02: ব্যক্তিগত তথ্য</span>
+      <span>ধাপ ২/৩</span>
+    </div>
+
+    <div id="errorAlert" class="alert-box alert-error"></div>
+
+    <form id="step1Form">
+      <div class="form-group">
+        <label for="fullName">পুরো নাম (NID কার্ড অনুযায়ী)</label>
+        <input type="text" id="fullName" class="form-control" required placeholder="আপনার পূর্ণ নাম লিখুন">
+      </div>
+
+      <div class="form-group">
+        <label for="whatsapp">হোয়াটসঅ্যাপ নম্বর</label>
+        <input type="text" id="whatsapp" class="form-control" required placeholder="01XXXXXXXXX">
+      </div>
+
+      <div class="form-group">
+        <label for="phone">মোবাইল নম্বর</label>
+        <input type="text" id="phone" class="form-control" required placeholder="01XXXXXXXXX">
+      </div>
+
+      <button type="submit" id="nextBtn" class="btn-primary">পরের ধাপে যান</button>
+    </form>
+  </div>
+
+  <script type="module">
+    import { auth, db, showCustomError } from '.signup.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = '/signup';
+        return;
+      }
+      try {
+        const docSnap = await getDoc(doc(db, "supplyers", user.uid));
+        if (docSnap.exists()) {
+          window.location.href = '/dashboard';
+        }
+      } catch (e) {
+        showCustomError('errorAlert', 'ডেটা যাচাইকরণে সমস্যা হয়েছে।');
+      }
+    });
+
+    const form = document.getElementById('step1Form');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('fullName').value.trim();
+      const whatsapp = document.getElementById('whatsapp').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      const bdPhoneRegex = /^01[3-9]\d{8}$/;
+      if (!bdPhoneRegex.test(whatsapp) || !bdPhoneRegex.test(phone)) {
+        showCustomError('errorAlert', 'সঠিক বাংলাদেশি মোবাইল নম্বর প্রদান করুন।');
+        return;
+      }
+
+      localStorage.setItem('name', name);
+      localStorage.setItem('whatsApp', '+880' + whatsapp.replace(/^0+/, ''));
+      localStorage.setItem('phone', '+880' + phone.replace(/^0+/, ''));
+
+      window.location.href = '/signup2';
+    });
+  </script>
+</body>
+</html>
