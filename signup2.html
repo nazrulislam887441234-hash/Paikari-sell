@@ -950,37 +950,45 @@
         );
 
 
-        // ==========================================
+              // ==========================================
         // TELEGRAM WORKER NOTIFICATION
         // ==========================================
+        try {
+          // localStorage clear করার আগেই সব ডাটা নিয়ে নিচ্ছি
+          const notifyPayload = {
+            uid: currentUser.uid,
+            name: localStorage.getItem('name'),
+            email: currentUser.email,
+            phone: localStorage.getItem('phone'),
+            whatsApp: localStorage.getItem('whatsApp'),
+            description: description,
+            nidFront: nidFrontKey,
+            nidBack: nidBackKey
+          };
 
-        fetch(
-          'https://telegram-notification.ghotimarket.com/notify',
-          {
+          console.log('Sending to Telegram:', notifyPayload);
+
+          // await দিবো না, যাতে ইউজারকে আটকে না রাখে - Fire and forget
+          fetch('https://telegram-notification.ghotimarket.com/notify', {
             method: 'POST',
-
             headers: {
-
               'Content-Type': 'application/json',
-
               'Authorization': `Bearer ${token}`
-
             },
+            body: JSON.stringify(notifyPayload)
+          })
+          .then(res => res.json())
+          .then(data => console.log('Telegram Sent:', data))
+          .catch(err => console.error('Telegram Error:', err));
 
-            body: JSON.stringify({
-              uid: currentUser.uid
-            })
-
-          }
-        ).catch(err => console.error(err));
-
+        } catch (notificationError) {
+          console.error('Telegram Notification Error:', notificationError);
+        }
 
         // ==========================================
         // COMPLETE REGISTRATION
         // ==========================================
-
         localStorage.clear();
-
         window.location.href = '/complete';
 
 
