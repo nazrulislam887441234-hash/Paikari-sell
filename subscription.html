@@ -1,0 +1,2950 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সাবস্ক্রিপশন ও প্রফাইল আনলক - PAIKARI SELL</title>
+    <link rel="icon" href="https://paikarisell.ghotimarket.com/photo/favicon.png" type="image/png">
+    <!-- Google Font: Hind Siliguri -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    
+:root {
+    --primary: #FF6B35;
+    --secondary: #FF6A00;
+    --accent: #FFA500;
+    --dark: #171717;
+    --background: #FFF7F1;
+    --white: #FFFFFF;
+
+    --gray-100: #F9FAFB;
+    --gray-200: #E5E7EB;
+    --gray-600: #6B7280;
+    --gray-800: #1F2937;
+
+    --success: #10B981;
+    --danger: #EF4444;
+
+    --shadow:
+        0 10px 30px rgba(255, 107, 53, 0.08);
+
+    --card-shadow:
+        0 8px 30px rgba(31, 41, 55, 0.045);
+
+    --transition: all 0.3s ease;
+}
+
+/* =========================
+   GLOBAL DESIGN
+========================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Hind Siliguri', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background:
+        linear-gradient(
+            180deg,
+            #FFF8F3 0%,
+            #FFF3EA 55%,
+            #FFF9F5 100%
+        );
+
+    color: var(--dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+button {
+    -webkit-appearance: none;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+    background: rgba(255, 255, 255, 0.97);
+    padding: 15px 30px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.045);
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    border-bottom: 1px solid rgba(255, 107, 53, 0.08);
+    backdrop-filter: blur(15px);
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo img {
+    height: 42px;
+    max-width: 220px;
+    object-fit: contain;
+}
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-weight: 700;
+    color: var(--gray-800);
+}
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.container {
+    max-width: 1150px;
+    margin: 35px auto;
+    padding: 0 25px;
+
+    width: 100%;
+    flex: 1;
+}
+
+/* =========================
+   LOADING SCREEN
+========================= */
+
+#loading-screen {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: var(--white);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+
+    transition: opacity 0.4s ease;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+
+    border: 4px solid #FFE5D8;
+    border-top: 4px solid var(--primary);
+
+    border-radius: 50%;
+
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================
+   BALANCE CARD
+========================= */
+
+.balance-card {
+    background:
+        linear-gradient(
+            135deg,
+            #FF713A 0%,
+            #FF6A00 55%,
+            #FF8C32 100%
+        );
+
+    color: var(--white);
+
+    border-radius: 24px;
+    padding: 30px 35px;
+
+    box-shadow:
+        0 12px 30px rgba(255, 106, 0, 0.18);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 25px;
+
+    flex-wrap: wrap;
+    gap: 20px;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.balance-card::after {
+    content: "";
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    right: -80px;
+    top: -110px;
+
+    background: rgba(255,255,255,0.09);
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+.balance-info h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    opacity: 0.95;
+    margin-bottom: 8px;
+}
+
+.balance-amount-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.balance-amount {
+    font-size: 2.3rem;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.eye-btn {
+    background: rgba(255,255,255,0.20);
+    border: 1px solid rgba(255,255,255,0.18);
+
+    cursor: pointer;
+
+    padding: 9px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: var(--transition);
+}
+
+.eye-btn:hover {
+    background: rgba(255,255,255,0.35);
+    transform: scale(1.05);
+}
+
+.eye-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--white);
+}
+
+.balance-action {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    z-index: 1;
+}
+
+.btn-primary-white {
+    background: var(--white);
+    color: var(--secondary);
+
+    padding: 13px 25px;
+    border-radius: 14px;
+
+    font-weight: 700;
+    text-decoration: none;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary-white:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.balance-note {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+/* =========================
+   SUBSCRIPTION STATUS
+========================= */
+
+.status-card {
+    background: var(--white);
+
+    border-radius: 26px;
+    padding: 30px;
+
+    box-shadow: var(--card-shadow);
+
+    margin-bottom: 45px;
+
+    border: 1px solid rgba(255, 107, 53, 0.12);
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    position: relative;
+}
+
+/* Status Header */
+
+.status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.badge {
+    padding: 9px 17px;
+
+    border-radius: 30px;
+
+    font-size: 0.95rem;
+    font-weight: 700;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.badge-active {
+    background: #ECFDF5;
+    color: #059669;
+
+    border: 1px solid #A7F3D0;
+}
+
+.badge-expired {
+    background: #FEF2F2;
+    color: #DC2626;
+
+    border: 1px solid #FECACA;
+}
+
+/* Countdown */
+
+.countdown-timer {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--dark);
+
+    letter-spacing: 0.3px;
+}
+
+/* Progress */
+
+.progress-bar-container {
+    width: 100%;
+    height: 11px;
+
+    background: #F3F4F6;
+
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--primary),
+            var(--accent)
+        );
+
+    width: 0%;
+
+    border-radius: 20px;
+
+    transition: width 0.5s ease;
+}
+
+/* =========================
+   PRICING SECTION
+========================= */
+
+.section-title {
+    text-align: center;
+
+    margin-bottom: 12px;
+
+    font-size: 2.2rem;
+    line-height: 1.5;
+
+    font-weight: 800;
+    color: #202938;
+}
+
+.section-desc {
+    text-align: center;
+
+    color: #777E89;
+
+    margin-bottom: 40px;
+
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+/* =========================
+   PRICING GRID
+========================= */
+
+.pricing-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(280px, 1fr));
+
+    gap: 25px;
+
+    margin-bottom: 55px;
+
+    align-items: stretch;
+}
+
+/* =========================
+   PRICING CARD
+========================= */
+
+.pricing-card {
+    background: var(--white);
+
+    border-radius: 28px;
+    padding: 35px;
+
+    box-shadow: var(--card-shadow);
+
+    border: 1.5px solid #F4E7DF;
+
+    transition: var(--transition);
+
+    display: flex;
+    flex-direction: column;
+
+    position: relative;
+    overflow: visible;
+}
+
+.pricing-card:hover {
+    transform: translateY(-6px);
+
+    border-color: #FFB58E;
+
+    box-shadow:
+        0 15px 35px rgba(255, 107, 53, 0.12);
+}
+
+/* Popular Package */
+
+.pricing-card.popular {
+    border: 2px solid var(--primary);
+
+    background:
+        linear-gradient(
+            180deg,
+            #FFF5EE 0%,
+            #FFFFFF 35%
+        );
+
+    box-shadow:
+        0 10px 35px rgba(255, 107, 53, 0.10);
+}
+
+.popular-badge {
+    position: absolute;
+
+    top: -13px;
+    right: 25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--secondary)
+        );
+
+    color: var(--white);
+
+    padding: 6px 16px;
+
+    border-radius: 30px;
+
+    font-size: 0.8rem;
+    font-weight: 800;
+
+    box-shadow:
+        0 4px 12px rgba(255, 107, 53, 0.22);
+}
+
+/* Package Name */
+
+.plan-name {
+    font-size: 1.55rem;
+    font-weight: 800;
+
+    color: #202938;
+
+    margin-bottom: 8px;
+}
+
+.plan-duration {
+    color: var(--gray-600);
+
+    font-size: 0.95rem;
+
+    margin-bottom: 20px;
+}
+
+/* Price */
+
+.plan-price {
+    font-size: 2.8rem;
+    line-height: 1.3;
+
+    font-weight: 800;
+
+    color: #E65C00;
+
+    margin-bottom: 5px;
+}
+
+.plan-daily {
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    color: #F08A48;
+
+    margin-bottom: 25px;
+
+    padding-bottom: 20px;
+
+    border-bottom: 1px dashed #F1D9CC;
+}
+
+/* =========================
+   PACKAGE FEATURES
+========================= */
+
+.features-list {
+    list-style: none;
+
+    margin-bottom: 32px;
+
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+.features-list li {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+
+    font-size: 1.05rem;
+
+    line-height: 1.7;
+
+    color: #374151;
+}
+
+.features-list svg {
+    width: 20px;
+    height: 20px;
+
+    fill: var(--success);
+
+    flex-shrink: 0;
+
+    margin-top: 4px;
+}
+
+/* =========================
+   PRIMARY BUTTON
+========================= */
+
+.btn-primary {
+    background:
+        linear-gradient(
+            135deg,
+            #FF6B35 0%,
+            #FF6A00 100%
+        );
+
+    color: var(--white);
+
+    padding: 16px 20px;
+
+    border-radius: 16px;
+
+    font-weight: 800;
+
+    text-align: center;
+
+    border: none;
+    cursor: pointer;
+
+    transition: var(--transition);
+
+    width: 100%;
+
+    font-size: 1.15rem;
+
+    box-shadow:
+        0 8px 18px rgba(255, 107, 53, 0.20);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 25px rgba(255, 107, 53, 0.28);
+
+    filter: brightness(1.03);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+    background: #E5E7EB;
+    color: #9CA3AF;
+
+    cursor: not-allowed;
+
+    transform: none;
+    box-shadow: none;
+}
+
+/* =========================
+   CUSTOM PACKAGE SECTION
+========================= */
+
+.custom-package-section {
+    background: var(--white);
+
+    border-radius: 25px;
+
+    padding: 40px;
+
+    text-align: center;
+
+    border: 2px dashed #FFB47E;
+
+    margin-bottom: 50px;
+
+    box-shadow: var(--card-shadow);
+
+    transition: var(--transition);
+}
+
+.custom-package-section:hover {
+    border-color: var(--primary);
+}
+
+.custom-package-section h3 {
+    font-size: 1.8rem;
+
+    margin-bottom: 12px;
+
+    color: #202938;
+
+    font-weight: 800;
+}
+
+.custom-package-section p {
+    color: var(--gray-600);
+
+    margin-bottom: 25px;
+
+    max-width: 600px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(20, 20, 20, 0.58);
+
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition: all 0.3s ease;
+
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-box {
+    background: var(--white);
+
+    width: 100%;
+    max-width: 500px;
+
+    border-radius: 25px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.18);
+
+    transform: translateY(20px);
+
+    transition: transform 0.3s ease;
+
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-overlay.active .modal-box {
+    transform: translateY(0);
+}
+
+.modal-header {
+    font-size: 1.5rem;
+
+    font-weight: 800;
+
+    margin-bottom: 22px;
+
+    color: #202938;
+
+    text-align: center;
+}
+
+.modal-body {
+    margin-bottom: 25px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 17px;
+}
+
+/* Form */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 700;
+
+    font-size: 0.95rem;
+
+    color: var(--gray-800);
+}
+
+.form-control {
+    padding: 14px 16px;
+
+    border: 1.5px solid #E5E7EB;
+
+    border-radius: 13px;
+
+    font-size: 1rem;
+
+    outline: none;
+
+    background: #FFFFFF;
+
+    color: var(--dark);
+
+    transition: var(--transition);
+
+    width: 100%;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 4px rgba(255, 107, 53, 0.09);
+}
+
+/* Calculation */
+
+.calculation-box {
+    background: #FFF7F1;
+
+    border-radius: 16px;
+
+    padding: 18px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+
+    border: 1px solid #FAD9C8;
+}
+
+.calc-row {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    font-size: 0.95rem;
+
+    color: var(--gray-800);
+}
+
+.calc-row.total {
+    font-weight: 800;
+
+    font-size: 1.15rem;
+
+    color: var(--secondary);
+
+    border-top: 1px solid #F1D9CC;
+
+    padding-top: 12px;
+}
+
+/* Modal Footer */
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-secondary {
+    background: #F3F4F6;
+
+    color: #374151;
+
+    padding: 13px;
+
+    border-radius: 13px;
+
+    font-weight: 700;
+
+    border: none;
+    cursor: pointer;
+
+    flex: 1;
+
+    transition: var(--transition);
+}
+
+.btn-secondary:hover {
+    background: #E5E7EB;
+}
+
+.btn-confirm {
+    flex: 1;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+
+@media (max-width: 768px) {
+
+    body {
+        font-size: 15px;
+    }
+
+    .navbar {
+        padding: 13px 15px;
+        min-height: 70px;
+        gap: 10px;
+    }
+
+    .nav-logo img {
+        height: 35px;
+        max-width: 190px;
+    }
+
+    .nav-user {
+        gap: 7px;
+        font-size: 0.9rem;
+    }
+
+    .container {
+        padding: 0 15px;
+        margin: 18px auto;
+    }
+
+    /* Balance */
+
+    .balance-card {
+        padding: 25px 22px;
+
+        border-radius: 21px;
+
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 18px;
+    }
+
+    .balance-amount {
+        font-size: 2rem;
+    }
+
+    .balance-action {
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .btn-primary-white {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Status */
+
+    .status-card {
+        padding: 23px 18px;
+
+        border-radius: 23px;
+
+        margin-bottom: 35px;
+
+        gap: 18px;
+    }
+
+    .status-header {
+        justify-content: flex-start;
+        gap: 10px;
+    }
+
+    .badge {
+        padding: 8px 13px;
+        font-size: 0.85rem;
+    }
+
+    .countdown-timer {
+        font-size: 1.1rem;
+    }
+
+    /* Pricing Heading */
+
+    .section-title {
+        font-size: 1.8rem;
+        line-height: 1.45;
+
+        padding: 0 5px;
+    }
+
+    .section-desc {
+        font-size: 1rem;
+
+        line-height: 1.7;
+
+        margin-bottom: 30px;
+    }
+
+    /* Pricing Cards */
+
+    .pricing-grid {
+        grid-template-columns: 1fr;
+
+        gap: 22px;
+
+        margin-bottom: 40px;
+    }
+
+    .pricing-card {
+        padding: 27px 23px;
+
+        border-radius: 25px;
+    }
+
+    .pricing-card:hover {
+        transform: none;
+    }
+
+    .plan-name {
+        font-size: 1.4rem;
+    }
+
+    .plan-price {
+        font-size: 2.5rem;
+    }
+
+    .plan-daily {
+        font-size: 0.95rem;
+    }
+
+    .features-list {
+        gap: 13px;
+    }
+
+    .features-list li {
+        font-size: 1rem;
+        line-height: 1.65;
+    }
+
+    .btn-primary {
+        padding: 16px;
+
+        font-size: 1.1rem;
+
+        border-radius: 15px;
+    }
+
+    /* Custom Package */
+
+    .custom-package-section {
+        padding: 28px 20px;
+
+        border-radius: 22px;
+    }
+
+    .custom-package-section h3 {
+        font-size: 1.5rem;
+    }
+
+    .custom-package-section p {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    /* Modal */
+
+    .modal-box {
+        padding: 24px 20px;
+
+        border-radius: 22px;
+    }
+
+    .modal-header {
+        font-size: 1.3rem;
+    }
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 380px) {
+
+    .navbar {
+        padding: 12px 10px;
+    }
+
+    .nav-logo img {
+        height: 30px;
+        max-width: 155px;
+    }
+
+    .container {
+        padding: 0 12px;
+    }
+
+    .section-title {
+        font-size: 1.55rem;
+    }
+
+    .pricing-card {
+        padding: 23px 18px;
+    }
+
+    .plan-price {
+        font-size: 2.2rem;
+    }
+
+    .status-card {
+        padding: 20px 15px;
+    }
+
+    .badge {
+        font-size: 0.78rem;
+        padding: 7px 10px;
+    }
+}
+
+/* =========================
+   LARGE SCREENS
+========================= */
+
+@media (min-width: 1100px) {
+
+    .container {
+        padding: 0 30px;
+    }
+
+    .pricing-grid {
+        grid-template-columns:
+            repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .pricing-card {
+        padding: 35px;
+    }
+}
+
+:root {
+    --primary: #FF6B35;
+    --secondary: #FF6A00;
+    --accent: #FFA500;
+    --dark: #171717;
+    --background: #FFF7F1;
+    --white: #FFFFFF;
+
+    --gray-100: #F9FAFB;
+    --gray-200: #E5E7EB;
+    --gray-600: #6B7280;
+    --gray-800: #1F2937;
+
+    --success: #10B981;
+    --danger: #EF4444;
+
+    --shadow:
+        0 10px 30px rgba(255, 107, 53, 0.08);
+
+    --card-shadow:
+        0 8px 30px rgba(31, 41, 55, 0.045);
+
+    --transition: all 0.3s ease;
+}
+
+/* =========================
+   GLOBAL DESIGN
+========================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Hind Siliguri', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background:
+        linear-gradient(
+            180deg,
+            #FFF8F3 0%,
+            #FFF3EA 55%,
+            #FFF9F5 100%
+        );
+
+    color: var(--dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+button {
+    -webkit-appearance: none;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+    background: rgba(255, 255, 255, 0.97);
+    padding: 15px 30px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.045);
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    border-bottom: 1px solid rgba(255, 107, 53, 0.08);
+    backdrop-filter: blur(15px);
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo img {
+    height: 42px;
+    max-width: 220px;
+    object-fit: contain;
+}
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-weight: 700;
+    color: var(--gray-800);
+}
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.container {
+    max-width: 1150px;
+    margin: 35px auto;
+    padding: 0 25px;
+
+    width: 100%;
+    flex: 1;
+}
+
+/* =========================
+   LOADING SCREEN
+========================= */
+
+#loading-screen {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: var(--white);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
+
+    transition: opacity 0.4s ease;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+
+    border: 4px solid #FFE5D8;
+    border-top: 4px solid var(--primary);
+
+    border-radius: 50%;
+
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================
+   BALANCE CARD
+========================= */
+
+.balance-card {
+    background:
+        linear-gradient(
+            135deg,
+            #FF713A 0%,
+            #FF6A00 55%,
+            #FF8C32 100%
+        );
+
+    color: var(--white);
+
+    border-radius: 24px;
+    padding: 30px 35px;
+
+    box-shadow:
+        0 12px 30px rgba(255, 106, 0, 0.18);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 25px;
+
+    flex-wrap: wrap;
+    gap: 20px;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.balance-card::after {
+    content: "";
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    right: -80px;
+    top: -110px;
+
+    background: rgba(255,255,255,0.09);
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+.balance-info h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    opacity: 0.95;
+    margin-bottom: 8px;
+}
+
+.balance-amount-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.balance-amount {
+    font-size: 2.3rem;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.eye-btn {
+    background: rgba(255,255,255,0.20);
+    border: 1px solid rgba(255,255,255,0.18);
+
+    cursor: pointer;
+
+    padding: 9px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: var(--transition);
+}
+
+.eye-btn:hover {
+    background: rgba(255,255,255,0.35);
+    transform: scale(1.05);
+}
+
+.eye-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--white);
+}
+
+.balance-action {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    z-index: 1;
+}
+
+.btn-primary-white {
+    background: var(--white);
+    color: var(--secondary);
+
+    padding: 13px 25px;
+    border-radius: 14px;
+
+    font-weight: 700;
+    text-decoration: none;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary-white:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.balance-note {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+/* =========================
+   SUBSCRIPTION STATUS
+========================= */
+
+.status-card {
+    background: var(--white);
+
+    border-radius: 26px;
+    padding: 30px;
+
+    box-shadow: var(--card-shadow);
+
+    margin-bottom: 45px;
+
+    border: 1px solid rgba(255, 107, 53, 0.12);
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    position: relative;
+}
+
+/* Status Header */
+
+.status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.badge {
+    padding: 9px 17px;
+
+    border-radius: 30px;
+
+    font-size: 0.95rem;
+    font-weight: 700;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.badge-active {
+    background: #ECFDF5;
+    color: #059669;
+
+    border: 1px solid #A7F3D0;
+}
+
+.badge-expired {
+    background: #FEF2F2;
+    color: #DC2626;
+
+    border: 1px solid #FECACA;
+}
+
+/* Countdown */
+
+.countdown-timer {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--dark);
+
+    letter-spacing: 0.3px;
+}
+
+/* Progress */
+
+.progress-bar-container {
+    width: 100%;
+    height: 11px;
+
+    background: #F3F4F6;
+
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--primary),
+            var(--accent)
+        );
+
+    width: 0%;
+
+    border-radius: 20px;
+
+    transition: width 0.5s ease;
+}
+
+/* =========================
+   PRICING SECTION
+========================= */
+
+.section-title {
+    text-align: center;
+
+    margin-bottom: 12px;
+
+    font-size: 2.2rem;
+    line-height: 1.5;
+
+    font-weight: 800;
+    color: #202938;
+}
+
+.section-desc {
+    text-align: center;
+
+    color: #777E89;
+
+    margin-bottom: 40px;
+
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+/* =========================
+   PRICING GRID
+========================= */
+
+.pricing-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(280px, 1fr));
+
+    gap: 25px;
+
+    margin-bottom: 55px;
+
+    align-items: stretch;
+}
+
+/* =========================
+   PRICING CARD
+========================= */
+
+.pricing-card {
+    background: var(--white);
+
+    border-radius: 28px;
+    padding: 35px;
+
+    box-shadow: var(--card-shadow);
+
+    border: 1.5px solid #F4E7DF;
+
+    transition: var(--transition);
+
+    display: flex;
+    flex-direction: column;
+
+    position: relative;
+    overflow: visible;
+}
+
+.pricing-card:hover {
+    transform: translateY(-6px);
+
+    border-color: #FFB58E;
+
+    box-shadow:
+        0 15px 35px rgba(255, 107, 53, 0.12);
+}
+
+/* Popular Package */
+
+.pricing-card.popular {
+    border: 2px solid var(--primary);
+
+    background:
+        linear-gradient(
+            180deg,
+            #FFF5EE 0%,
+            #FFFFFF 35%
+        );
+
+    box-shadow:
+        0 10px 35px rgba(255, 107, 53, 0.10);
+}
+
+.popular-badge {
+    position: absolute;
+
+    top: -13px;
+    right: 25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--secondary)
+        );
+
+    color: var(--white);
+
+    padding: 6px 16px;
+
+    border-radius: 30px;
+
+    font-size: 0.8rem;
+    font-weight: 800;
+
+    box-shadow:
+        0 4px 12px rgba(255, 107, 53, 0.22);
+}
+
+/* Package Name */
+
+.plan-name {
+    font-size: 1.55rem;
+    font-weight: 800;
+
+    color: #202938;
+
+    margin-bottom: 8px;
+}
+
+.plan-duration {
+    color: var(--gray-600);
+
+    font-size: 0.95rem;
+
+    margin-bottom: 20px;
+}
+
+/* Price */
+
+.plan-price {
+    font-size: 2.8rem;
+    line-height: 1.3;
+
+    font-weight: 800;
+
+    color: #E65C00;
+
+    margin-bottom: 5px;
+}
+
+.plan-daily {
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    color: #F08A48;
+
+    margin-bottom: 25px;
+
+    padding-bottom: 20px;
+
+    border-bottom: 1px dashed #F1D9CC;
+}
+
+/* =========================
+   PACKAGE FEATURES
+========================= */
+
+.features-list {
+    list-style: none;
+
+    margin-bottom: 32px;
+
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+.features-list li {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 11px;
+
+    font-size: 1.05rem;
+
+    line-height: 1.7;
+
+    color: #374151;
+}
+
+.features-list svg {
+    width: 20px;
+    height: 20px;
+
+    fill: var(--success);
+
+    flex-shrink: 0;
+
+    margin-top: 4px;
+}
+
+/* =========================
+   PRIMARY BUTTON
+========================= */
+
+.btn-primary {
+    background:
+        linear-gradient(
+            135deg,
+            #FF6B35 0%,
+            #FF6A00 100%
+        );
+
+    color: var(--white);
+
+    padding: 16px 20px;
+
+    border-radius: 16px;
+
+    font-weight: 800;
+
+    text-align: center;
+
+    border: none;
+    cursor: pointer;
+
+    transition: var(--transition);
+
+    width: 100%;
+
+    font-size: 1.15rem;
+
+    box-shadow:
+        0 8px 18px rgba(255, 107, 53, 0.20);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 25px rgba(255, 107, 53, 0.28);
+
+    filter: brightness(1.03);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+    background: #E5E7EB;
+    color: #9CA3AF;
+
+    cursor: not-allowed;
+
+    transform: none;
+    box-shadow: none;
+}
+
+/* =========================
+   CUSTOM PACKAGE SECTION
+========================= */
+
+.custom-package-section {
+    background: var(--white);
+
+    border-radius: 25px;
+
+    padding: 40px;
+
+    text-align: center;
+
+    border: 2px dashed #FFB47E;
+
+    margin-bottom: 50px;
+
+    box-shadow: var(--card-shadow);
+
+    transition: var(--transition);
+}
+
+.custom-package-section:hover {
+    border-color: var(--primary);
+}
+
+.custom-package-section h3 {
+    font-size: 1.8rem;
+
+    margin-bottom: 12px;
+
+    color: #202938;
+
+    font-weight: 800;
+}
+
+.custom-package-section p {
+    color: var(--gray-600);
+
+    margin-bottom: 25px;
+
+    max-width: 600px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(20, 20, 20, 0.58);
+
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition: all 0.3s ease;
+
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-box {
+    background: var(--white);
+
+    width: 100%;
+    max-width: 500px;
+
+    border-radius: 25px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.18);
+
+    transform: translateY(20px);
+
+    transition: transform 0.3s ease;
+
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-overlay.active .modal-box {
+    transform: translateY(0);
+}
+
+.modal-header {
+    font-size: 1.5rem;
+
+    font-weight: 800;
+
+    margin-bottom: 22px;
+
+    color: #202938;
+
+    text-align: center;
+}
+
+.modal-body {
+    margin-bottom: 25px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 17px;
+}
+
+/* Form */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 700;
+
+    font-size: 0.95rem;
+
+    color: var(--gray-800);
+}
+
+.form-control {
+    padding: 14px 16px;
+
+    border: 1.5px solid #E5E7EB;
+
+    border-radius: 13px;
+
+    font-size: 1rem;
+
+    outline: none;
+
+    background: #FFFFFF;
+
+    color: var(--dark);
+
+    transition: var(--transition);
+
+    width: 100%;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 4px rgba(255, 107, 53, 0.09);
+}
+
+/* Calculation */
+
+.calculation-box {
+    background: #FFF7F1;
+
+    border-radius: 16px;
+
+    padding: 18px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+
+    border: 1px solid #FAD9C8;
+}
+
+.calc-row {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    font-size: 0.95rem;
+
+    color: var(--gray-800);
+}
+
+.calc-row.total {
+    font-weight: 800;
+
+    font-size: 1.15rem;
+
+    color: var(--secondary);
+
+    border-top: 1px solid #F1D9CC;
+
+    padding-top: 12px;
+}
+
+/* Modal Footer */
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-secondary {
+    background: #F3F4F6;
+
+    color: #374151;
+
+    padding: 13px;
+
+    border-radius: 13px;
+
+    font-weight: 700;
+
+    border: none;
+    cursor: pointer;
+
+    flex: 1;
+
+    transition: var(--transition);
+}
+
+.btn-secondary:hover {
+    background: #E5E7EB;
+}
+
+.btn-confirm {
+    flex: 1;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+
+@media (max-width: 768px) {
+
+    body {
+        font-size: 15px;
+    }
+
+    .navbar {
+        padding: 13px 15px;
+        min-height: 70px;
+        gap: 10px;
+    }
+
+    .nav-logo img {
+        height: 35px;
+        max-width: 190px;
+    }
+
+    .nav-user {
+        gap: 7px;
+        font-size: 0.9rem;
+    }
+
+    .container {
+        padding: 0 15px;
+        margin: 18px auto;
+    }
+
+    /* Balance */
+
+    .balance-card {
+        padding: 25px 22px;
+
+        border-radius: 21px;
+
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 18px;
+    }
+
+    .balance-amount {
+        font-size: 2rem;
+    }
+
+    .balance-action {
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .btn-primary-white {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Status */
+
+    .status-card {
+        padding: 23px 18px;
+
+        border-radius: 23px;
+
+        margin-bottom: 35px;
+
+        gap: 18px;
+    }
+
+    .status-header {
+        justify-content: flex-start;
+        gap: 10px;
+    }
+
+    .badge {
+        padding: 8px 13px;
+        font-size: 0.85rem;
+    }
+
+    .countdown-timer {
+        font-size: 1.1rem;
+    }
+
+    /* Pricing Heading */
+
+    .section-title {
+        font-size: 1.8rem;
+        line-height: 1.45;
+
+        padding: 0 5px;
+    }
+
+    .section-desc {
+        font-size: 1rem;
+
+        line-height: 1.7;
+
+        margin-bottom: 30px;
+    }
+
+    /* Pricing Cards */
+
+    .pricing-grid {
+        grid-template-columns: 1fr;
+
+        gap: 22px;
+
+        margin-bottom: 40px;
+    }
+
+    .pricing-card {
+        padding: 27px 23px;
+
+        border-radius: 25px;
+    }
+
+    .pricing-card:hover {
+        transform: none;
+    }
+
+    .plan-name {
+        font-size: 1.4rem;
+    }
+
+    .plan-price {
+        font-size: 2.5rem;
+    }
+
+    .plan-daily {
+        font-size: 0.95rem;
+    }
+
+    .features-list {
+        gap: 13px;
+    }
+
+    .features-list li {
+        font-size: 1rem;
+        line-height: 1.65;
+    }
+
+    .btn-primary {
+        padding: 16px;
+
+        font-size: 1.1rem;
+
+        border-radius: 15px;
+    }
+
+    /* Custom Package */
+
+    .custom-package-section {
+        padding: 28px 20px;
+
+        border-radius: 22px;
+    }
+
+    .custom-package-section h3 {
+        font-size: 1.5rem;
+    }
+
+    .custom-package-section p {
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    /* Modal */
+
+    .modal-box {
+        padding: 24px 20px;
+
+        border-radius: 22px;
+    }
+
+    .modal-header {
+        font-size: 1.3rem;
+    }
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 380px) {
+
+    .navbar {
+        padding: 12px 10px;
+    }
+
+    .nav-logo img {
+        height: 30px;
+        max-width: 155px;
+    }
+
+    .container {
+        padding: 0 12px;
+    }
+
+    .section-title {
+        font-size: 1.55rem;
+    }
+
+    .pricing-card {
+        padding: 23px 18px;
+    }
+
+    .plan-price {
+        font-size: 2.2rem;
+    }
+
+    .status-card {
+        padding: 20px 15px;
+    }
+
+    .badge {
+        font-size: 0.78rem;
+        padding: 7px 10px;
+    }
+}
+
+/* =========================
+   LARGE SCREENS
+========================= */
+
+@media (min-width: 1100px) {
+
+    .container {
+        padding: 0 30px;
+    }
+
+    .pricing-grid {
+        grid-template-columns:
+            repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .pricing-card {
+        padding: 35px;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p style="font-weight: 600; color: var(--gray-600);">ডেটা লোড হচ্ছে...</p>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <img src="https://paikarisell.ghotimarket.com/photo/logo.png" alt="Paikari Sell Logo">
+        </div>
+        <div class="nav-user" id="nav-user-name">
+            লোড হচ্ছে...
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Balance Section -->
+        <div class="balance-card">
+            <div class="balance-info">
+                <h3>আপনার বর্তমান ব্যালেন্স</h3>
+                <div class="balance-amount-wrapper">
+                    <span class="balance-amount" id="balance-display">৳ 0.00</span>
+                    <button class="eye-btn" id="toggle-balance-btn" title="ব্যালেন্স লুকান/দেখুন">
+                        <!-- SVG Eye Icon -->
+                        <svg id="eye-icon" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="balance-action">
+                <a href="/add-balance" class="btn-primary-white">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    ব্যালেন্স যুক্ত করুন
+                </a>
+                <span class="balance-note">আপনার ব্যালেন্স ব্যবহার করে সহজেই সাবস্ক্রিপশন কিনতে পারবেন।</span>
+            </div>
+        </div>
+
+        <!-- Subscription Expiry Overview -->
+        <div class="status-card">
+            <div class="status-header">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span id="subscription-status-badge" class="badge badge-expired">মেয়াদ যাচাই হচ্ছে</span>
+                    <span id="subscription-status-text" style="font-weight: 600; color: var(--gray-800);">সাবস্ক্রিপশন স্ট্যাটাস লোড হচ্ছে...</span>
+                </div>
+                <div class="countdown-timer" id="countdown-timer-display">-- দিন -- ঘণ্টা -- মিনিট -- সেকেন্ড</div>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="subscription-progress-bar"></div>
+            </div>
+        </div>
+
+        <!-- Pricing Section -->
+        <h2 class="section-title">আপনার ব্যবসার জন্য উপযুক্ত প্যাকেজ বেছে নিন</h2>
+        <p class="section-desc">সাশ্রয়ী মূল্যে আপনার Supplier Profile Unlock করে ব্যবসার কার্যক্রম পরিচালনা করুন।</p>
+
+        <div class="pricing-grid" id="pricing-grid-container">
+            <!-- 1 to 12 Months Cards will be dynamically injected via JS -->
+        </div>
+
+        <!-- Custom Subscription Package -->
+        <div class="custom-package-section">
+            <h3>নিজের ইচ্ছামতো মেয়াদের প্যাক কিনুন</h3>
+            <p>আপনি যত দিনের জন্য সাবস্ক্রিপশন নিতে চান, নিজেই মেয়াদ নির্ধারণ করুন।</p>
+            <button class="btn-primary" id="open-custom-modal-btn" style="max-width: 250px; margin: 0 auto;">কাস্টম প্যাক তৈরি করুন</button>
+        </div>
+
+    </div>
+
+    <!-- Custom Package Modal -->
+    <div class="modal-overlay" id="custom-modal">
+        <div class="modal-box">
+            <div class="modal-header">আপনার সাবস্ক্রিপশন মেয়াদ নির্বাচন করুন</div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="custom-days-input">কত দিনের জন্য সাবস্ক্রিপশন নিতে চান?</label>
+                    <input type="number" id="custom-days-input" class="form-control" min="1" value="30" placeholder="দিন সংখ্যা লিখুন">
+                </div>
+                <div class="calculation-box">
+                    <div class="calc-row">
+                        <span>নির্বাচিত মেয়াদ:</span>
+                        <span id="modal-calc-days">৩০ দিন</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>প্রতিদিনের মূল্য:</span>
+                        <span>৳ 16.67</span>
+                    </div>
+                    <div class="calc-row total">
+                        <span>মোট মূল্য:</span>
+                        <span id="modal-calc-price">৳ 500.10</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>বর্তমান ব্যালেন্স:</span>
+                        <span id="modal-calc-current-balance">৳ 0.00</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>ক্রয়ের পর অবশিষ্ট ব্যালেন্স:</span>
+                        <span id="modal-calc-remaining-balance" style="font-weight: 600; color: var(--success);">৳ 0.00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="close-custom-modal-btn">বাতিল করুন</button>
+                <button class="btn-primary btn-confirm" id="confirm-custom-purchase-btn">কিনুন</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-box">
+            <div class="modal-header">সাবস্ক্রিপশন কিনতে চান?</div>
+            <div class="modal-body">
+                <div class="calculation-box">
+                    <div class="calc-row">
+                        <span>নির্বাচিত প্যাকেজ:</span>
+                        <span id="conf-modal-title" style="font-weight: 600;">--</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>মেয়াদ:</span>
+                        <span id="conf-modal-days">-- দিন</span>
+                    </div>
+                    <div class="calc-row total">
+                        <span>মোট মূল্য:</span>
+                        <span id="conf-modal-price">৳ 0.00</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>বর্তমান ব্যালেন্স:</span>
+                        <span id="conf-modal-current-balance">৳ 0.00</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>ক্রয়ের পর অবশিষ্ট ব্যালেন্স:</span>
+                        <span id="conf-modal-remaining-balance" style="font-weight: 600; color: var(--success);">৳ 0.00</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>বর্তমান মেয়াদ শেষ হবে:</span>
+                        <span id="conf-modal-old-expiry">--</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>নতুন মেয়াদ শেষ হবে:</span>
+                        <span id="conf-modal-new-expiry" style="font-weight: 600; color: var(--primary);">--</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="close-confirm-modal-btn">বাতিল করুন</button>
+                <button class="btn-primary btn-confirm" id="final-purchase-action-btn">কিনবো</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="success-modal">
+        <div class="modal-box" style="text-align: center;">
+            <div style="width: 60px; height: 60px; background: #D1FAE5; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="#065F46"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+            </div>
+            <div class="modal-header" style="margin-bottom: 10px;">সাবস্ক্রিপশন সফলভাবে চালু হয়েছে!</div>
+            <p style="color: var(--gray-600); margin-bottom: 20px; font-size: 0.95rem;">আপনার অ্যাকাউন্ট থেকে সাবস্ক্রিপশনের মূল্য কেটে নেওয়া হয়েছে এবং আপনার প্রোফাইলের মেয়াদ সফলভাবে বৃদ্ধি করা হয়েছে।</p>
+            <div class="calculation-box" style="text-align: left; margin-bottom: 25px;">
+                <div class="calc-row">
+                    <span>কেনা প্যাকেজ:</span>
+                    <span id="succ-modal-title" style="font-weight: 600;">--</span>
+                </div>
+                <div class="calc-row">
+                    <span>মেয়াদ:</span>
+                    <span id="succ-modal-days">-- দিন</span>
+                </div>
+                <div class="calc-row">
+                    <span>কাটা টাকা:</span>
+                    <span id="succ-modal-price" style="color: var(--danger);">৳ 0.00</span>
+                </div>
+                <div class="calc-row">
+                    <span>নতুন ব্যালেন্স:</span>
+                    <span id="succ-modal-new-balance">৳ 0.00</span>
+                </div>
+                <div class="calc-row total">
+                    <span>নতুন Expiry Date:</span>
+                    <span id="succ-modal-new-expiry">--</span>
+                </div>
+            </div>
+            <button class="btn-primary" id="success-ok-btn" style="width: 100%;">ঠিক আছে</button>
+        </div>
+    </div>
+
+    <!-- Error/Warning Modal -->
+    <div class="modal-overlay" id="error-modal">
+        <div class="modal-box" style="text-align: center;">
+            <div style="width: 60px; height: 60px; background: #FEE2E2; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="#991B1B"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            </div>
+            <div class="modal-header" id="error-modal-title" style="margin-bottom: 10px;">সতর্কতা</div>
+            <p id="error-modal-desc" style="color: var(--gray-600); margin-bottom: 25px; font-size: 0.95rem;">ত্রুটি বার্তা এখানে প্রদর্শিত হবে।</p>
+            <button class="btn-primary" id="error-ok-btn" style="width: 100%;">ঠিক আছে</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs (Modular) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Firebase Configuration (Using your existing project settings)
+        const firebaseConfig = {
+  apiKey: "AIzaSyDCIRWmozT0XcEXuXtQ6RDiDo6vtT1T9mU",
+  authDomain: "paikarisell-ghotimarket.firebaseapp.com",
+  projectId: "paikarisell-ghotimarket",
+  storageBucket: "paikarisell-ghotimarket.firebasestorage.app",
+  messagingSenderId: "464086432830",
+  appId: "1:464086432830:web:a10fdd9884954e380e656f",
+  measurementId: "G-E3HR2F9TC5"
+};
+
+        // Initialize Firebase (Assuming standard initialization or window.firebase app)
+        // If your project already initializes firebase elsewhere, adapt accordingly.
+        let app, auth, db;
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+        } catch(e) {
+            // Fallback if app is already initialized
+            app = firebase.app();
+            auth = getAuth(app);
+            db = getFirestore(app);
+        }
+
+        // Global State Variables
+        let currentUser = null;
+        let supplierData = null;
+        let isBalanceVisible = true;
+        let countdownInterval = null;
+        let pendingPurchaseDays = 0;
+        let pendingPurchaseTitle = "";
+
+        // Standard Features list for all cards
+        const standardFeatures = [
+            "অর্ডার দেখার সুযোগ",
+            "হিসাব দেখার সুযোগ",
+            "পণ্য আপলোড করার সুযোগ",
+            "ড্যাশবোর্ড ম্যানেজ করার সুযোগ",
+            "রিসেলাররা আপনার পণ্য দেখার সুযোগ"
+        ];
+
+        const svgCheckIcon = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>`;
+
+        // DOM Elements
+        const loadingScreen = document.getElementById('loading-screen');
+        const balanceDisplay = document.getElementById('balance-display');
+        const toggleBalanceBtn = document.getElementById('toggle-balance-btn');
+        const eyeIcon = document.getElementById('eye-icon');
+        const navUserName = document.getElementById('nav-user-name');
+        const pricingGridContainer = document.getElementById('pricing-grid-container');
+        
+        // Modal Elements
+        const customModal = document.getElementById('custom-modal');
+        const openCustomModalBtn = document.getElementById('open-custom-modal-btn');
+        const closeCustomModalBtn = document.getElementById('close-custom-modal-btn');
+        const customDaysInput = document.getElementById('custom-days-input');
+        const modalCalcDays = document.getElementById('modal-calc-days');
+        const modalCalcPrice = document.getElementById('modal-calc-price');
+        const modalCalcCurrentBalance = document.getElementById('modal-calc-current-balance');
+        const modalCalcRemainingBalance = document.getElementById('modal-calc-remaining-balance');
+        const confirmCustomPurchaseBtn = document.getElementById('confirm-custom-purchase-btn');
+
+        const confirmModal = document.getElementById('confirm-modal');
+        const closeConfirmModalBtn = document.getElementById('close-confirm-modal-btn');
+        const finalPurchaseActionBtn = document.getElementById('final-purchase-action-btn');
+
+        const successModal = document.getElementById('success-modal');
+        const successOkBtn = document.getElementById('success-ok-btn');
+
+        const errorModal = document.getElementById('error-modal');
+        const errorModalTitle = document.getElementById('error-modal-title');
+        const errorModalDesc = document.getElementById('error-modal-desc');
+        const errorOkBtn = document.getElementById('error-ok-btn');
+
+        // Helper: Show Custom Error Popup
+        function showError(title, message) {
+            errorModalTitle.textContent = title;
+            errorModalDesc.textContent = message;
+            errorModal.classList.add('active');
+        }
+
+        errorOkBtn.addEventListener('click', () => {
+            errorModal.classList.remove('active');
+        });
+
+        successOkBtn.addEventListener('click', () => {
+            successModal.classList.remove('active');
+            window.location.reload();
+        });
+
+        // Toggle Balance Visibility
+        toggleBalanceBtn.addEventListener('click', () => {
+            isBalanceVisible = !isBalanceVisible;
+            if (isBalanceVisible) {
+                balanceDisplay.textContent = `৳ ${Number(supplierData.balance || 0).toLocaleString('en-BD', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                eyeIcon.innerHTML = `<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>`;
+            } else {
+                balanceDisplay.textContent = `৳ ••••••`;
+                eyeIcon.innerHTML = `<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.12c0-1.66-1.34-3-3-3l-.17.02z"/>`;
+            }
+        });
+
+        // Generate 1 to 12 Months Pricing Cards
+        function renderPricingCards() {
+            let html = "";
+            for (let m = 1; m <= 12; m++) {
+                const totalDays = m * 30;
+                const price = Number((totalDays * 16.67).toFixed(2));
+                const isPopular = (m === 6);
+                const planTitle = `${m} মাস`;
+                const monthlyAvg = (price / m).toFixed(2);
+
+                html += `
+                    <div class="pricing-card ${isPopular ? 'popular' : ''}">
+                        ${isPopular ? '<span class="popular-badge">জনপ্রিয় প্যাকেজ</span>' : ''}
+                        <div class="plan-name">${planTitle}</div>
+                        <div class="plan-duration">মোট মেয়াদ: ${totalDays} দিন</div>
+                        <div class="plan-price">৳ ${price.toLocaleString('en-BD', {minimumFractionDigits: 2})}</div>
+                        <div class="plan-daily">প্রতিদিন মাত্র ৳16.67 (মাসিক গড়ে ৳${monthlyAvg})</div>
+                        <ul class="features-list">
+                            ${standardFeatures.map(f => `<li>${svgCheckIcon} ${f}</li>`).join('')}
+                        </ul>
+                        <button class="btn-primary" onclick="initiatePurchase(${totalDays}, '${planTitle} প্যাক')">কিনুন</button>
+                    </div>
+                `;
+            }
+            pricingGridContainer.innerHTML = html;
+        }
+
+        // Authentication State Listener
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "/login";
+                return;
+            }
+            currentUser = user;
+            await loadSupplierData();
+        });
+
+        // Load Supplier Data from Firestore
+        async function loadSupplierData() {
+            try {
+                const docRef = doc(db, "supplyers", currentUser.uid);
+                const docSnap = await getDoc(docRef);
+
+                if (!docSnap.exists()) {
+                    window.location.href = "/signup1.html";
+                    return;
+                }
+
+                supplierData = docSnap.data();
+                
+                // Validate required fields
+                if (supplierData.uid !== currentUser.uid) {
+                    // Self-heal or strict check if needed
+                }
+
+                navUserName.textContent = supplierData.name || currentUser.email;
+                updateBalanceUI();
+                updateSubscriptionStatusUI();
+                renderPricingCards();
+
+                // Hide Loading Screen
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => { loadingScreen.style.display = 'none'; }, 400);
+
+            } catch (error) {
+                console.error("Firestore Error:", error);
+                showError("ডেটা লোড ত্রুটি", "Supplier ডেটা সংগ্রহ করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।");
+                loadingScreen.style.display = 'none';
+            }
+        }
+
+        function updateBalanceUI() {
+            const bal = Number(supplierData.balance || 0);
+            if (isBalanceVisible) {
+                balanceDisplay.textContent = `৳ ${bal.toLocaleString('en-BD', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            }
+        }
+
+        // Subscription Status & Live Countdown
+        function updateSubscriptionStatusUI() {
+            const expiry = Number(supplierData.profileUnlockedUntil || 0);
+            const now = Date.now();
+            const badge = document.getElementById('subscription-status-badge');
+            const statusText = document.getElementById('subscription-status-text');
+            const timerDisplay = document.getElementById('countdown-timer-display');
+            const progressBar = document.getElementById('subscription-progress-bar');
+
+            if (expiry > now) {
+                badge.className = "badge badge-active";
+                badge.textContent = "সক্রিয়";
+                statusText.textContent = `মেয়াদ শেষ হবে: ${new Date(expiry).toLocaleString('bn-BD', {dateStyle: 'medium', timeStyle: 'short'})}`;
+                
+                if (countdownInterval) clearInterval(countdownInterval);
+                
+                countdownInterval = setInterval(() => {
+                    const diff = expiry - Date.now();
+                    if (diff <= 0) {
+                        clearInterval(countdownInterval);
+                        updateSubscriptionStatusUI();
+                        return;
+                    }
+
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                    timerDisplay.textContent = `${days} দিন ${String(hours).padStart(2, '0')} ঘণ্টা ${String(minutes).padStart(2, '0')} মিনিট ${String(seconds).padStart(2, '0')} সেকেন্ড`;
+
+                    // Progress bar calculation (assuming standard max package or relative to active duration)
+                    const totalDuration = 30 * 24 * 60 * 60 * 1000; // Visual baseline
+                    const elapsed = totalDuration - diff;
+                    let progressPercent = (elapsed / totalDuration) * 100;
+                    if(progressPercent > 100) progressPercent = 100;
+                    if(progressPercent < 0) progressPercent = 0;
+                    progressBar.style.width = `${progressPercent}%`;
+
+                }, 1000);
+
+            } else {
+                badge.className = "badge badge-expired";
+                badge.textContent = "মেয়াদ শেষ";
+                statusText.textContent = "আপনার সাবস্ক্রিপশনের মেয়াদ শেষ হয়েছে";
+                timerDisplay.textContent = "০ দিন ০ ঘণ্টা ০ মিনিট ০ সেকেন্ড";
+                progressBar.style.width = "0%";
+            }
+        }
+
+        // Custom Modal Logic
+        openCustomModalBtn.addEventListener('click', () => {
+            customDaysInput.value = "30";
+            updateCustomModalCalculation();
+            customModal.classList.add('active');
+        });
+
+        closeCustomModalBtn.addEventListener('click', () => {
+            customModal.classList.remove('active');
+        });
+
+        customDaysInput.addEventListener('input', updateCustomModalCalculation);
+
+        function updateCustomModalCalculation() {
+            let days = parseInt(customDaysInput.value);
+            if (isNaN(days) || days < 1) days = 1;
+            
+            const price = Number((days * 16.67).toFixed(2));
+            const currentBal = Number(supplierData.balance || 0);
+            const remainingBal = currentBal - price;
+
+            modalCalcDays.textContent = `${days} দিন`;
+            modalCalcPrice.textContent = `৳ ${price.toLocaleString('en-BD', {minimumFractionDigits: 2})}`;
+            modalCalcCurrentBalance.textContent = `৳ ${currentBal.toLocaleString('en-BD', {minimumFractionDigits: 2})}`;
+            modalCalcRemainingBalance.textContent = `৳ ${remainingBal.toLocaleString('en-BD', {minimumFractionDigits: 2})}`;
+            
+            if (remainingBal < 0) {
+                modalCalcRemainingBalance.style.color = "var(--danger)";
+            } else {
+                modalCalcRemainingBalance.style.color = "var(--success)";
+            }
+        }
+
+        confirmCustomPurchaseBtn.addEventListener('click', () => {
+            const days = parseInt(customDaysInput.value);
+            if (isNaN(days) || days < 1) {
+                showError("অবৈধ মেয়াদ", "অনুগ্রহ করে কমপক্ষে ১ দিন বা সঠিক সংখ্যা দিন।");
+                return;
+            }
+            customModal.classList.remove('active');
+            initiatePurchase(days, `${days} দিনের কাস্টম প্যাক`);
+        });
+
+        // STEP 01 & 02 — Purchase Initialization & Confirmation Modal
+        window.initiatePurchase = function(days, title) {
+            if (!currentUser || !supplierData) {
+                showError("অননুমোদিত অ্যাক্সেস", "অনুগ্রহ করে আবার লগইন করুন।");
+                return;
+            }
+
+            if (isNaN(days) || days < 1 || !Number.isInteger(days)) {
+                showError("অবৈধ মেয়াদ", "সাবস্ক্রিপশনের মেয়াদ পূর্ণ সংখ্যা হতে হবে।");
+                return;
+            }
+
+            const price = Number((days * 16.67).toFixed(2));
+            const currentBal = Number(supplierData.balance || 0);
+            const remainingBal = currentBal - price;
+
+            if (currentBal < price) {
+                showError("পর্যাপ্ত ব্যালেন্স নেই", "এই সাবস্ক্রিপশন কেনার জন্য আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই। অনুগ্রহ করে ব্যালেন্স যুক্ত করুন।");
+                return;
+            }
+
+            // Expiry calculation preview
+            const now = Date.now();
+            const oldExpiry = Number(supplierData.profileUnlockedUntil || 0);
+            const baseTime = oldExpiry > now ? oldExpiry : now;
+            const newExpiry = baseTime + (days * 86400000);
+
+            document.getElementById('conf-modal-title').textContent = title;
+            document.getElementById('conf-modal-days').textContent = `${days} দিন`;
+            document.getElementById('conf-modal-price').textContent = `৳ ${price.toLocaleString('en-BD', {minimumFractionDigits: 2})}`;
+            document.getElementById('conf-modal-current-balance').textContent = `৳ ${currentBal.toLocaleString('en-BD', {minimumFractionDigits: 2})}`;
+            document.getElementById('conf-modal-remaining-balance').textContent = `৳ ${remainingBal.toLocaleString('en-BD', {minimumFractionDigits: 2})}`;
+            document.getElementById('conf-modal-old-expiry').textContent = oldExpiry > 0 ? new Date(oldExpiry).toLocaleString('en-BD', {dateStyle: 'medium', timeStyle: 'short'}) : "নেই";
+            document.getElementById('conf-modal-new-expiry').textContent = new Date(newExpiry).toLocaleString('en-BD', {dateStyle: 'medium', timeStyle: 'short'});
+
+            pendingPurchaseDays = days;
+            pendingPurchaseTitle = title;
+            confirmModal.classList.add('active');
+        };
+
+        closeConfirmModalBtn.addEventListener('click', () => {
+            confirmModal.classList.remove('active');
+        });
+
+        // STEP 03, 04 & 09 — Firestore Atomic Purchase Process
+        finalPurchaseActionBtn.addEventListener('click', async () => {
+            confirmModal.classList.remove('active');
+            loadingScreen.style.display = 'flex';
+            loadingScreen.style.opacity = '1';
+            const loadingText = loadingScreen.querySelector('p');
+            loadingText.textContent = "সাবস্ক্রিপশন কেনা হচ্ছে...";
+
+            try {
+                const supplierRef = doc(db, "supplyers", currentUser.uid);
+                // Transactions collection reference
+                const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js");
+                const transactionsRef = collection(db, "transactions");
+
+                const days = pendingPurchaseDays;
+                const price = Number((days * 16.67).toFixed(2));
+                const durationMs = days * 86400000;
+
+                await runTransaction(db, async (transaction) => {
+                    // Read latest supplier document
+                    const supplierDoc = await transaction.get(supplierRef);
+                    if (!supplierDoc.exists()) {
+                        throw new Error("Supplier Document Not Found");
+                    }
+
+                    const currentData = supplierDoc.data();
+                    const oldBalance = Number(currentData.balance || 0);
+                    const oldExpiry = Number(currentData.profileUnlockedUntil || 0);
+
+                    // Verify balance inside transaction
+                    if (oldBalance < price) {
+                        throw new Error("Insufficient Balance");
+                    }
+
+                    // Base Time calculation adhering to Security Rules
+                    // let baseTime = oldExpiry > request.time.toMillis() ? oldExpiry : request.time.toMillis();
+                    // Using client Date.now() as approximation, synchronized with server logic rule constraints.
+                    const now = Date.now();
+                    const baseTime = oldExpiry > now ? oldExpiry : now;
+                    const newExpiry = baseTime + durationMs;
+                    const newBalance = Number((oldBalance - price).toFixed(2));
+
+                    // Update supplier document (strictly limited to allowed fields)
+                    transaction.update(supplierRef, {
+                        balance: newBalance,
+                        profileUnlockedUntil: newExpiry
+                    });
+
+                    // Create transaction document in 'transactions' collection
+                    const newTransactionRef = doc(transactionsRef); // auto ID
+                    transaction.set(newTransactionRef, {
+                        uid: currentUser.uid,
+                        oldBalance: oldBalance,
+                        balance: newBalance,
+                        createdAt: serverTimestamp(),
+                        name: `SUBSCRIPTION BUY ${days}Days PACK`
+                    });
+                });
+
+                // Success! Fetch updated data to display in Success Modal
+                const updatedDocSnap = await getDoc(supplierRef);
+                const updatedData = updatedDocSnap.data();
+
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => { loadingScreen.style.display = 'none'; }, 400);
+
+                // Show Success Modal
+                document.getElementById('succ-modal-title').textContent = pendingPurchaseTitle;
+                document.getElementById('succ-modal-days').textContent = `${days} দিন`;
+                document.getElementById('succ-modal-price').textContent = `৳ ${price.toLocaleString('en-BD', {minimumFractionDigits: 2})}`;
+                document.getElementById('succ-modal-new-balance').textContent = `৳ ${Number(updatedData.balance).toLocaleString('en-BD', {minimumFractionDigits: 2})}`;
+                document.getElementById('succ-modal-new-expiry').textContent = new Date(updatedData.profileUnlockedUntil).toLocaleString('en-BD', {dateStyle: 'medium', timeStyle: 'short'});
+                
+                successModal.classList.add('active');
+
+            } catch (error) {
+                console.error("Transaction Error:", error);
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => { loadingScreen.style.display = 'none'; }, 400);
+
+                let errMsg = error.message;
+                if (errMsg.includes("Insufficient Balance")) {
+                    showError("পর্যাপ্ত ব্যালেন্স নেই", "আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই।");
+                } else if (errMsg.includes("Permission Denied") || errMsg.includes("permission-denied")) {
+                    showError("অনুমতি ত্রুটি (Permission Denied)", "আপনার Firestore Security Rules-এ transactions কালেকশনে create পারমিশন থাকতে হবে। অনুগ্রহ করে নিয়মটি যাচাই করুন।");
+                } else {
+                    showError("লেনদেন ব্যর্থ হয়েছে", "সাবস্ক্রিপশন ক্রয় সম্পন্ন করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।");
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
