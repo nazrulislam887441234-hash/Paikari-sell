@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -905,9 +904,19 @@
         const nidBackKey = await uploadFile(backFile);
 
 
+           // ==========================================
+        // PHONE NORMALIZE - 01XXXXXXXXX
         // ==========================================
-        // SUPPLIER FIRESTORE DATA
-        // ==========================================
+        function normalizePhone(raw) {
+          if (!raw) return raw;
+          let p = raw.toString().trim();
+          p = p.replace(/[\s\-]/g, ''); // space - remove
+          p = p.replace(/^\+/, ''); // + remove
+          if (p.startsWith('88')) {
+            p = p.substring(2); // 88 কেটে দাও
+          }
+          return p; // এখন 01xxxxxxxxx
+        }
 
         const supplierData = {
 
@@ -923,9 +932,9 @@
 
           description: description,
 
-          phone: localStorage.getItem('phone'),
+          phone: normalizePhone(localStorage.getItem('phone')),
 
-          whatsApp: localStorage.getItem('whatsApp'),
+          whatsApp: normalizePhone(localStorage.getItem('whatsApp')),
 
           balance: 0,
 
@@ -955,12 +964,12 @@
         // ==========================================
         try {
           // localStorage clear করার আগেই সব ডাটা নিয়ে নিচ্ছি
-          const notifyPayload = {
+                    const notifyPayload = {
             uid: currentUser.uid,
             name: localStorage.getItem('name'),
             email: currentUser.email,
-            phone: localStorage.getItem('phone'),
-            whatsApp: localStorage.getItem('whatsApp'),
+            phone: normalizePhone(localStorage.getItem('phone')),
+            whatsApp: normalizePhone(localStorage.getItem('whatsApp')),
             description: description,
             nidFront: nidFrontKey,
             nidBack: nidBackKey
