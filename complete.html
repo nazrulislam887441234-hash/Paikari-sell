@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>রেজিস্ট্রেশন সফল হয়েছে - PAIKARI SELL</title>
+
+  <!-- Favicon & Touch Icon -->
+  <link rel="icon" type="image/png" href="https://paikarisell.ghotimarket.com/photo/favicon.png">
+  <link rel="apple-touch-icon" href="https://paikarisell.ghotimarket.com/photo/favicon.png">
+
+  <!-- Google Fonts: Hind Siliguri -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- html2canvas for High Resolution Owner Secret Canvas Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#FF6B35',
+              secondary: '#FF6A00',
+              accent: '#FFA500',
+              bg: '#FFF8F4',
+              surface: '#FFFFFF',
+              dark: '#1F2937',
+              warningBg: '#FFF3EB',
+              warningBorder: '#FFD6C0'
+            }
+          },
+          fontFamily: {
+            bangla: ['"Hind Siliguri"', 'sans-serif']
+          },
+          boxShadow: {
+            'card-glow': '0 20px 40px -15px rgba(255, 107, 53, 0.12)',
+            'btn-orange': '0 8px 25px -5px rgba(255, 107, 53, 0.4)',
+            'float': '0 12px 30px rgba(0, 0, 0, 0.08)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Hind Siliguri', sans-serif;
+      background-color: #FFF8F4;
+      color: #1F2937;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Custom Glassmorphism & Gradient Effects */
+    .hero-gradient {
+      background: linear-gradient(135deg, #FF6B35 0%, #FF6A00 50%, #E0531A 100%);
+    }
+
+    .status-badge-glow {
+      box-shadow: 0 0 15px rgba(255, 165, 0, 0.4);
+    }
+
+    /* Laser Scanning Line Animation */
+    @keyframes scanLine {
+      0% { top: 12%; opacity: 0.3; }
+      50% { top: 82%; opacity: 0.95; }
+      100% { top: 12%; opacity: 0.3; }
+    }
+
+    .animate-scan-line {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #FFA500, #FF6B35, #FFA500, transparent);
+      box-shadow: 0 0 12px #FF6B35, 0 0 4px #FFA500;
+      animation: scanLine 2.8s ease-in-out infinite;
+      border-radius: 50%;
+    }
+
+    /* Subtle Scanning Radar Glow */
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.04); opacity: 0.85; }
+    }
+
+    .animate-pulse-glow {
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    /* Corner Markers Flash */
+    @keyframes cornerPulse {
+      0%, 100% { stroke: #FF6B35; stroke-width: 3; }
+      50% { stroke: #FFA500; stroke-width: 4.5; }
+    }
+    
+    .scan-corner {
+      animation: cornerPulse 2s infinite ease-in-out;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FFF8F4;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #FFD6C0;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #FF6B35;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-primary selection:text-white">
+
+  <!-- ================= LOADING SCREEN OVERLAY ================= -->
+  <div id="loadingOverlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-brand-bg transition-opacity duration-500">
+    <div class="relative flex items-center justify-center">
+      <div class="w-20 h-20 border-4 border-orange-200 border-t-brand-primary rounded-full animate-spin"></div>
+      <img src="https://paikarisell.ghotimarket.com/photo/logo.png" alt="PAIKARI SELL Logo" class="w-10 h-10 absolute object-contain animate-pulse" onerror="this.src='https://placehold.co/100x100/FF6B35/ffffff?text=PS'">
+    </div>
+    <p class="mt-4 text-brand-primary font-semibold text-lg tracking-wide animate-pulse">তথ্য যাচাই করা হচ্ছে...</p>
+    <span class="text-xs text-gray-500 mt-1">অনুগ্রহ করে কয়েক সেকেন্ড অপেক্ষা করুন</span>
+  </div>
+
+  <!-- ================= TOAST NOTIFICATION CONTAINER ================= -->
+  <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <div id="exportableArea" class="w-full max-w-4xl mx-auto px-4 py-6 sm:py-10 flex-grow">
+    
+    <!-- HEADER BRANDING BAR -->
+    <header id="tripleTapZone" class="cursor-pointer select-none mb-6 text-center flex flex-col items-center justify-center group" title="PAIKARI SELL Supplier Portal">
+      <div class="inline-flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm border border-orange-100 hover:shadow-md transition-all duration-300 transform group-hover:scale-[1.01]">
+        <img src="https://paikarisell.ghotimarket.com/photo/logo.png" alt="PAIKARI SELL Logo" class="h-10 sm:h-12 w-auto object-contain" onerror="this.src='https://placehold.co/180x60/FF6B35/ffffff?text=PAIKARI+SELL'">
+        <span class="h-6 w-[1px] bg-gray-200"></span>
+        <span class="text-xs sm:text-sm font-bold tracking-wide text-brand-dark uppercase">সাপ্লায়ার রেজিস্ট্রেশন পোর্টাল</span>
+      </div>
+    </header>
+
+    <!-- SUCCESS HERO CARD -->
+    <main class="bg-white rounded-3xl border border-orange-100 shadow-card-glow p-6 sm:p-10 mb-8 relative overflow-hidden">
+      <!-- Top Decorative Accent Lines -->
+      <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-brand-accent via-brand-primary to-brand-secondary"></div>
+
+      <!-- SUCCESS CHECK BADGE -->
+      <div class="flex justify-center mb-6">
+        <div class="relative">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-green-500 to-emerald-400 flex items-center justify-center text-white shadow-lg shadow-green-500/30 transform transition-transform hover:rotate-6">
+            <svg class="w-10 h-10 sm:w-12 sm:h-12 stroke-current" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+            </svg>
+          </div>
+          <div class="absolute -bottom-1 -right-1 bg-white p-1 rounded-full shadow-md">
+            <svg class="w-6 h-6 text-brand-primary" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUCCESS TITLE & SUBTITLE -->
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <h1 class="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">
+          আপনার একাউন্ট সফলভাবে তৈরি হয়েছে!
+        </h1>
+        <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
+          PAIKARI SELL মার্চেন্ট পরিবারে আপনাকে স্বাগতম! আপনার পাইকারি সাপ্লায়ার একাউন্টটি সফলভাবে নিবন্ধিত হয়েছে।
+        </p>
+      </div>
+
+      <!-- WARNING STATUS BOX -->
+      <div class="bg-brand-warningBg border-2 border-dashed border-brand-primary/40 rounded-2xl p-4 sm:p-6 mb-10 relative">
+        <div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+          <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center text-brand-primary">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+            </svg>
+          </div>
+          <div class="flex-grow">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-brand-primary text-white text-xs font-bold rounded-full mb-1 uppercase tracking-wide status-badge-glow">
+              <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+              স্ট্যাটাস: পেন্ডিং ভেরিফিকেশন। ২৪ ঘন্টার মধ্যে আপনার সাথে যোগাযোগ করা হবে।
+            </div>
+            <h2 class="text-lg sm:text-xl font-bold text-brand-primary mt-1">
+              আপনার একাউন্ট এখনও ভেরিফাইড করা হয়নি!
+            </h2>
+            <p class="text-xs sm:text-sm text-gray-700 mt-1">
+              নিরাপত্তা ও গুণমান বজায় রাখতে সকল সাপ্লায়ারকে পরিচয়পত্র ও ভিডিও কলের মাধ্যমে ভেরিফিকেশন সম্পন্ন করতে হয়। ভেরিফিকেশন সম্পন্ন না হওয়া পর্যন্ত আপনার একাউন্টের কিছু ফিচার সীমিত থাকবে।
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANIMATED SELFIE SCANNING SVG ILLUSTRATION -->
+      <div class="mb-12 flex flex-col items-center">
+        <div class="text-center mb-4">
+          <span class="text-xs font-bold text-brand-primary tracking-wider uppercase bg-orange-100 px-3 py-1 rounded-full">স্মার্ট পেস ভেরিফিকেশন সিমুলেশন</span>
+        </div>
+
+        <div class="relative w-64 h-64 sm:w-72 sm:h-72 bg-gradient-to-b from-orange-50 to-orange-100/60 rounded-3xl p-4 border border-orange-200 shadow-inner flex items-center justify-center overflow-hidden">
+          
+          <!-- SCANNER LASER LINE -->
+          <div class="animate-scan-line z-20"></div>
+
+          <!-- CAMERA FRAME SVG CONTAINER -->
+          <svg class="w-full h-full relative z-10" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background Grid -->
+            <defs>
+              <pattern id="grid" width="16" height="16" patternUnits="userSpaceOnUse">
+                <path d="M 16 0 L 0 0 0 16" fill="none" stroke="#FF6B35" stroke-width="0.4" stroke-opacity="0.15"/>
+              </pattern>
+              <linearGradient id="faceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF6B35" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="#FFA500" stop-opacity="0.05"/>
+              </linearGradient>
+            </defs>
+
+            <rect width="200" height="200" fill="url(#grid)" rx="16"/>
+
+            <!-- Scanning Target Face Outline -->
+            <g class="animate-pulse-glow" transform="translate(100, 95)">
+              <!-- Outer Pulse Ring -->
+              <circle r="65" stroke="#FF6B35" stroke-width="1" stroke-dasharray="4 4" opacity="0.4"/>
+              <circle r="55" stroke="#FFA500" stroke-width="1.5" stroke-dasharray="8 4" opacity="0.6"/>
+
+              <!-- Person Head & Body SVG Sketch -->
+              <!-- Hair / Head Contour -->
+              <path d="M-22,-15 C-22,-38 22,-38 22,-15 C22,10 16,30 0,30 C-16,30 -22,10 -22,-15 Z" fill="url(#faceGrad)" stroke="#FF6B35" stroke-width="2"/>
+              <!-- Shoulders -->
+              <path d="M-42,55 C-38,32 -18,28 0,28 C18,28 38,32 42,55" fill="none" stroke="#FF6B35" stroke-width="2.5" stroke-linecap="round"/>
+              
+              <!-- Eyes -->
+              <circle cx="-9" cy="-10" r="2.5" fill="#FF6B35"/>
+              <circle cx="9" cy="-10" r="2.5" fill="#FF6B35"/>
+              <!-- Smile -->
+              <path d="M-8,8 Q0,16 8,8" fill="none" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/>
+
+              <!-- Phone in Hand Illustration -->
+              <rect x="-48" y="5" width="22" height="42" rx="4" fill="#FFFFFF" stroke="#FF6B35" stroke-width="2" transform="rotate(-15)"/>
+              <circle cx="-37" cy="12" r="2" fill="#FF6B35" transform="rotate(-15)"/>
+            </g>
+
+            <!-- Face Recognition Corner Target Markers -->
+            <!-- Top Left -->
+            <path class="scan-corner" d="M 35 55 L 35 35 L 55 35" stroke="#FF6B35" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Top Right -->
+            <path class="scan-corner" d="M 145 35 L 165 35 L 165 55" stroke="#FF6B35" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Bottom Left -->
+            <path class="scan-corner" d="M 35 145 L 35 165 L 55 165" stroke="#FF6B35" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Bottom Right -->
+            <path class="scan-corner" d="M 165 145 L 165 165 L 145 165" stroke="#FF6B35" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <!-- Top Camera Sensor Light -->
+            <circle cx="100" cy="16" r="3" fill="#FF6B35">
+              <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
+            </circle>
+            <text x="100" y="185" text-anchor="middle" fill="#FF6B35" font-size="9" font-weight="bold" font-family="Hind Siliguri">সেলফি ভেরিফিকেশন অ্যালগরিদম রেডি</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- STEP-BY-STEP VERIFICATION PROCESS TIMELINE -->
+      <section class="mb-10">
+        <div class="text-center mb-8">
+          <h2 class="text-xl sm:text-2xl font-bold text-gray-900 inline-block relative pb-2">
+            আপনার একাউন্ট ভেরিফাই করার ধাপ
+            <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-brand-primary rounded-full"></span>
+          </h2>
+          <p class="text-xs sm:text-sm text-gray-500 mt-2">নিচের ৫টি ধাপ ধাপে ধাপে সম্পন্ন করা হবে</p>
+        </div>
+
+        <div class="relative pl-6 sm:pl-8 border-l-2 border-orange-200 space-y-8 sm:space-y-10 my-4 ml-2 sm:ml-4">
+          
+          <!-- STEP 1 -->
+          <div class="relative group">
+            <!-- Timeline Badge Icon -->
+            <div class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-brand-primary text-white flex items-center justify-center font-bold text-sm sm:text-base shadow-md group-hover:scale-110 transition-transform">
+              ১
+            </div>
+            <!-- Card Body -->
+            <div class="bg-orange-50/50 hover:bg-orange-50 border border-orange-100 rounded-2xl p-4 sm:p-5 transition-all">
+              <div class="flex items-start gap-3">
+                <div class="p-2 bg-green-500 text-white rounded-xl shadow-sm flex-shrink-0 mt-1">
+                  <!-- WhatsApp SVG -->
+                  <svg class="w-5 h-5 sm:w-6 sm:h-6 fill-current" viewBox="0 0 24 24">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-bold text-gray-900 text-base sm:text-lg">ধাপ ১: WhatsApp যোগাযোগ</h3>
+                  <p class="text-xs sm:text-sm text-gray-600 mt-1">
+                    আপনাকে আমাদের ভেরিফিকেশন টিম থেকে সরাসরি WhatsApp-এ মেসেজ করা হবে। নিচের যেকোনো একটি অফিশিয়াল নম্বর থেকে যোগাযোগ করা হবে:
+                  </p>
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    <a href="https://wa.me/8801727003670" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-green-300 text-green-700 font-bold rounded-lg text-xs sm:text-sm shadow-sm hover:bg-green-50 transition-colors">
+                      <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654z"/></svg>
+                      01727003670
+                    </a>
+                    <a href="https://wa.me/8801316487435" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-green-300 text-green-700 font-bold rounded-lg text-xs sm:text-sm shadow-sm hover:bg-green-50 transition-colors">
+                      <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654z"/></svg>
+                      01316487435
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="relative group">
+            <div class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-brand-primary text-white flex items-center justify-center font-bold text-sm sm:text-base shadow-md group-hover:scale-110 transition-transform">
+              ২
+            </div>
+            <div class="bg-orange-50/50 hover:bg-orange-50 border border-orange-100 rounded-2xl p-4 sm:p-5 transition-all">
+              <div class="flex items-start gap-3">
+                <div class="p-2 bg-brand-primary text-white rounded-xl shadow-sm flex-shrink-0 mt-1">
+                  <!-- Video Call SVG -->
+                  <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-bold text-gray-900 text-base sm:text-lg">ধাপ ২: ভিডিও কল কনফার্মেশন</h3>
+                  <p class="text-xs sm:text-sm text-gray-600 mt-1">
+                    WhatsApp-এ আপনার সঙ্গে সরাসরি একটি সংক্ষিপ্ত ভিডিও কলের মাধ্যমে আপনার প্রাথমিক পরিচয় এবং সশরীরে উপস্থিতি নিশ্চিত করা হবে।
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="relative group">
+            <div class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-brand-primary text-white flex items-center justify-center font-bold text-sm sm:text-base shadow-md group-hover:scale-110 transition-transform">
+              ৩
+            </div>
+            <div class="bg-orange-50/50 hover:bg-orange-50 border border-orange-100 rounded-2xl p-4 sm:p-5 transition-all">
+              <div class="flex items-start gap-3">
+                <div class="p-2 bg-brand-secondary text-white rounded-xl shadow-sm flex-shrink-0 mt-1">
+                  <!-- Camera & NID Verification SVG -->
+                  <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2zM9 10a2 2 0 100-4 2 2 0 000 4zm-4 8a6 6 0 0112 0H5z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-bold text-gray-900 text-base sm:text-lg">ধাপ ৩: Selfie ও NID Verification</h3>
+                  <p class="text-xs sm:text-sm text-gray-600 mt-1">
+                    ভিডিও কলের সময় প্রায় ৩০ সেকেন্ডের লাইভ Selfie যাচাই করা হবে এবং এটি আপনার জাতীয় পরিচয়পত্র (NID)-এর ছবির সঙ্গে মিলিয়ে দেখা হবে।
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4 -->
+          <div class="relative group">
+            <div class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-brand-primary text-white flex items-center justify-center font-bold text-sm sm:text-base shadow-md group-hover:scale-110 transition-transform">
+              ৪
+            </div>
+            <div class="bg-orange-50/50 hover:bg-orange-50 border border-orange-100 rounded-2xl p-4 sm:p-5 transition-all">
+              <div class="flex items-start gap-3">
+                <div class="p-2 bg-blue-600 text-white rounded-xl shadow-sm flex-shrink-0 mt-1">
+                  <!-- Email Code SVG -->
+                  <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-bold text-gray-900 text-base sm:text-lg">ধাপ ৪: Email Verification</h3>
+                  <p class="text-xs sm:text-sm text-gray-600 mt-1">
+                    আপনার নিবন্ধিত ইমেইল ঠিকানায় <span class="font-bold text-brand-primary underline">support@ghotimarket.com</span> থেকে একটি Verification Code পাঠানো হবে। ইমেইলে পাওয়া কোডটি WhatsApp-এ আমাদের এজেন্টকে প্রদান করতে হবে।
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 5 -->
+          <div class="relative group">
+            <div class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm sm:text-base shadow-md group-hover:scale-110 transition-transform">
+              ৫
+            </div>
+            <div class="bg-emerald-50/50 hover:bg-emerald-50 border border-emerald-200 rounded-2xl p-4 sm:p-5 transition-all">
+              <div class="flex items-start gap-3">
+                <div class="p-2 bg-emerald-500 text-white rounded-xl shadow-sm flex-shrink-0 mt-1">
+                  <!-- Verified Shield SVG -->
+                  <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-bold text-emerald-900 text-base sm:text-lg">ধাপ ৫: Account Verified</h3>
+                  <p class="text-xs sm:text-sm text-emerald-700 mt-1">
+                    সবগুলো ধাপ সফলভাবে যাচাই হওয়ার পর আমাদের ভেরিফিকেশন টিম আপনার সাপ্লায়ার একাউন্ট ফুললি Verified হিসেবে এক্টিভ করে দেবে।
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- IMPORTANT WARNING & PRIVACY NOTICE CARD -->
+      <div class="bg-gradient-to-r from-red-50 via-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-5 sm:p-6 mb-8">
+        <div class="flex items-start gap-4">
+          <div class="p-2.5 bg-red-500 text-white rounded-xl shadow-sm flex-shrink-0 mt-0.5">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0 3.75h.007v.008H12v-.008zM12 3s-8 3-8 9 8 9 8 9 8-3 8-9-8-9-8-9z"/>
+            </svg>
+          </div>
+          <div class="space-y-2 text-xs sm:text-sm text-gray-800">
+            <h4 class="font-bold text-gray-900 text-sm sm:text-base">গুরুত্বপূর্ণ নিরাপত্তা ও ব্যবহার নির্দেশিকা:</h4>
+            <p class="leading-relaxed">
+              আপনার অ্যাকাউন্ট সম্পূর্ণ Verified না হওয়া পর্যন্ত সব Supplier সুবিধা ব্যবহার করতে পারবেন না। আমাদের টিমের সঙ্গে যোগাযোগের সময় শুধুমাত্র উপরে উল্লেখ করা অফিশিয়াল নম্বর (01727003670, 01316487435) এবং ইমেইল (<span class="font-semibold text-brand-primary">support@ghotimarket.com</span>) ব্যবহার করুন।
+            </p>
+            <div class="pt-2 border-t border-orange-200/60 font-medium text-gray-700 flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span>পরিচয়পত্র ও ব্যক্তিগত তথ্য যাচাইয়ের ক্ষেত্রে সর্বোচ্চ গোপনীয়তা বজায় রাখা হয়। PAIKARI SELL টিম কখনো আপনার OTP, পাসওয়ার্ড বা লগইন কোড চাইবে না।</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM LOGIN ACTION BUTTON -->
+      <div class="pt-4 border-t border-gray-100 flex flex-col sm:flex-row justify-center items-center gap-4">
+        <a href="/login" id="loginBtn" class="w-full sm:w-auto min-w-[280px] px-8 py-4 hero-gradient text-white font-bold text-lg rounded-2xl shadow-btn-orange hover:shadow-orange-500/50 hover:opacity-95 transform active:scale-95 transition-all duration-200 flex items-center justify-center gap-3 group">
+          <span>লগইন করুন</span>
+          <svg class="w-6 h-6 stroke-current transform group-hover:translate-x-1 transition-transform" fill="none" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l3 3m0 0l-3 3m3-3H2.25"/>
+          </svg>
+        </a>
+      </div>
+
+    </main>
+
+    <!-- FOOTER COPYRIGHT & SUPPORT LINKS -->
+    <footer class="text-center text-xs text-gray-500 space-y-2 py-4">
+      <p>© 2026 <a href="https://paikarisell.ghotimarket.com" class="font-bold text-brand-primary hover:underline">PAIKARI SELL</a> (ghotimarket.com)। সর্বস্বত্ব সংরক্ষিত।</p>
+      <div class="flex justify-center items-center gap-4 text-gray-400">
+        <a href="mailto:support@ghotimarket.com" class="hover:text-brand-primary transition-colors">সহায়তা: support@ghotimarket.com</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ================= SECRET OWNER HIDDEN DOWNLOAD MODAL ================= -->
+  <div id="ownerModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-orange-200 relative transform scale-95 transition-transform duration-300">
+      
+      <!-- Close Button -->
+      <button id="closeOwnerModal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="p-3 bg-orange-100 text-brand-primary rounded-2xl">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+          </svg>
+        </div>
+        <div>
+          <span class="text-xs font-bold text-brand-primary uppercase tracking-wider">Owner Only Feature</span>
+          <h3 class="text-lg font-bold text-gray-900">High-Res Banner Export</h3>
+        </div>
+      </div>
+
+      <p class="text-xs sm:text-sm text-gray-600 mb-6">
+        সফল নিবন্ধনের এই কনফিমেশন পেজটি ব্যানার বা আর্টওয়ার্ক হিসেবে ডাউনলোড করতে সাইজ নির্বাচন করুন:
+      </p>
+
+      <!-- DOWNLOAD OPTIONS -->
+      <div class="space-y-4 mb-6">
+        <!-- LANDSCAPE BUTTON -->
+        <button id="downloadLandscape" class="w-full p-4 border-2 border-orange-200 hover:border-brand-primary rounded-2xl flex items-center justify-between group hover:bg-orange-50/50 transition-all text-left">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-8 border-2 border-brand-primary rounded bg-white flex items-center justify-center text-[10px] font-bold text-brand-primary">16:9</div>
+            <div>
+              <div class="font-bold text-gray-900 group-hover:text-brand-primary transition-colors">Landscape Mode</div>
+              <div class="text-xs text-gray-500">3840 × 2160 Pixels (Ultra HD)</div>
+            </div>
+          </div>
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-brand-primary transform group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+          </svg>
+        </button>
+
+        <!-- PORTRAIT BUTTON -->
+        <button id="downloadPortrait" class="w-full p-4 border-2 border-orange-200 hover:border-brand-primary rounded-2xl flex items-center justify-between group hover:bg-orange-50/50 transition-all text-left">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-12 border-2 border-brand-primary rounded bg-white flex items-center justify-center text-[10px] font-bold text-brand-primary">9:16</div>
+            <div>
+              <div class="font-bold text-gray-900 group-hover:text-brand-primary transition-colors">Portrait Mode</div>
+              <div class="text-xs text-gray-500">2160 × 3840 Pixels (Banner/Story)</div>
+            </div>
+          </div>
+          <svg class="w-5 h-5 text-gray-400 group-hover:text-brand-primary transform group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- RENDER STATUS FEEDBACK -->
+      <div id="renderStatus" class="hidden text-center text-xs font-semibold text-brand-primary py-2 animate-pulse">
+        ছবি তৈরি করা হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= FIREBASE V9+ MODULAR SCRIPT ================= -->
+  <script type="module">
+    // Import Firebase Modular SDK components
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Standard Firebase Config setup
+    const firebaseConfig = {
+  apiKey: "AIzaSyDCIRWmozT0XcEXuXtQ6RDiDo6vtT1T9mU",
+  authDomain: "paikarisell-ghotimarket.firebaseapp.com",
+  projectId: "paikarisell-ghotimarket",
+  storageBucket: "paikarisell-ghotimarket.firebasestorage.app",
+  messagingSenderId: "464086432830",
+  appId: "1:464086432830:web:a10fdd9884954e380e656f",
+  measurementId: "G-E3HR2F9TC5"
+};
+
+    // Initialize App & Services
+    let app, auth, db;
+    try {
+      app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      db = getFirestore(app);
+    } catch (err) {
+      console.warn("Firebase initialization notice:", err);
+    }
+
+    // List of Authorized Owner Emails for Secret Download
+    const AUTHORIZED_OWNERS = [
+      'nazrulislam887441234@gmail.com',
+      'support@ghotimarket.com'
+    ];
+
+    let currentUserEmail = null;
+
+    // UI Elements
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const toastContainer = document.getElementById('toastContainer');
+    const tripleTapZone = document.getElementById('tripleTapZone');
+    const ownerModal = document.getElementById('ownerModal');
+    const closeOwnerModal = document.getElementById('closeOwnerModal');
+    const downloadLandscape = document.getElementById('downloadLandscape');
+    const downloadPortrait = document.getElementById('downloadPortrait');
+    const renderStatus = document.getElementById('renderStatus');
+
+    // Helper: Toast Notifications
+    window.showToast = function(message, type = 'info') {
+      const toast = document.createElement('div');
+      const bgClass = type === 'error' ? 'bg-red-600' : type === 'success' ? 'bg-emerald-600' : 'bg-gray-900';
+      toast.className = `${bgClass} text-white px-5 py-3 rounded-2xl shadow-float text-xs sm:text-sm font-medium flex items-center gap-2 transform translate-y-[-10px] opacity-0 transition-all duration-300 pointer-events-auto`;
+      toast.innerHTML = `
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+        </svg>
+        <span>${message}</span>
+      `;
+      toastContainer.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-[-10px]', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-[-10px]');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    };
+
+    // Firebase Auth Verification Process
+    function initAuthVerification() {
+      if (!auth) {
+        // Fallback simulation if Firebase is waiting for production config
+        setTimeout(() => {
+          hideLoading();
+        }, 800);
+        return;
+      }
+
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          // Rule: If user is not logged in -> redirect to /login
+          window.location.href = '/login';
+          return;
+        }
+
+        currentUserEmail = user.email ? user.email.toLowerCase().trim() : null;
+
+        try {
+          // Rule: Check supplyers/{uid} document in Firestore
+          const supplierRef = doc(db, "supplyers", user.uid);
+          const supplierSnap = await getDoc(supplierRef);
+
+          if (!supplierSnap.exists()) {
+            // Rule: Document not found -> redirect to /signup1.html
+            window.location.href = '/signup1.html';
+            return;
+          }
+
+          // Document found -> show main content
+          hideLoading();
+        } catch (error) {
+          console.error("Firestore verification error:", error);
+          hideLoading();
+          showToast("নেটওয়ার্ক সমস্যা হয়েছে। অনুগ্রহ করে পেজ রিফ্রেশ করুন।", "error");
+        }
+      });
+    }
+
+    function hideLoading() {
+      if (loadingOverlay) {
+        loadingOverlay.classList.add('opacity-0');
+        setTimeout(() => {
+          loadingOverlay.classList.add('hidden');
+        }, 500);
+      }
+    }
+
+    // ================= 3-TAP SECRET OWNER FEATURE =================
+    let tapCount = 0;
+    let tapTimer = null;
+
+    if (tripleTapZone) {
+      tripleTapZone.addEventListener('click', (e) => {
+        tapCount++;
+        clearTimeout(tapTimer);
+
+        tapTimer = setTimeout(() => {
+          if (tapCount >= 3) {
+            handleSecretOwnerTrigger();
+          }
+          tapCount = 0;
+        }, 400);
+      });
+    }
+
+    function handleSecretOwnerTrigger() {
+      // Validate owner identity via logged-in user email
+      const isOwner = currentUserEmail && AUTHORIZED_OWNERS.includes(currentUserEmail);
+
+      // Also allow test environment bypass if explicitly needed locally
+      if (isOwner || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        openOwnerModal();
+      } else {
+        // Silent behavior or standard feedback for non-owners
+        console.log("Unauthorized owner attempt.");
+      }
+    }
+
+    function openOwnerModal() {
+      ownerModal.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        ownerModal.classList.remove('opacity-0');
+        ownerModal.querySelector('div').classList.remove('scale-95');
+      });
+    }
+
+    function hideOwnerModal() {
+      ownerModal.classList.add('opacity-0');
+      ownerModal.querySelector('div').classList.add('scale-95');
+      setTimeout(() => {
+        ownerModal.classList.add('hidden');
+        renderStatus.classList.add('hidden');
+      }, 300);
+    }
+
+    if (closeOwnerModal) {
+      closeOwnerModal.addEventListener('click', hideOwnerModal);
+    }
+
+    // Canvas Image Export Generation using html2canvas
+    async function exportBanner(mode = 'landscape') {
+      const targetElement = document.getElementById('exportableArea');
+      if (!targetElement) return;
+
+      renderStatus.classList.remove('hidden');
+
+      try {
+        // Set canvas export parameters based on aspect ratio request
+        const isLandscape = mode === 'landscape';
+        const targetWidth = isLandscape ? 3840 : 2160;
+        const targetHeight = isLandscape ? 2160 : 3840;
+
+        const canvas = await html2canvas(targetElement, {
+          scale: 3, // High DPI resolution rendering
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#FFF8F4',
+          logging: false
+        });
+
+        // Create canvas of requested resolution and paint high quality output
+        const outputCanvas = document.createElement('canvas');
+        outputCanvas.width = targetWidth;
+        outputCanvas.height = targetHeight;
+        const ctx = outputCanvas.getContext('2d');
+
+        // Draw background
+        ctx.fillStyle = '#FFF8F4';
+        ctx.fillRect(0, 0, targetWidth, targetHeight);
+
+        // Center content scaled inside canvas
+        const scale = Math.min(targetWidth / canvas.width, targetHeight / canvas.height) * 0.9;
+        const x = (targetWidth - canvas.width * scale) / 2;
+        const y = (targetHeight - canvas.height * scale) / 2;
+
+        ctx.drawImage(canvas, x, y, canvas.width * scale, canvas.height * scale);
+
+        // Export & Trigger Download
+        const imageURI = outputCanvas.toDataURL('image/png', 1.0);
+        const link = document.createElement('a');
+        link.download = `PAIKARI_SELL_Verification_${mode.toUpperCase()}_4K.png`;
+        link.href = imageURI;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showToast("হাই-রেজোলিউশন ইমেজ সফলভাবে ডাউনলোড হয়েছে!", "success");
+        hideOwnerModal();
+      } catch (err) {
+        console.error("Canvas Export Failure:", err);
+        showToast("ইমেজ এক্সপোর্ট করতে সমস্যা হয়েছে", "error");
+      } finally {
+        renderStatus.classList.add('hidden');
+      }
+    }
+
+    if (downloadLandscape) {
+      downloadLandscape.addEventListener('click', () => exportBanner('landscape'));
+    }
+    if (downloadPortrait) {
+      downloadPortrait.addEventListener('click', () => exportBanner('portrait'));
+    }
+
+    // Initialize Firebase check on load
+    window.addEventListener('DOMContentLoaded', initAuthVerification);
+  </script>
+</body>
+</html>
