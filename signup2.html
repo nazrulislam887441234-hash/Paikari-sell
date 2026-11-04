@@ -959,12 +959,11 @@
         );
 
 
-              // ==========================================
+             // ==========================================
         // TELEGRAM WORKER NOTIFICATION
         // ==========================================
         try {
-          // localStorage clear করার আগেই সব ডাটা নিয়ে নিচ্ছি
-                    const notifyPayload = {
+          const notifyPayload = {
             uid: currentUser.uid,
             name: localStorage.getItem('name'),
             email: currentUser.email,
@@ -977,23 +976,21 @@
 
           console.log('Sending to Telegram:', notifyPayload);
 
-          // await দিবো না, যাতে ইউজারকে আটকে না রাখে - Fire and forget
-          fetch('https://telegram-notification.ghotimarket.com/notify', {
+          await fetch('https://telegram-notification.ghotimarket.com/notify', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify(notifyPayload)
-          })
-          .then(res => res.json())
-          .then(data => console.log('Telegram Sent:', data))
-          .catch(err => console.error('Telegram Error:', err));
+          });
+
+          console.log('Telegram Sent Success');
 
         } catch (notificationError) {
           console.error('Telegram Notification Error:', notificationError);
+          // Notification fail হলেও registration আটকাবে না
         }
-
         // ==========================================
         // COMPLETE REGISTRATION
         // ==========================================
