@@ -157,18 +157,19 @@
         /* ==========================================
            3. AUTOMATIC BANNER SLIDER
            ========================================== */
-        .banner-container {
-            position: relative;
-            width: 100%;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
-            aspect-ratio: 16 / 7;
-        }
-
-        .banner-slide {
+    .banner-container {
+  position: relative;
+  width: 100%;
+  max-width: 981px;
+  aspect-ratio: 981 / 383;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #FFE5D9;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.08);
+}
+      .banner-slide {
             width: 100%;
             height: 100%;
             display: none;
@@ -718,7 +719,7 @@
                 <span class="nav-card-desc">অ্যাকোউন্টে টাকা যোগ করুন</span>
             </a>
 
-            <a href="/transactions" class="nav-card">
+            <a href="/transaction" class="nav-card">
                 <div class="nav-icon-wrapper">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                 </div>
