@@ -1,826 +1,870 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAIKARI SELL — Supplier Dashboard</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" href="https://paikarisell.ghotimarket.com/photo/favicon.png" type="image/png">
-    
-    <!-- Google Fonts: Hind Siliguri -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supplier Dashboard - PAIKARI SELL</title>
+  
+  <!-- Favicon & Fonts -->
+  <link rel="shortcut icon" href="https://paikarisell.ghotimarket.com/photo/favicon.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <style>
-        /* ==========================================
-           1. DESIGN SYSTEM & BASE STYLES
-           ========================================== */
-        :root {
-            --primary: #FF6B35;
-            --primary-dark: #FF6A00;
-            --accent: #FFA500;
-            --bg-color: #FFF8F4;
-            --card-bg: #FFFFFF;
-            --text-main: #171717;
-            --text-muted: #666666;
-            --border-color: #FFE5D9;
-            --verified-blue: #1DA1F2;
-            --active-green: #10B981;
-            --inactive-red: #EF4444;
-            --shadow-sm: 0 2px 8px rgba(255, 107, 53, 0.08);
-            --shadow-md: 0 6px 16px rgba(255, 107, 53, 0.12);
-            --radius-md: 16px;
-            --radius-lg: 20px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+  <style>
+    /* ==========================================================================
+       1. DESIGN SYSTEM & CSS VARIABLES
+       ========================================================================== */
+    :root {
+      --primary: #FF6B35;
+      --secondary: #FF6A00;
+      --accent: #FFA500;
+      --bg: #F7F7F7;
+      --card-bg: #FFFFFF;
+      --text: #171717;
+      --text-muted: #666666;
+      --border: #E5E7EB;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-full: 9999px;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.03);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 25px rgba(255, 107, 53, 0.15);
+      --font-family: 'Hind Siliguri', sans-serif;
+      --max-width: 1080px;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Hind Siliguri', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
 
-        /* App Container Wrapper (Mobile First Max Width) */
-        .app-container {
-            width: 100%;
-            max-width: 1024px;
-            margin: 0 auto;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+    .app-container {
+      width: 100%;
+      max-width: var(--max-width);
+      padding: 12px 16px 32px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-        /* Card Utility */
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-        }
+    /* SVG Utilities */
+    .icon {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
 
-        .card:hover {
-            box-shadow: var(--shadow-md);
-        }
+    /* ==========================================================================
+       2. SKELETON LOADER & ERROR STATES
+       ========================================================================== */
+    .skeleton-loader {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: fadeIn 0.3s ease;
+    }
 
-        /* ==========================================
-           2. HEADER SECTION
-           ========================================== */
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 16px;
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-sm);
-        }
+    .skeleton-box {
+      background: linear-gradient(90deg, #eeeeee 25%, #dddddd 50%, #eeeeee 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+      border-radius: var(--radius-md);
+    }
 
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
 
-        .header-logo {
-            height: 42px;
-            width: auto;
-            object-fit: contain;
-        }
+    .error-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 32px 20px;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-top: 40px;
+    }
 
-        .supplier-info {
-            display: flex;
-            flex-direction: column;
-        }
+    .error-card h3 { color: #DC2626; }
+    .btn-retry {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
 
-        .supplier-title {
-            font-size: 11px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
+    /* ==========================================================================
+       3. HEADER SECTION
+       ========================================================================== */
+    .header {
+      background: var(--card-bg);
+      padding: 12px 16px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0,0,0,0.04);
+      position: sticky;
+      top: 10px;
+      z-index: 90;
+    }
 
-        .supplier-name-container {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+    .header-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-        .supplier-name {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
+    .avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: var(--shadow-sm);
+    }
 
-        .verified-badge {
-            display: inline-flex;
-            align-items: center;
-            color: var(--verified-blue);
-        }
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
 
-        .btn-support {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #ffffff;
-            border: none;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            box-shadow: 0 4px 10px rgba(255, 107, 53, 0.3);
-            transition: var(--transition);
-        }
+    .name-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-        .btn-support:active {
-            transform: scale(0.95);
-        }
+    .user-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
 
-        /* ==========================================
-           3. AUTOMATIC BANNER SLIDER
-           ========================================== */
+    .verified-badge {
+      width: 18px;
+      height: 18px;
+      color: #2563EB;
+      fill: #2563EB;
+    }
+
+    .user-uid {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-support {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #FFF5F0;
+      color: var(--primary);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: var(--radius-full);
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 107, 53, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    .btn-support:active { transform: scale(0.96); }
+
+    /* ==========================================================================
+       4. AUTO SLIDING BANNER SYSTEM
+       ========================================================================== */
     .banner-container {
-  position: relative;
-  width: 100%;
-  max-width: 981px;
-  aspect-ratio: 981 / 383;
-  margin: 0 auto;
-  border-radius: 16px;
-  overflow: hidden;
-  background: #fff;
-  border: 1px solid #FFE5D9;
-  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.08);
-}
-      .banner-slide {
-            width: 100%;
-            height: 100%;
-            display: none;
-            cursor: pointer;
-            text-decoration: none;
-        }
+      position: relative;
+      width: 100%;
+      aspect-ratio: 981 / 363;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: #E5E7EB;
+      box-shadow: var(--shadow-sm);
+    }
 
-        .banner-slide.active {
-            display: block;
-        }
+    .banner-slider {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.4s ease-out;
+    }
 
-        .banner-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    .banner-slide {
+      min-width: 100%;
+      height: 100%;
+      position: relative;
+      cursor: pointer;
+    }
 
-        .banner-indicators {
-            position: absolute;
-            bottom: 8px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 6px;
-            z-index: 10;
-        }
+    .banner-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-        .indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            transition: var(--transition);
-        }
+    .banner-indicators {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
 
-        .indicator.active {
-            width: 20px;
-            border-radius: 10px;
-            background: var(--primary);
-        }
+    .indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.5);
+      transition: all 0.3s ease;
+    }
 
-        /* Skeleton & Error Placeholder */
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: skeleton-loading 1.5s infinite;
-            width: 100%;
-            height: 100%;
-        }
+    .indicator.active {
+      background: #FFFFFF;
+      width: 20px;
+    }
 
-        @keyframes skeleton-loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
+    /* ==========================================================================
+       5. BALANCE CARD
+       ========================================================================== */
+    .balance-card {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+      color: #FFFFFF;
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
 
-        .banner-empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: var(--text-muted);
-            font-size: 14px;
-            gap: 8px;
-        }
+    .balance-card::before {
+      content: "";
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 120px;
+      height: 120px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      pointer-events: none;
+    }
 
-        /* ==========================================
-           4. PRODUCT STATISTICS (2 CARDS ROW)
-           ========================================== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            width: 100%;
-        }
+    .balance-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
 
-        .stat-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-md);
-            padding: 14px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            box-shadow: var(--shadow-sm);
-            position: relative;
-            overflow: hidden;
-        }
+    .balance-body {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-        .stat-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--primary);
-        }
+    .balance-amount {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+    }
 
-        .stat-card.active-stat::after {
-            background: var(--active-green);
-        }
+    .btn-toggle-balance {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: background 0.2s ease;
+    }
 
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .btn-toggle-balance:hover { background: rgba(255,255,255,0.3); }
 
-        .stat-title {
-            font-size: 13px;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
+    /* ==========================================================================
+       6. PRODUCT STATISTICS CARDS
+       ========================================================================== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
 
-        .stat-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            background: #FFF0EB;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary);
-        }
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
 
-        .stat-icon.active-icon {
-            background: #ECFDF5;
-            color: var(--active-green);
-        }
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background: #FFF5F0;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .stat-number {
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--text-main);
-            line-height: 1.2;
-        }
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+    }
 
-        .stat-desc {
-            font-size: 10.5px;
-            color: var(--text-muted);
-            line-height: 1.3;
-        }
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
 
-        /* ==========================================
-           5. MAIN DASHBOARD NAVIGATION CARDS
-           ========================================== */
-        .section-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: -4px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
 
-        .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
+    /* ==========================================================================
+       7. MAIN ACTION CARDS
+       ========================================================================== */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
 
-        @media (min-width: 640px) {
-            .nav-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
+    @media (min-width: 600px) {
+      .actions-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 900px) {
+      .actions-grid { grid-template-columns: repeat(3, 1fr); }
+    }
 
-        .nav-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-md);
-            padding: 16px 12px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--text-main);
-            box-shadow: var(--shadow-sm);
-            cursor: pointer;
-            transition: var(--transition);
-        }
+    .action-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
 
-        .nav-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--primary);
-            box-shadow: var(--shadow-md);
-        }
+    .action-card:active {
+      transform: scale(0.97);
+    }
 
-        .nav-card:active {
-            transform: scale(0.97);
-        }
+    @media (min-width: 768px) {
+      .action-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        border-color: rgba(255, 107, 53, 0.3);
+      }
+    }
 
-        .nav-icon-wrapper {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #FFF0EB, #FFE5D9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary);
-            transition: var(--transition);
-        }
+    .action-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-full);
+      background: #FFF5F0;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .nav-card:hover .nav-icon-wrapper {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #ffffff;
-        }
+    .action-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+    }
 
-        .nav-card-title {
-            font-size: 14px;
-            font-weight: 700;
-        }
+    /* ==========================================================================
+       8. ACCOUNT STATUS SECTION
+       ========================================================================== */
+    .status-section {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-        .nav-card-desc {
-            font-size: 11px;
-            color: var(--text-muted);
-            line-height: 1.2;
-        }
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border);
+    }
 
-        /* ==========================================
-           6. ACCOUNT STATUS SECTION
-           ========================================== */
-        .status-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+    }
 
-        .status-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            border-radius: 12px;
-            background: #FAFAFA;
-            border: 1px solid #F0F0F0;
-        }
+    .status-label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
 
-        .status-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    .status-value {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
 
-        .status-badge-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .status-active { color: #16A34A; }
+    .status-inactive { color: #DC2626; }
+    .status-verified { color: #2563EB; }
+    .status-pending { color: #D97706; }
 
-        .status-badge-icon.active { background: #ECFDF5; color: var(--active-green); }
-        .status-badge-icon.inactive { background: #FEF2F2; color: var(--inactive-red); }
-        .status-badge-icon.verified { background: #E0F2FE; color: var(--verified-blue); }
+    /* ==========================================================================
+       9. MORE OPTIONS MODAL & BOTTOM SHEET
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(2px);
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
 
-        .status-info {
-            display: flex;
-            flex-direction: column;
-        }
+    @media (min-width: 600px) {
+      .modal-overlay {
+        align-items: center;
+      }
+    }
 
-        .status-label {
-            font-size: 14px;
-            font-weight: 700;
-        }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
 
-        .status-subtext {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
+    .modal-content {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 480px;
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+      padding: 20px;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
 
-        /* ==========================================
-           7. MORE OPTIONS BOTTOM SHEET / MODAL
-           ========================================== */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(4px);
-            z-index: 100;
-            display: none;
-            justify-content: center;
-            align-items: flex-end;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
+    @media (min-width: 600px) {
+      .modal-content {
+        border-radius: var(--radius-lg);
+        transform: translateY(20px);
+      }
+    }
 
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
+    .modal-overlay.active .modal-content {
+      transform: translateY(0);
+    }
 
-        .modal-sheet {
-            width: 100%;
-            max-width: 600px;
-            background: var(--card-bg);
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            padding: 20px;
-            box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.15);
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            max-height: 80vh;
-            overflow-y: auto;
-        }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
 
-        .modal-overlay.active .modal-sheet {
-            transform: translateY(0);
-        }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border-color);
-        }
+    .btn-close-modal {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
 
-        .modal-title {
-            font-size: 16px;
-            font-weight: 700;
-        }
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-        .modal-close {
-            background: #F3F4F6;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-        }
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      color: var(--text);
+      background: #FAFAFA;
+      border: 1px solid rgba(0,0,0,0.03);
+      font-weight: 500;
+      font-size: 14px;
+      transition: background 0.2s ease;
+    }
 
-        .modal-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
+    .option-item:active {
+      background: #FFF5F0;
+      color: var(--primary);
+    }
 
-        .modal-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px;
-            background: #FFF8F4;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            text-decoration: none;
-            color: var(--text-main);
-            font-size: 13px;
-            font-weight: 600;
-            transition: var(--transition);
-        }
+    .option-item .icon {
+      color: var(--primary);
+    }
 
-        .modal-option:hover {
-            background: var(--primary);
-            color: #ffffff;
-        }
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        /* ==========================================
-           8. ERROR & RETRY SCREEN
-           ========================================== */
-        .error-overlay {
-            position: fixed;
-            inset: 0;
-            background: var(--bg-color);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            text-align: center;
-            z-index: 200;
-        }
-
-        .error-overlay.active {
-            display: flex;
-        }
-
-        .btn-retry {
-            margin-top: 16px;
-            padding: 10px 24px;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            border-radius: 20px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        /* Global Loader */
-        .loader-overlay {
-            position: fixed;
-            inset: 0;
-            background: var(--bg-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 300;
-        }
-
-        .spinner {
-            width: 44px;
-            height: 44px;
-            border: 4px solid var(--border-color);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+    .animate-in {
+      animation: fadeIn 0.4s ease forwards;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Full Screen Page Initial Loader -->
-    <div id="pageLoader" class="loader-overlay">
-        <div class="spinner"></div>
-        <p style="margin-top: 12px; color: var(--text-muted); font-size: 14px;">অপেক্ষা করুন...</p>
+  <div class="app-container">
+
+    <!-- SKELETON LOADER STATE -->
+    <div id="skeleton-state" class="skeleton-loader">
+      <div class="skeleton-box" style="height: 70px;"></div>
+      <div class="skeleton-box" style="aspect-ratio: 981 / 363; width: 100%;"></div>
+      <div class="skeleton-box" style="height: 110px;"></div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="skeleton-box" style="height: 70px;"></div>
+        <div class="skeleton-box" style="height: 70px;"></div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div class="skeleton-box" style="height: 90px;"></div>
+        <div class="skeleton-box" style="height: 90px;"></div>
+        <div class="skeleton-box" style="height: 90px;"></div>
+        <div class="skeleton-box" style="height: 90px;"></div>
+      </div>
     </div>
 
-    <!-- Firebase / Network Error View -->
-    <div id="errorOverlay" class="error-overlay">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-        </svg>
-        <h3 style="margin-top: 12px;" id="errorMessage">সংযোগের সমস্যা দেখা দিয়েছে!</h3>
-        <button class="btn-retry" onclick="location.reload()">পুনরায় চেষ্টা করুন</button>
+    <!-- ERROR STATE -->
+    <div id="error-state" class="error-card" style="display: none;">
+      <svg class="icon" style="width: 48px; height: 48px; color: #DC2626;" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <h3 id="error-title">নেটওয়ার্ক এরর</h3>
+      <p id="error-message" style="font-size: 14px; color: var(--text-muted);">তথ্য লোড করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।</p>
+      <button class="btn-retry" onclick="window.location.reload()">পুনরায় চেষ্টা করুন</button>
     </div>
 
-    <!-- MAIN APP CONTAINER -->
-    <div class="app-container" id="mainDashboard" style="display: none;">
+    <!-- MAIN DASHBOARD CONTENT -->
+    <div id="dashboard-content" style="display: none;" class="animate-in">
 
-        <!-- 3. Professional Dashboard Header -->
-        <header class="app-header">
-            <div class="header-brand">
-                <img src="https://paikarisell.ghotimarket.com/photo/logo.png" alt="PAIKARI SELL" class="header-logo">
-                <div class="supplier-info">
-                    <span class="supplier-title">সাপ্লায়ার ড্যাশবোর্ড</span>
-                    <div class="supplier-name-container">
-                        <span class="supplier-name" id="supplierName">...</span>
-                        <span id="verifiedBadge" class="verified-badge" style="display: none;">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-                            </svg>
-                        </span>
-                    </div>
-                </div>
+      <!-- HEADER -->
+      <header class="header">
+        <div class="header-user">
+          <div class="avatar" id="user-avatar">P</div>
+          <div class="user-info">
+            <div class="name-wrapper">
+              <span class="user-name" id="user-name">---</span>
+              <!-- Blue Verified SVG -->
+              <svg id="header-verified-badge" class="verified-badge" style="display: none;" viewBox="0 0 24 24">
+                <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.79-3.99-4-3.99-.495 0-.965.084-1.4.238C14.55 2.475 13.18 1.6 11.6 1.6c-1.58 0-2.95.875-3.6 2.148-.435-.154-.905-.238-1.4-.238-2.21 0-3.99 1.79-3.99 4 0 .495.084.965.238 1.4C1.575 9.55.7 10.92.7 12.5c0 1.58.875 2.95 2.148 3.6-.154.435-.238.905-.238 1.4 0 2.21 1.79 3.99 4 3.99.495 0 .965-.084 1.4-.238 1.35 1.273 2.72 2.148 4.3 2.148 1.58 0 2.95-.875 3.6-2.148.435.154.905.238 1.4.238 2.21 0 3.99-1.79 3.99-4 0-.495-.084-.965-.238-1.4 1.273-.65 2.148-2.02 2.148-3.6zm-12.29 4.21L5.7 12.2l1.41-1.41 3.1 3.1 7.07-7.07 1.41 1.41-8.48 8.48z"/>
+              </svg>
             </div>
-            <a href="/contact" class="btn-support">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
-                    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
-                </svg>
-                <span>সাপোর্ট</span>
-            </a>
-        </header>
-
-        <!-- 4. Automatic Banner Slider -->
-        <section class="banner-container" id="bannerContainer">
-            <div class="skeleton" id="bannerSkeleton"></div>
-            <div id="bannerSlidesWrapper" style="width: 100%; height: 100%;"></div>
-            <div class="banner-indicators" id="bannerIndicators"></div>
-        </section>
-
-        <!-- 5 & 6. Product Statistics Cards with Counter -->
-        <section class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-title">মোট পণ্য</span>
-                    <div class="stat-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                        </svg>
-                    </div>
-                </div>
-                <div class="stat-number" id="statTotalProduct">০</div>
-                <span class="stat-desc">আপনার আপলোড করা মোট পণ্যের সংখ্যা</span>
-            </div>
-
-            <div class="stat-card active-stat">
-                <div class="stat-header">
-                    <span class="stat-title">সক্রিয় পণ্য</span>
-                    <div class="stat-icon active-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                        </svg>
-                    </div>
-                </div>
-                <div class="stat-number" id="statActiveProduct">০</div>
-                <span class="stat-desc">বর্তমানে রিসেলারদের জন্য সক্রিয় পণ্য</span>
-            </div>
-        </section>
-
-        <!-- 7. Main Navigation Section -->
-        <h2 class="section-title">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7"></rect>
-                <rect x="14" y="3" width="7" height="7"></rect>
-                <rect x="14" y="14" width="7" height="7"></rect>
-                <rect x="3" y="14" width="7" height="7"></rect>
-            </svg>
-            আপনার ব্যবসা পরিচালনা করুন
-        </h2>
-
-        <section class="nav-grid">
-            <a href="/all-product" class="nav-card">
-                <div class="nav-icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                </div>
-                <span class="nav-card-title">সকল পণ্য</span>
-                <span class="nav-card-desc">আপনার সব পণ্য দেখুন</span>
-            </a>
-
-            <a href="/orders" class="nav-card">
-                <div class="nav-icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                </div>
-                <span class="nav-card-title">অর্ডার</span>
-                <span class="nav-card-desc">আপনার পণ্যের অর্ডার দেখুন</span>
-            </a>
-
-            <a href="/add-balance" class="nav-card">
-                <div class="nav-icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-                </div>
-                <span class="nav-card-title">ব্যালেন্স যুক্ত করুন</span>
-                <span class="nav-card-desc">অ্যাকোউন্টে টাকা যোগ করুন</span>
-            </a>
-
-            <a href="/transaction" class="nav-card">
-                <div class="nav-icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                </div>
-                <span class="nav-card-title">লেনদেনের ইতিহাস</span>
-                <span class="nav-card-desc">আপনার সব লেনদেন দেখুন</span>
-            </a>
-
-            <a href="/product-upload" class="nav-card">
-                <div class="nav-icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                </div>
-                <span class="nav-card-title">পণ্য আপলোড</span>
-                <span class="nav-card-desc">নতুন পাইকারি পণ্য যুক্ত করুন</span>
-            </a>
-
-            <div class="nav-card" id="btnMoreOptions">
-                <div class="nav-icon-wrapper">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                </div>
-                <span class="nav-card-title">আরও অপশন</span>
-                <span class="nav-card-desc">অন্যান্য সুবিধা ও সেটিংস</span>
-            </div>
-        </section>
-
-        <!-- 9. Account Status Section -->
-        <h2 class="section-title">অ্যাকাউন্টের অবস্থা</h2>
-        <section class="card status-container">
-            <!-- Account Active Status -->
-            <div class="status-item">
-                <div class="status-left">
-                    <div class="status-badge-icon" id="iconAccountActive">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </div>
-                    <div class="status-info">
-                        <span class="status-label" id="labelAccountActive">অ্যাকাউন্ট স্থিতি</span>
-                        <span class="status-subtext" id="textAccountActive">যাচাই করা হচ্ছে...</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Account Verification Status -->
-            <div class="status-item">
-                <div class="status-left">
-                    <div class="status-badge-icon" id="iconAccountVerified">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                    </div>
-                    <div class="status-info">
-                        <span class="status-label" id="labelAccountVerified">ভেরিফিকেশন স্ট্যাটাস</span>
-                        <span class="status-subtext" id="textAccountVerified">যাচাই করা হচ্ছে...</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </div>
-
-    <!-- 8. More Options Bottom Sheet Modal -->
-    <div class="modal-overlay" id="moreOptionsModal">
-        <div class="modal-sheet">
-            <div class="modal-header">
-                <span class="modal-title">অন্যান্য সুবিধা</span>
-                <button class="modal-close" id="btnCloseModal">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-            <div class="modal-grid">
-                <a href="/contact" class="modal-option">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                    <span>যোগাযোগ</span>
-                </a>
-                <a href="/subscription" class="modal-option">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
-                    <span>সাবস্ক্রিপশন</span>
-                </a>
-                <a href="/change-password" class="modal-option">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                    <span>পাসওয়ার্ড পরিবর্তন</span>
-                </a>
-                <a href="/terms" class="modal-option">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                    <span>টার্মস</span>
-                </a>
-                <a href="/privacy-policy" class="modal-option">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                    <span>প্রাইভেসি পলিসি</span>
-                </a>
-                <a href="/tips" class="modal-option">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                    <span>টিপস</span>
-                </a>
-            </div>
+            <span class="user-uid" id="user-uid">ID: ---</span>
+          </div>
         </div>
-    </div>
+        <div class="header-actions">
+          <a href="/contact" class="btn-support">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>সাপোর্ট</span>
+          </a>
+        </div>
+      </header>
 
-    <!-- ==========================================
-       JAVASCRIPT: FIREBASE INTEGRATION & LOGIC
-       ========================================== -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      <!-- AUTO SLIDING BANNER -->
+      <section class="banner-container" id="banner-container">
+        <div class="banner-slider" id="banner-slider"></div>
+        <div class="banner-indicators" id="banner-indicators"></div>
+      </section>
+
+      <!-- BALANCE CARD -->
+      <section class="balance-card">
+        <div class="balance-header">
+          <svg class="icon" viewBox="0 0 24 24">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <line x1="2" y1="10" x2="22" y2="10"></line>
+          </svg>
+          <span>বর্তমান ব্যালেন্স</span>
+        </div>
+        <div class="balance-body">
+          <div class="balance-amount" id="balance-amount">৳ ••••••</div>
+          <button class="btn-toggle-balance" id="btn-toggle-balance" onclick="toggleBalance()">
+            <!-- Eye SVG -->
+            <svg id="eye-icon" class="icon" style="width: 16px; height: 16px;" viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span id="balance-toggle-text">ব্যালেন্স দেখুন</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- PRODUCT STATISTICS CARDS -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-total-products">0</span>
+            <span class="stat-label">মোট পণ্য</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #E0F2FE; color: #0284C7;">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value" id="stat-active-products">0</span>
+            <span class="stat-label">অ্যাক্টিভ পণ্য</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- MAIN ACTION CARDS -->
+      <section class="actions-grid">
+        <a href="/all-product" class="action-card">
+          <div class="action-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </div>
+          <span class="action-title">All Product</span>
+        </a>
+
+        <a href="/orders" class="action-card">
+          <div class="action-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+          </div>
+          <span class="action-title">Orders</span>
+        </a>
+
+        <a href="/add-balance" class="action-card">
+          <div class="action-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16"></line>
+              <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+          </div>
+          <span class="action-title">Add Balance</span>
+        </a>
+
+        <a href="/transactions" class="action-card">
+          <div class="action-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <span class="action-title">Transaction History</span>
+        </a>
+
+        <a href="/product-upload" class="action-card">
+          <div class="action-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </div>
+          <span class="action-title">Product Upload</span>
+        </a>
+
+        <div class="action-card" onclick="openMoreModal()">
+          <div class="action-icon">
+            <svg class="icon" viewBox="0 0 24 24">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+          </div>
+          <span class="action-title">More Options</span>
+        </div>
+      </section>
+
+      <!-- ACCOUNT STATUS SECTION -->
+      <section class="status-section">
+        <div class="section-title">আপনার অ্যাকাউন্টের অবস্থা</div>
+        
+        <div class="status-row">
+          <span class="status-label">Account Status</span>
+          <div class="status-value" id="account-status-value">
+            <!-- Dynamic Content -->
+          </div>
+        </div>
+
+        <div class="status-row">
+          <span class="status-label">Verification Status</span>
+          <div class="status-value" id="verification-status-value">
+            <!-- Dynamic Content -->
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- MORE OPTIONS MODAL / BOTTOM SHEET -->
+  <div class="modal-overlay" id="more-modal" onclick="closeMoreModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <span class="modal-title">আরও অপশন</span>
+        <button class="btn-close-modal" onclick="closeMoreModal()">
+          <svg class="icon" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="options-list">
+        <a href="/contact" class="option-item">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"></path><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path></svg>
+          <span>যোগাযোগ</span>
+        </a>
+        <a href="/subscriptions" class="option-item">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+          <span>সাবস্ক্রিপশন</span>
+        </a>
+        <a href="/change-password" class="option-item">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <span>পাসওয়ার্ড পরিবর্তন</span>
+        </a>
+        <a href="/terms" class="option-item">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          <span>টার্মস</span>
+        </a>
+        <a href="/privacy-policy" class="option-item">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span>প্রাইভেসি পলিসি</span>
+        </a>
+        <a href="/tips" class="option-item">
+          <svg class="icon" viewBox="0 0 24 24"><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path></svg>
+          <span>টিপস</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIREBASE MODULAR SDK & SCRIPT -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDCIRWmozT0XcEXuXtQ6RDiDo6vtT1T9mU",
@@ -832,208 +876,276 @@ const firebaseConfig = {
   measurementId: "G-E3HR2F9TC5"
 };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        // Utility: Convert English Numbers to Bengali Numbers
-        function toBengaliNumber(num) {
-            const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-            return num.toString().replace(/\d/g, digit => bengaliDigits[digit]);
+    // Global App State
+    let rawBalance = 0;
+    let isBalanceVisible = false;
+    let currentBannerIndex = 0;
+    let bannerInterval = null;
+
+    // Elements
+    const skeletonState = document.getElementById('skeleton-state');
+    const errorState = document.getElementById('error-state');
+    const dashboardContent = document.getElementById('dashboard-content');
+
+    /* ==========================================================================
+       AUTHENTICATION & DATA FETCHING
+       ========================================================================== */
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = '/login';
+        return;
+      }
+
+      try {
+        // Fetch Supplier Doc
+        const supplierRef = doc(db, "supplyers", user.uid);
+        const supplierSnap = await getDoc(supplierRef);
+
+        if (!supplierSnap.exists()) {
+          window.location.href = '/signup1';
+          return;
         }
 
-        // Animated Counter Logic
-        function animateCounter(elementId, targetVal) {
-            const el = document.getElementById(elementId);
-            const target = parseInt(targetVal) || 0;
-            if (target <= 0) {
-                el.textContent = '০';
-                return;
-            }
-            let current = 0;
-            const duration = 1000;
-            const stepTime = Math.max(Math.floor(duration / target), 30);
-            
-            const timer = setInterval(() => {
-                current += Math.ceil(target / 20);
-                if (current >= target) {
-                    current = target;
-                    clearInterval(timer);
-                }
-                el.textContent = toBengaliNumber(current);
-            }, stepTime);
+        const supplierData = supplierSnap.data();
+
+        // Fetch Banners
+        const bannersSnap = await getDocs(collection(db, "banners"));
+        const banners = [];
+        bannersSnap.forEach(bDoc => banners.push(bDoc.data()));
+
+        // Populate Dashboard UI
+        renderSupplierInfo(supplierData, user.uid);
+        renderAccountStatus(supplierData);
+        initBanners(banners);
+
+        // Hide Skeleton Loader & Render Content
+        skeletonState.style.display = 'none';
+        dashboardContent.style.display = 'flex';
+
+        // Trigger Counter Animations
+        animateCounter('stat-total-products', supplierData.product || 0);
+        animateCounter('stat-active-products', supplierData.activeProduct || 0);
+
+      } catch (err) {
+        console.error("Firebase Error:", err);
+        skeletonState.style.display = 'none';
+        showError("ডেটা লোড করতে ব্যর্থ হয়েছে", "ইন্টারনেট কানেকশন বা পারমিশন জনিত সমস্যা। অনুগ্রহ করে আবার চেষ্টা করুন।");
+      }
+    });
+
+    /* ==========================================================================
+       RENDER USER INFO & STATUS
+       ========================================================================== */
+    function renderSupplierInfo(data, uid) {
+      const name = data.name || "সাপ্লায়ার";
+      document.getElementById('user-name').innerText = name;
+      document.getElementById('user-avatar').innerText = name.charAt(0).toUpperCase();
+      document.getElementById('user-uid').innerText = `ID: ${uid.substring(0, 8)}...`;
+
+      rawBalance = data.balance || 0;
+
+      if (data.verified === true) {
+        document.getElementById('header-verified-badge').style.display = 'inline-block';
+      }
+    }
+
+    function renderAccountStatus(data) {
+      // 1. Account Status
+      const accStatusEl = document.getElementById('account-status-value');
+      if (data.active === true) {
+        accStatusEl.innerHTML = `
+          <svg class="icon status-active" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          <span class="status-active">অ্যাকাউন্ট সক্রিয়</span>
+        `;
+      } else {
+        accStatusEl.innerHTML = `
+          <svg class="icon status-inactive" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+          <span class="status-inactive">অ্যাকাউন্ট নিষ্ক্রিয়</span>
+        `;
+      }
+
+      // 2. Verification Status
+      const verStatusEl = document.getElementById('verification-status-value');
+      if (data.verified === true) {
+        verStatusEl.innerHTML = `
+          <svg class="icon status-verified" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span class="status-verified">অ্যাকাউন্ট ভেরিফাইড</span>
+        `;
+      } else {
+        verStatusEl.innerHTML = `
+          <svg class="icon status-pending" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          <span class="status-pending">ভেরিফিকেশন অপেক্ষমাণ</span>
+        `;
+      }
+    }
+
+    /* ==========================================================================
+       BALANCE HIDE / SHOW TOGGLE
+       ========================================================================== */
+    window.toggleBalance = function() {
+      const balanceEl = document.getElementById('balance-amount');
+      const toggleText = document.getElementById('balance-toggle-text');
+      const eyeIcon = document.getElementById('eye-icon');
+
+      isBalanceVisible = !isBalanceVisible;
+
+      if (isBalanceVisible) {
+        const formatted = new Intl.NumberFormat('bn-BD').format(rawBalance);
+        balanceEl.innerText = `৳ ${formatted}`;
+        toggleText.innerText = "ব্যালেন্স লুকান";
+        eyeIcon.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>`;
+      } else {
+        balanceEl.innerText = "৳ ••••••";
+        toggleText.innerText = "ব্যালেন্স দেখুন";
+        eyeIcon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
+      }
+    };
+
+    /* ==========================================================================
+       COUNTER ANIMATION FOR STATISTICS
+       ========================================================================== */
+    function animateCounter(elementId, targetValue) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      
+      const duration = 1200; // ms
+      const start = 0;
+      const end = parseInt(targetValue, 10) || 0;
+      
+      if (end === 0) {
+        el.innerText = "০";
+        return;
+      }
+
+      let startTime = null;
+
+      function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = Math.min((timestamp - startTime) / duration, 1);
+        const current = Math.floor(progress * (end - start) + start);
+        el.innerText = new Intl.NumberFormat('bn-BD').format(current);
+        
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        } else {
+          el.innerText = new Intl.NumberFormat('bn-BD').format(end);
         }
+      }
 
-        // 2. Authentication & Supplier Verification
-        onAuthStateChanged(auth, async (user) => {
-            const pageLoader = document.getElementById('pageLoader');
-            const mainDashboard = document.getElementById('mainDashboard');
-            const errorOverlay = document.getElementById('errorOverlay');
+      window.requestAnimationFrame(step);
+    }
 
-            if (!user) {
-                window.location.href = '/login';
-                return;
-            }
+    /* ==========================================================================
+       AUTO BANNER SLIDER & TOUCH SWIPE
+       ========================================================================== */
+    function initBanners(banners) {
+      const slider = document.getElementById('banner-slider');
+      const indicators = document.getElementById('banner-indicators');
 
-            try {
-                const supplierRef = doc(db, 'supplyers', user.uid);
-                const supplierSnap = await getDoc(supplierRef);
+      if (!banners || banners.length === 0) {
+        document.getElementById('banner-container').style.display = 'none';
+        return;
+      }
 
-                if (!supplierSnap.exists()) {
-                    window.location.href = '/signup1';
-                    return;
-                }
+      slider.innerHTML = '';
+      indicators.innerHTML = '';
 
-                const supplierData = supplierSnap.data();
+      banners.forEach((b, idx) => {
+        // Slide
+        const slide = document.createElement('div');
+        slide.className = 'banner-slide';
+        slide.innerHTML = `<img src="${b.bannerLink}" alt="Banner ${idx + 1}" loading="lazy" />`;
+        slide.onclick = () => handleBannerClick(b.clickLink);
+        slider.appendChild(slide);
 
-                // Load Supplier Details
-                document.getElementById('supplierName').textContent = supplierData.name || 'সাপ্লায়ার';
-                if (supplierData.verified === true) {
-                    document.getElementById('verifiedBadge').style.display = 'inline-flex';
-                }
+        // Indicator
+        const ind = document.createElement('div');
+        ind.className = `indicator ${idx === 0 ? 'active' : ''}`;
+        indicators.appendChild(ind);
+      });
 
-                // Load Animated Product Counters
-                animateCounter('statTotalProduct', supplierData.product || 0);
-                animateCounter('statActiveProduct', supplierData.activeProduct || 0);
+      if (banners.length > 1) {
+        startAutoSlide(banners.length);
+        setupSwipe(banners.length);
+      }
+    }
 
-                // Account Status Logic
-                renderAccountStatus(supplierData);
+    function handleBannerClick(url) {
+      if (!url) return;
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } else if (url.startsWith('/')) {
+        window.location.href = url;
+      }
+    }
 
-                // Load Banners
-                await loadBanners();
+    function goToSlide(index, total) {
+      currentBannerIndex = index;
+      const slider = document.getElementById('banner-slider');
+      slider.style.transform = `translateX(-${currentBannerIndex * 100}%)`;
 
-                // Reveal Dashboard
-                pageLoader.style.display = 'none';
-                mainDashboard.style.display = 'flex';
+      const inds = document.querySelectorAll('.indicator');
+      inds.forEach((ind, i) => {
+        ind.classList.toggle('active', i === currentBannerIndex);
+      });
+    }
 
-            } catch (err) {
-                console.error("Firebase Error: ", err);
-                pageLoader.style.display = 'none';
-                errorOverlay.classList.add('active');
-            }
-        });
+    function startAutoSlide(total) {
+      clearInterval(bannerInterval);
+      bannerInterval = setInterval(() => {
+        const next = (currentBannerIndex + 1) % total;
+        goToSlide(next, total);
+      }, 4500);
+    }
 
-        // 9. Render Account Status Section
-        function renderAccountStatus(data) {
-            const iconActive = document.getElementById('iconAccountActive');
-            const labelActive = document.getElementById('labelAccountActive');
-            const textActive = document.getElementById('textAccountActive');
+    function setupSwipe(total) {
+      const container = document.getElementById('banner-container');
+      let startX = 0;
+      let endX = 0;
 
-            if (data.active === true) {
-                iconActive.className = 'status-badge-icon active';
-                labelActive.textContent = 'সক্রিয়';
-                textActive.textContent = 'আপনার অ্যাকাউন্ট বর্তমানে সক্রিয় রয়েছে।';
-            } else {
-                iconActive.className = 'status-badge-icon inactive';
-                labelActive.textContent = 'নিষ্ক্রিয়';
-                textActive.textContent = 'আপনার অ্যাকাউন্ট বর্তমানে নিষ্ক্রিয় রয়েছে।';
-            }
+      container.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        clearInterval(bannerInterval);
+      }, { passive: true });
 
-            const iconVerified = document.getElementById('iconAccountVerified');
-            const labelVerified = document.getElementById('labelAccountVerified');
-            const textVerified = document.getElementById('textAccountVerified');
-
-            if (data.verified === true) {
-                iconVerified.className = 'status-badge-icon verified';
-                labelVerified.textContent = 'ভেরিফাইড';
-                textVerified.textContent = 'আপনার অ্যাকাউন্ট সফলভাবে ভেরিফাইড হয়েছে।';
-            } else {
-                iconVerified.className = 'status-badge-icon inactive';
-                labelVerified.textContent = 'ভেরিফিকেশন বাকি';
-                textVerified.textContent = 'আপনার অ্যাকাউন্ট এখনও ভেরিফাইড হয়নি।';
-            }
+      container.addEventListener('touchend', (e) => {
+        endX = e.changedTouches[0].clientX;
+        if (startX - endX > 40) {
+          // Swipe left
+          const next = (currentBannerIndex + 1) % total;
+          goToSlide(next, total);
+        } else if (endX - startX > 40) {
+          // Swipe right
+          const prev = (currentBannerIndex - 1 + total) % total;
+          goToSlide(prev, total);
         }
+        startAutoSlide(total);
+      }, { passive: true });
+    }
 
-        // 4. Banner Carousel Logic
-        let bannerTimer = null;
-        async function loadBanners() {
-            const wrapper = document.getElementById('bannerSlidesWrapper');
-            const indicators = document.getElementById('bannerIndicators');
-            const skeleton = document.getElementById('bannerSkeleton');
+    /* ==========================================================================
+       MODAL CONTROLS
+       ========================================================================== */
+    window.openMoreModal = function() {
+      document.getElementById('more-modal').classList.add('active');
+    };
 
-            try {
-                const bannerQuery = query(collection(db, 'banners'), orderBy('createdAt', 'desc'));
-                const querySnap = await getDocs(bannerQuery);
+    window.closeMoreModal = function() {
+      document.getElementById('more-modal').classList.remove('active');
+    };
 
-                skeleton.style.display = 'none';
-
-                if (querySnap.empty) {
-                    wrapper.innerHTML = '<div class="banner-empty-state">কোনো অ্যাক্টিভ ব্যানার পাওয়া যায়নি</div>';
-                    return;
-                }
-
-                const banners = querySnap.docs.map(doc => doc.data());
-                let currentIndex = 0;
-
-                banners.forEach((b, index) => {
-                    const slide = document.createElement('a');
-                    slide.className = `banner-slide ${index === 0 ? 'active' : ''}`;
-                    slide.href = b.clickLink || '#';
-                    
-                    if (b.clickLink && (b.clickLink.startsWith('http://') || b.clickLink.startsWith('https://'))) {
-                        slide.target = '_blank';
-                        slide.rel = 'noopener noreferrer';
-                    }
-
-                    const img = document.createElement('img');
-                    img.src = b.bannerLink;
-                    img.alt = "Banner";
-                    img.onerror = () => {
-                        slide.innerHTML = '<div class="banner-empty-state">ছবি লোড করা সম্ভব হয়নি</div>';
-                    };
-
-                    slide.appendChild(img);
-                    wrapper.appendChild(slide);
-
-                    // Create Indicator
-                    const ind = document.createElement('div');
-                    ind.className = `indicator ${index === 0 ? 'active' : ''}`;
-                    indicators.appendChild(ind);
-                });
-
-                // Auto Carousel Every 4 Seconds
-                const slides = wrapper.querySelectorAll('.banner-slide');
-                const indList = indicators.querySelectorAll('.indicator');
-
-                if (slides.length > 1) {
-                    bannerTimer = setInterval(() => {
-                        slides[currentIndex].classList.remove('active');
-                        indList[currentIndex].classList.remove('active');
-
-                        currentIndex = (currentIndex + 1) % slides.length;
-
-                        slides[currentIndex].classList.add('active');
-                        indList[currentIndex].classList.add('active');
-                    }, 4000);
-                }
-
-            } catch (err) {
-                skeleton.style.display = 'none';
-                wrapper.innerHTML = '<div class="banner-empty-state">ব্যানার লোড করতে সমস্যা হয়েছে</div>';
-            }
-        }
-
-        // 8. Bottom Sheet Modal Logic
-        const btnMoreOptions = document.getElementById('btnMoreOptions');
-        const modalOverlay = document.getElementById('moreOptionsModal');
-        const btnCloseModal = document.getElementById('btnCloseModal');
-
-        btnMoreOptions.addEventListener('click', () => {
-            modalOverlay.classList.add('active');
-        });
-
-        const closeModal = () => modalOverlay.classList.remove('active');
-
-        btnCloseModal.addEventListener('click', closeModal);
-        modalOverlay.addEventListener('click', (e) => {
-            if (e.target === modalOverlay) closeModal();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
-                closeModal();
-            }
-        });
-    </script>
+    /* ==========================================================================
+       ERROR HANDLING
+       ========================================================================== */
+    function showError(title, msg) {
+      document.getElementById('error-title').innerText = title;
+      document.getElementById('error-message').innerText = msg;
+      errorState.style.display = 'flex';
+    }
+  </script>
 </body>
 </html>
