@@ -5,17 +5,9 @@ import {
     signOut 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { 
-    getFirestore, 
-    doc, 
-    getDoc, 
-    collection, 
-    getDocs,  
-    addDoc, 
-    query, 
-    orderBy, 
-    limit, 
-    serverTimestamp,
-    Timestamp 
+    getFirestore, doc, getDoc, collection, getDocs,  
+    addDoc, query, orderBy, limit, serverTimestamp,
+    Timestamp, runTransaction, increment 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Firebase Configuration
@@ -101,8 +93,6 @@ onAuthStateChanged(auth, async (user) => {
 
     try {
         authLoaderText.textContent = "সাপ্লায়ার তথ্য যাচাই করা হচ্ছে...";
-        
-        // 3. Supplier Document Check
         const supplierRef = doc(db, "supplyers", user.uid);
         const supplierSnap = await getDoc(supplierRef);
 
@@ -154,11 +144,9 @@ onAuthStateChanged(auth, async (user) => {
             return;
         }
 
-        // Load Categories
         authLoaderText.textContent = "ক্যাটাগরি লোড করা হচ্ছে...";
         await loadCategories();
 
-        // All Checks Passed -> Reveal Dashboard
         authLoader.style.display = "none";
         dashboardWrapper.style.display = "flex";
 
@@ -186,19 +174,15 @@ async function loadCategories() {
         const catQuery = query(collection(db, "categories"));
         const querySnapshot = await getDocs(catQuery);
         categoriesList = [];
-        
         categorySelect.innerHTML = `<option value="">ক্যাটাগরি নির্বাচন করুন</option>`;
-        
         querySnapshot.forEach((docSnap) => {
             const data = docSnap.data();
             categoriesList.push({ id: docSnap.id, ...data });
-            
             const option = document.createElement("option");
             option.value = docSnap.id;
             option.textContent = data.categoryName || "নামহীন ক্যাটাগরি";
             categorySelect.appendChild(option);
         });
-
         if (categoriesList.length === 0) {
             categorySelect.innerHTML = `<option value="">কোনো ক্যাটাগরি পাওয়া যায়নি</option>`;
         }
@@ -215,7 +199,6 @@ addVariantBtn.addEventListener("click", () => {
     const variantCard = document.createElement("div");
     variantCard.className = "variant-card";
     variantCard.dataset.variantId = variantId;
-    
     variantCard.innerHTML = `
         <div class="variant-header-row">
             <input type="text" placeholder="ভ্যারিয়েন্ট নাম (যেমন: সাইজ, রঙ)" class="variant-name-input" required>
@@ -223,23 +206,14 @@ addVariantBtn.addEventListener("click", () => {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
             </button>
         </div>
-        <div class="variant-values-list">
-            <!-- Values injected here -->
-        </div>
-        <button type="button" class="btn-secondary-sm add-value-btn">
-            + ভ্যালু যোগ করুন
-        </button>
+        <div class="variant-values-list"></div>
+        <button type="button" class="btn-secondary-sm add-value-btn">+ ভ্যালু যোগ করুন</button>
     `;
-    
     variantsContainer.appendChild(variantCard);
-
     const valuesList = variantCard.querySelector(".variant-values-list");
     const addValBtn = variantCard.querySelector(".add-value-btn");
     const removeVarBtn = variantCard.querySelector(".remove-variant-btn");
-
-    // Add initial value row
     addVariantValueRow(valuesList);
-
     addValBtn.addEventListener("click", () => addVariantValueRow(valuesList));
     removeVarBtn.addEventListener("click", () => variantCard.remove());
 });
@@ -260,22 +234,18 @@ function addVariantValueRow(container) {
 
 // H. Image Upload Handling (Dropzone & Input)
 dropzone.addEventListener("click", () => imageInput.click());
-
 dropzone.addEventListener("dragover", (e) => {
     e.preventDefault();
     dropzone.style.borderColor = "var(--primary)";
 });
-
 dropzone.addEventListener("dragleave", () => {
     dropzone.style.borderColor = "var(--border-color)";
 });
-
 dropzone.addEventListener("drop", (e) => {
     e.preventDefault();
     dropzone.style.borderColor = "var(--border-color)";
     handleFiles(e.dataTransfer.files);
 });
-
 imageInput.addEventListener("change", (e) => {
     handleFiles(e.target.files);
 });
@@ -304,7 +274,6 @@ function renderImagePreviews() {
                 <button type="button" class="image-remove-btn" data-index="${index}">&times;</button>
             `;
             imagePreviewGrid.appendChild(item);
-
             item.querySelector(".image-remove-btn").addEventListener("click", () => {
                 selectedFiles.splice(index, 1);
                 renderImagePreviews();
@@ -320,11 +289,9 @@ async function getImgBBApiKey() {
     try {
         const pkQuery = query(collection(db, "public_keys"), orderBy("createdAt", "desc"), limit(1));
         const pkSnapshot = await getDocs(pkQuery);
-        
         if (pkSnapshot.empty) {
             throw new Error("কোনো ImgBB API Key পাওয়া যায়নি।");
         }
-
         const latestKeyDoc = pkSnapshot.docs[0].data();
         if (!latestKeyDoc.apiKey) {
             throw new Error("API Key ফিল্ডটি খালি রয়েছে।");
@@ -340,16 +307,13 @@ async function getImgBBApiKey() {
 async function uploadImageToImgBB(file, apiKey) {
     const timestamp = Date.now();
     const customFilename = `${timestamp}${file.name}`;
-    
     const formData = new FormData();
     formData.append("image", file);
     formData.append("name", customFilename);
-
     const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
         method: "POST",
         body: formData
     });
-
     const data = await response.json();
     if (!data.success) {
         throw new Error("ইমেজ আপলোড ব্যর্থ হয়েছে: " + (data.error?.message || "অজানা ত্রুটি"));
@@ -360,7 +324,6 @@ async function uploadImageToImgBB(file, apiKey) {
 // XI & XII. Final Product Upload & Submission Handling
 productForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    
     const productName = document.getElementById("productName").value.trim();
     const productDescription = document.getElementById("productDescription").value.trim();
     const price = Number(document.getElementById("price").value);
@@ -369,9 +332,8 @@ productForm.addEventListener("submit", async (e) => {
     const freeDelivery = document.getElementById("freeDelivery").checked;
     const activeStatus = document.getElementById("activeStatus").checked;
 
-    // 1. Validation Checks
     if (!productName || !productDescription) {
-        showToast("সব প্রয়োজনীয় ঘর পূরণ করুন।");
+        showToast("সব প্রয়োজনীয় ঘর পূরণ করুন.");
         return;
     }
     if (price <= 0) {
@@ -424,11 +386,9 @@ productForm.addEventListener("submit", async (e) => {
         btnText.textContent = "ভ্যারিয়েন্ট প্রসেস করা হচ্ছে...";
         const variants = [];
         const variantCards = variantsContainer.querySelectorAll(".variant-card");
-        
         variantCards.forEach(card => {
             const varName = card.querySelector(".variant-name-input").value.trim();
             if (!varName) return;
-            
             const values = [];
             const valRows = card.querySelectorAll(".variant-value-row");
             valRows.forEach(row => {
@@ -441,16 +401,12 @@ productForm.addEventListener("submit", async (e) => {
                     });
                 }
             });
-
             if (values.length > 0) {
-                variants.push({
-                    name: varName,
-                    values: values
-                });
+                variants.push({ name: varName, values: values });
             }
         });
 
-        // 10. Final Product Document Structure
+        // 10. Final Product Document Structure - আগের মতোই সব ফিল্ড
         btnText.textContent = "পণ্য সংরক্ষণ করা হচ্ছে...";
         const productData = {
             productName: productName,
@@ -466,7 +422,48 @@ productForm.addEventListener("submit", async (e) => {
             createdAt: serverTimestamp()
         };
 
-        const docRef = await addDoc(collection(db, "products"), productData);
+        // ===== ✅ নতুন অংশ - TRANSACTION START =====
+        const newProductRef = doc(collection(db, "products"));
+        const supplierRefTx = doc(db, "supplyers", currentUser.uid);
+
+        await runTransaction(db, async (transaction) => {
+            const supplierSnapTx = await transaction.get(supplierRefTx);
+            if (!supplierSnapTx.exists()) {
+                throw new Error("সাপ্লায়ার ডকুমেন্ট পাওয়া যায়নি।");
+            }
+            // ১. প্রোডাক্ট বানাও
+            transaction.set(newProductRef, productData);
+            // ২. একই সাথে supplyers এ product +1
+            transaction.update(supplierRefTx, {
+                product: increment(1)
+            });
+        });
+        const docRef = newProductRef;
+        // ===== TRANSACTION END =====
+
+        // ===== ✅ নতুন অংশ - TELEGRAM NOTIFY VIA WORKER =====
+        try {
+            await fetch("https://paikarisell-product-upload-notify.nazrulislam887441234.workers.dev", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    productId: docRef.id,
+                    productName: productName,
+                    productDescription: productDescription,
+                    price: price,
+                    highRate: highRate,
+                    categoryId: categoryId,
+                    freeDelivery: freeDelivery,
+                    supplierEmail: currentUser.email,
+                    supplierUid: currentUser.uid,
+                    images: imageUrls,
+                    createdAt: new Date().toISOString()
+                })
+            });
+        } catch (notifyErr) {
+            console.log("Telegram Notify Failed, কিন্তু প্রোডাক্ট সেভ হইছে:", notifyErr);
+        }
+        // ===== TELEGRAM END =====
         
         btnText.textContent = "সফলভাবে সম্পন্ন হয়েছে!";
         showToast("প্রোডাক্ট সফলভাবে আপলোড হয়েছে!");
@@ -507,23 +504,18 @@ function showSuccessPopup(productName, productId, fullProductData) {
         </div>
     `;
     customModal.style.display = "flex";
-
     document.getElementById("newUploadBtn").onclick = () => {
         window.location.reload();
     };
     document.getElementById("dashboardRedirectBtn").onclick = () => {
         window.location.href = "https://paikarisell.ghotimarket.com/dashboard";
     };
-
-    // Secret Double Tap Feature for Owners
     const titleEl = document.getElementById("successPopupTitle");
     let lastTap = 0;
-
     titleEl.addEventListener("click", (e) => {
         const currentTime = new Date().getTime();
         const tapLength = currentTime - lastTap;
         if (tapLength < 400 && tapLength > 0) {
-            // Double Tap Detected
             const isOwner = OWNER_EMAILS.includes(currentUser.email);
             if (isOwner) {
                 const jsonString = JSON.stringify(fullProductData, null, 2);
