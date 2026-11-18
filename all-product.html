@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সব পণ্য ব্যবস্থাপনা | PAIKARI SELL</title>
+    <link rel="icon" type="image/png" href="https://paikarisell.ghotimarket.com/photo/favicon.png">
+    
+    <!-- Google Fonts: Hind Siliguri for Clean Bengali Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="all-product.css">
+</head>
+<body>
+
+    <!-- Full Screen Auth & Supplier Verification Loader -->
+    <div id="authGateLoader" class="auth-gate-overlay">
+        <div class="auth-gate-card">
+            <img src="https://paikarisell.ghotimarket.com/photo/logo.png" alt="PAIKARI SELL" class="gate-logo">
+            <div class="spinner-ring"></div>
+            <p id="authGateMessage" class="gate-text">অ্যাকাউন্ট যাচাই করা হচ্ছে...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <!-- Main Dashboard Wrapper -->
+    <div id="dashboardApp" class="dashboard-wrapper hidden">
+        
+        <!-- Sticky Top Header -->
+        <header class="top-navbar">
+            <div class="container navbar-inner">
+                <div class="brand-area">
+                    <a href="/" class="brand-link">
+                        <img src="https://paikarisell.ghotimarket.com/photo/logo.png" alt="PAIKARI SELL Logo" class="brand-logo">
+                        <div class="brand-info">
+                            <span class="brand-title">PAIKARI SELL</span>
+                            <span class="brand-subtitle">সাপ্লায়ার প্রোডাক্ট ড্যাশবোর্ড</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="header-actions">
+                    <div id="subscriptionBadge" class="sub-status-pill skeleton-pill">
+                        <span class="dot"></span>
+                        <span id="subscriptionText">স্ট্যাটাস লোড হচ্ছে...</span>
+                    </div>
+                    <div class="supplier-profile-chip" id="supplierProfileChip">
+                        <div class="avatar-circle">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <span id="supplierShopName" class="shop-name">সাপ্লায়ার</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="container main-content">
+            
+            <!-- Page Title & Quick Action -->
+            <section class="page-header-section">
+                <div>
+                    <h1 class="page-title">সকল পণ্য তালিকা</h1>
+                    <p class="page-desc">আপনার স্টোরের সব পণ্য পরিচালনা, মূল্য হালনাগাদ এবং স্ট্যাটাস নিয়ন্ত্রণ করুন</p>
+                </div>
+                <a href="/add-product" class="btn btn-primary add-product-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>নতুন পণ্য যোগ করুন</span>
+                </a>
+            </section>
+
+            <!-- Summary Statistics Cards (Loaded directly from supplyers/{uid}) -->
+            <section class="stats-grid" aria-label="পণ্যের সারসংক্ষেপ">
+                <!-- Total Products Card -->
+                <div class="stat-card">
+                    <div class="stat-icon-box icon-orange">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-label">মোট পণ্য</span>
+                        <div class="stat-value-row">
+                            <h2 id="statTotalProducts" class="stat-value">0</h2>
+                            <span id="statTotalLoader" class="mini-loader hidden">লোড হচ্ছে...</span>
+                        </div>
+                        <span class="stat-hint">আপনার অ্যাকাউন্টে যুক্ত সর্বমোট পণ্য</span>
+                    </div>
+                </div>
+
+                <!-- Live / Approved Products Card -->
+                <div class="stat-card">
+                    <div class="stat-icon-box icon-amber">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-label">লাইভ পণ্য</span>
+                        <div class="stat-value-row">
+                            <h2 id="statLiveProducts" class="stat-value">0</h2>
+                            <span id="statLiveLoader" class="mini-loader hidden">লোড হচ্ছে...</span>
+                        </div>
+                        <span class="stat-hint">অনুমোদিত পণ্যের সংখ্যা</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Search & Filter Control Panel -->
+            <section class="controls-card">
+                <!-- Single Document ID Search -->
+                <div class="search-wrapper">
+                    <form id="productSearchForm" class="search-form" autocomplete="off">
+                        <div class="search-input-group">
+                            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input 
+                                type="text" 
+                                id="searchProductIdInput" 
+                                class="search-input" 
+                                placeholder="প্রোডাক্ট আইডি দিয়ে খুঁজুন..."
+                                aria-label="প্রোডাক্ট আইডি দিয়ে খুঁজুন"
+                            >
+                            <button type="button" id="clearSearchBtn" class="clear-search-btn hidden" title="সার্চ মুছুন">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <button type="submit" id="searchSubmitBtn" class="btn btn-primary search-btn">
+                            <span>খুঁজুন</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="filter-bar" role="tablist" aria-label="পণ্য ফিল্টার">
+                    <button type="button" class="filter-chip active" data-filter="all">সব পণ্য</button>
+                    <button type="button" class="filter-chip" data-filter="active">সক্রিয় পণ্য</button>
+                    <button type="button" class="filter-chip" data-filter="inactive">নিষ্ক্রিয় পণ্য</button>
+                    <button type="button" class="filter-chip" data-filter="approved">অনুমোদিত পণ্য</button>
+                    <button type="button" class="filter-chip" data-filter="review">রিভিউতে থাকা পণ্য</button>
+                    <button type="button" class="filter-chip" data-filter="freeDelivery">ফ্রি ডেলিভারি পণ্য</button>
+                </div>
+            </section>
+
+            <!-- Active Search Banner (Shown when viewing single ID search result) -->
+            <div id="searchResultBanner" class="search-banner hidden">
+                <div class="search-banner-info">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <span>সার্চ ফলাফল দেখানো হচ্ছে: <strong id="searchedIdDisplay"></strong></span>
+                </div>
+                <button type="button" id="resetFromBannerBtn" class="btn btn-outline btn-sm">সব পণ্যে ফিরে যান</button>
+            </div>
+
+            <!-- Error / Retry State Box -->
+            <div id="errorStateBox" class="state-box error-box hidden">
+                <div class="state-icon error-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                </div>
+                <h3 id="errorTitle" class="state-title">তথ্য লোড করতে সমস্যা হয়েছে</h3>
+                <p id="errorMessage" class="state-desc">ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।</p>
+                <button type="button" id="retryLoadBtn" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                    <span>আবার চেষ্টা করুন</span>
+                </button>
+            </div>
+
+            <!-- Empty State Box -->
+            <div id="emptyStateBox" class="state-box empty-box hidden">
+                <div class="state-icon empty-icon">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                </div>
+                <h3 id="emptyStateTitle" class="state-title">কোনো পণ্য পাওয়া যায়নি</h3>
+                <p id="emptyStateDesc" class="state-desc">এই ফিল্টারে আপনার কোনো পণ্য নেই।</p>
+            </div>
+
+            <!-- Products Grid -->
+            <section id="productsGrid" class="products-grid" aria-label="পণ্যের তালিকা"></section>
+
+            <!-- Pagination Footer ("আরও দেখুন") -->
+            <div id="paginationSection" class="pagination-wrapper hidden">
+                <button type="button" id="loadMoreBtn" class="btn btn-load-more">
+                    <span id="loadMoreSpinner" class="btn-spinner hidden"></span>
+                    <span id="loadMoreText">আরও দেখুন</span>
+                    <svg id="loadMoreIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ==========================================
+         MODAL 1: PRODUCT EDIT MODAL
+         ========================================== -->
+    <div id="editProductModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <span class="modal-badge">সম্পাদনা</span>
+                    <h3 id="editModalTitle" class="modal-title">পণ্য তথ্য হালনাগাদ করুন</h3>
+                </div>
+                <button type="button" class="modal-close-btn" id="closeEditModalBtn" aria-label="বন্ধ করুন">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <form id="editProductForm" class="modal-body" novalidate>
+                <input type="hidden" id="editProductId">
+
+                <!-- Read-Only Product ID Notice -->
+                <div class="readonly-id-bar">
+                    <span>প্রোডাক্ট আইডি:</span>
+                    <code id="editDisplayProductId"></code>
+                </div>
+
+                <div class="form-grid">
+                    <!-- Product Name -->
+                    <div class="form-group full-width">
+                        <label for="editProductName" class="form-label">পণ্যের নাম <span class="req">*</span></label>
+                        <input type="text" id="editProductName" class="form-control" placeholder="পণ্যের নাম লিখুন" required>
+                    </div>
+
+                    <!-- Product Description -->
+                    <div class="form-group full-width">
+                        <label for="editProductDescription" class="form-label">পণ্যের বিবরণ <span class="req">*</span></label>
+                        <textarea id="editProductDescription" class="form-control" rows="4" placeholder="পণ্যের বিস্তারিত বিবরণ লিখুন" required></textarea>
+                    </div>
+
+                    <!-- Wholesale Price -->
+                    <div class="form-group">
+                        <label for="editPrice" class="form-label">পাইকারি দাম (৳) <span class="req">*</span></label>
+                        <input type="number" id="editPrice" class="form-control" min="1" step="any" placeholder="যেমন: 650" required>
+                    </div>
+
+                    <!-- High Rate -->
+                    <div class="form-group">
+                        <label for="editHighRate" class="form-label">সর্বোচ্চ রিসেলার বিক্রির রেট (৳) <span class="req">*</span></label>
+                        <input type="number" id="editHighRate" class="form-control" min="2" step="any" placeholder="যেমন: 950" required>
+                        <small class="form-hint">অবশ্যই পাইকারি দামের চেয়ে বেশি হতে হবে</small>
+                    </div>
+
+                    <!-- Category Selector -->
+                    <div class="form-group full-width">
+                        <label class="form-label">ক্যাটাগরি নির্বাচন করুন <span class="req">*</span></label>
+                        <input type="hidden" id="editCategoryId" required>
+                        
+                        <div class="custom-category-select" id="categorySelectWrapper">
+                            <button type="button" class="category-select-trigger" id="categoryTriggerBtn">
+                                <div class="selected-cat-preview" id="selectedCatPreview">
+                                    <span class="placeholder-text">ক্যাটাগরি নির্বাচন করুন...</span>
+                                </div>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                            <div class="category-dropdown-list hidden" id="categoryDropdownList">
+                                <!-- Categories populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Toggles: Active & Free Delivery -->
+                    <div class="form-group">
+                        <div class="toggle-card">
+                            <div class="toggle-info">
+                                <span class="toggle-title">সক্রিয় স্ট্যাটাস (Active)</span>
+                                <span class="toggle-sub">বন্ধ থাকলে কাস্টমার পণ্যটি দেখতে পাবে না</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="editActive">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="toggle-card">
+                            <div class="toggle-info">
+                                <span class="toggle-title">ফ্রি ডেলিভারি</span>
+                                <span class="toggle-sub">চালু থাকলে ডেলিভারি চার্জ ফ্রি দেখাবে</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="editFreeDelivery">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Variants Editor -->
+                <div class="variants-editor-section">
+                    <div class="variants-header">
+                        <div>
+                            <h4 class="variants-title">ভ্যারিয়েন্ট সমূহ (সাইজ, রঙ ইত্যাদি)</h4>
+                            <p class="variants-sub">প্রয়োজন অনুযায়ী ভ্যারিয়েন্ট ও অতিরিক্ত মূল্য যোগ বা পরিবর্তন করুন</p>
+                        </div>
+                        <button type="button" id="addVariantGroupBtn" class="btn btn-outline btn-sm">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            <span>নতুন ভ্যারিয়েন্ট যোগ করুন</span>
+                        </button>
+                    </div>
+
+                    <div id="variantsEditorContainer" class="variants-container">
+                        <!-- Dynamic Variant Groups Render Here -->
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="cancelEditBtn" class="btn btn-secondary">বাতিল</button>
+                    <button type="submit" id="saveEditBtn" class="btn btn-primary">
+                        <span id="saveEditSpinner" class="btn-spinner hidden"></span>
+                        <span id="saveEditText">পরিবর্তন সংরক্ষণ করুন</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL 2: DELETE CONFIRMATION MODAL
+         ========================================== -->
+    <div id="deleteConfirmModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-body delete-modal-body">
+                <div class="delete-warning-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                    </svg>
+                </div>
+                <h3 id="deleteModalTitle" class="delete-title">পণ্য ডিলিট নিশ্চিতকরণ</h3>
+                <p class="delete-message">আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি ডিলিট করতে চান? ডিলিট করলে এটি আর ফিরে পাওয়া যাবে না।</p>
+                <div class="delete-target-info" id="deleteTargetName"></div>
+                
+                <div class="delete-actions">
+                    <button type="button" id="cancelDeleteBtn" class="btn btn-secondary">বাতিল</button>
+                    <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
+                        <span id="deleteBtnSpinner" class="btn-spinner hidden"></span>
+                        <span id="deleteBtnText">স্থায়ীভাবে ডিলিট করুন</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modular Firebase Script -->
+    <script type="module" src="all-product.js"></script>
+</body>
+</html>
