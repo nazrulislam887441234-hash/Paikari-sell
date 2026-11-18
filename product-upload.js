@@ -368,7 +368,8 @@ productForm.addEventListener("submit", async (e) => {
         if (!supplierSnap.exists() || Number(supplierSnap.data().balance) < 0 || Number(supplierSnap.data().profileUnlockedUntil) <= Date.now()) {
             throw new Error("আপনার ব্যালেন্স বা সাবস্ক্রিপশনের মেয়াদ শেষ হয়েছে। অনুগ্রহ করে রিনিউ করুন।");
         }
-
+// === সেইম মিলিসেকেন্ডটা ধরে রাখলাম ===
+const profileUnlockedUntil = Number(supplierSnap.data().profileUnlockedUntil);
         // 7. Get ImgBB API Key
         btnText.textContent = "ImgBB API Key সংগ্রহ করা হচ্ছে...";
         const imgbbKey = await getImgBBApiKey();
@@ -409,18 +410,19 @@ productForm.addEventListener("submit", async (e) => {
         // 10. Final Product Document Structure - আগের মতোই সব ফিল্ড
         btnText.textContent = "পণ্য সংরক্ষণ করা হচ্ছে...";
         const productData = {
-            productName: productName,
-            productDescription: productDescription,
-            price: price,
-            highRate: highRate,
-            categoryId: categoryId,
-            freeDelivery: freeDelivery,
-            variants: variants,
-            images: imageUrls,
-            active: activeStatus,
-            uid: currentUser.uid,
-            createdAt: serverTimestamp()
-        };
+    productName: productName,
+    productDescription: productDescription,
+    price: price,
+    highRate: highRate,
+    categoryId: categoryId,
+    freeDelivery: freeDelivery,
+    variants: variants,
+    images: imageUrls,
+    active: activeStatus,
+    uid: currentUser.uid,
+    createdAt: serverTimestamp(),
+    profileUnlockedUntil: profileUnlockedUntil // === এই লাইনটাই আসল ===
+};
 
         // ===== ✅ নতুন অংশ - TRANSACTION START =====
         const newProductRef = doc(collection(db, "products"));
