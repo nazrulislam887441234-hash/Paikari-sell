@@ -348,8 +348,8 @@ productForm.addEventListener("submit", async (e) => {
         showToast("সঠিক ক্যাটাগরি নির্বাচন করুন।");
         return;
     }
-    if (selectedFiles.length < 1) {
-        showToast("সর্বনিম্ন ১টি প্রোডাক্ট ইমেজ আপলোড করা বাধ্যতামূলক।");
+    if (selectedFiles.length < 2) {
+        showToast("সর্বনিম্ন ২ টি প্রোডাক্ট ইমেজ আপলোড করা বাধ্যতামূলক।");
         return;
     }
 
