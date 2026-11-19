@@ -14,9 +14,9 @@ import {
     where,
     orderBy,
     limit,
-    startAfter,
-    runTransaction
+    startAfter
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDCIRWmozT0XcEXuXtQ6RDiDo6vtT1T9mU",
   authDomain: "paikarisell-ghotimarket.firebaseapp.com",
@@ -36,6 +36,7 @@ const db = getFirestore(app);
 // ==========================================
 const PAGE_SIZE = 20;
 const FALLBACK_IMAGE = "https://paikarisell.ghotimarket.com/photo/logo.png";
+const SUBSCRIPTION_PAGE_URL = "/subscription";
 
 const state = {
     currentUser: null,
@@ -56,10 +57,9 @@ const state = {
     isSearchMode: false,
     searchedProduct: null,
 
-    // Action Locks (Prevent double click)
+    // Action Locks
     isUpdating: false,
-    isDeleting: false,
-    deleteTargetId: null
+    activatingProductIds: new Set()
 };
 
 // ==========================================
@@ -128,15 +128,7 @@ const dom = {
     variantsEditorContainer: document.getElementById("variantsEditorContainer"),
     saveEditBtn: document.getElementById("saveEditBtn"),
     saveEditSpinner: document.getElementById("saveEditSpinner"),
-    saveEditText: document.getElementById("saveEditText"),
-
-    // Delete Modal
-    deleteConfirmModal: document.getElementById("deleteConfirmModal"),
-    deleteTargetName: document.getElementById("deleteTargetName"),
-    cancelDeleteBtn: document.getElementById("cancelDeleteBtn"),
-    confirmDeleteBtn: document.getElementById("confirmDeleteBtn"),
-    deleteBtnSpinner: document.getElementById("deleteBtnSpinner"),
-    deleteBtnText: document.getElementById("deleteBtnText")
+    saveEditText: document.getElementById("saveEditText")
 };
 
 // ==========================================
@@ -271,10 +263,15 @@ onAuthStateChanged(auth, async (user) => {
 // ==========================================
 // 2. SUPPLIER STATS & SUBSCRIPTION LOGIC
 // ==========================================
+function getSupplierUnlockedUntil() {
+    const raw = Number(state.supplierData?.profileUnlockedUntil);
+    return Number.isFinite(raw) ? raw : 0;
+}
+
 function isSubscriptionActive() {
     if (!state.supplierData) return false;
-    const unlockedUntil = Number(state.supplierData.profileUnlockedUntil);
-    return Number.isFinite(unlockedUntil) && unlockedUntil > Date.now();
+    const unlockedUntil = getSupplierUnlockedUntil();
+    return unlockedUntil > Date.now();
 }
 
 function renderSupplierHeaderAndStats() {
@@ -301,25 +298,6 @@ function renderSupplierHeaderAndStats() {
 
     dom.statTotalProducts.textContent = totalCount.toLocaleString("bn-BD");
     dom.statLiveProducts.textContent = liveCount.toLocaleString("bn-BD");
-}
-
-async function refreshSupplierStats() {
-    const uid = verifyCurrentUid();
-    dom.statTotalLoader.classList.remove("hidden");
-    dom.statLiveLoader.classList.remove("hidden");
-
-    try {
-        const supplierSnap = await getDoc(doc(db, "supplyers", uid));
-        if (supplierSnap.exists()) {
-            state.supplierData = supplierSnap.data();
-            renderSupplierHeaderAndStats();
-        }
-    } catch (error) {
-        console.error("Stats Refresh Error:", error);
-    } finally {
-        dom.statTotalLoader.classList.add("hidden");
-        dom.statLiveLoader.classList.add("hidden");
-    }
 }
 
 // ==========================================
@@ -412,7 +390,6 @@ function buildProductsQuery(uid, filterType, cursorDoc = null) {
             constraints.push(where("approved", "==", true));
             break;
         case "review":
-            // Note: Requires approved == false in Firestore documents (see migration guide)
             constraints.push(where("approved", "==", false));
             break;
         case "freeDelivery":
@@ -471,7 +448,6 @@ async function fetchProducts({ reset = false } = {}) {
 
         newDocs.forEach((docSnap) => {
             const data = docSnap.data();
-            // Extra Defensive Check: Strictly ensure own UID and no duplicates
             if (data.uid === uid && !state.loadedIds.has(docSnap.id)) {
                 state.loadedIds.add(docSnap.id);
                 state.products.push({
@@ -481,7 +457,6 @@ async function fetchProducts({ reset = false } = {}) {
             }
         });
 
-        // Update Cursor & Pagination Button Visibility
         if (newDocs.length > 0) {
             state.lastVisibleDoc = newDocs[newDocs.length - 1];
         }
@@ -559,13 +534,11 @@ async function handleProductIdSearch(rawId) {
     renderSkeletonCards(1);
 
     try {
-        // Single Document Lookup (Equivalent to limit 1)
         const productRef = doc(db, "products", productId);
         const productSnap = await getDoc(productRef);
 
         dom.productsGrid.innerHTML = "";
 
-        // Strict Ownership Check: Hide existence if doc belongs to another supplier
         if (!productSnap.exists() || productSnap.data().uid !== uid) {
             state.searchedProduct = null;
             showEmptyState(
@@ -586,7 +559,6 @@ async function handleProductIdSearch(rawId) {
     } catch (error) {
         console.error("Search Product Error:", error);
         dom.productsGrid.innerHTML = "";
-        // If Firestore Rules deny reading another supplier's doc, show standard Not Found message
         if (error.code === "permission-denied") {
             showEmptyState(
                 "এই প্রোডাক্টটি পাওয়া যায়নি",
@@ -613,7 +585,6 @@ function clearProductSearch() {
     dom.searchResultBanner.classList.add("hidden");
     hideStateBoxes();
 
-    // Restore previously loaded pagination list intact without extra reads
     if (state.products.length > 0) {
         renderProductsList(state.products);
         if (state.hasMore) {
@@ -625,46 +596,153 @@ function clearProductSearch() {
 }
 
 // ==========================================
-// 6. PRODUCT STATUS MESSAGE LOGIC (4 CONDITIONS)
+// 6. PRODUCT STATUS & UNLOCK LOGIC
 // ==========================================
-function determineProductStatus(product) {
-    const subActive = isSubscriptionActive();
-    const isApproved = product.approved === true;
-    const isActive = product.active === true;
+function isProductExpired(product) {
+    const prodUnlockedUntil = Number(product?.profileUnlockedUntil);
+    if (!Number.isFinite(prodUnlockedUntil)) return false;
+    return prodUnlockedUntil < Date.now();
+}
 
-    // Condition 1: Subscription Expired (Highest Priority)
-    if (!subActive) {
+function hasSameUnlockedUntilAsSupplier(product) {
+    const supplierUnlocked = getSupplierUnlockedUntil();
+    const productUnlocked = Number(product?.profileUnlockedUntil);
+    if (!Number.isFinite(productUnlocked) || !Number.isFinite(supplierUnlocked)) {
+        return false;
+    }
+    return productUnlocked === supplierUnlocked;
+}
+
+function determineProductStatus(product) {
+    // ১. প্রোডাক্টের profileUnlockedUntil < Date.now() হলে মেয়াদ শেষ
+    if (isProductExpired(product)) {
         return {
             cssClass: "status-expired",
-            text: "সাবস্ক্রিপশন কেনার পর পণ্য অটোমেটিক লাইভ হয়ে যাবে!",
+            text: "প্রোডাক্টের মেয়াদ শেষ!",
+            showLiveButton: true,
             icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
         };
     }
 
-    // Condition 2: Review Pending (approved !== true, including missing field)
+    const subActive = isSubscriptionActive();
+    const isApproved = product.approved === true;
+    const isActive = product.active === true;
+
+    if (!subActive) {
+        return {
+            cssClass: "status-expired",
+            text: "সাবস্ক্রিপশন কেনার পর পণ্য অটোমেটিক লাইভ হয়ে যাবে!",
+            showLiveButton: false,
+            icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
+        };
+    }
+
     if (!isApproved) {
         return {
             cssClass: "status-review",
             text: "প্রোডাক্টটি রিভিউতে আছে!",
+            showLiveButton: false,
             icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`
         };
     }
 
-    // Condition 3: Approved + Subscription Valid + Inactive
     if (!isActive) {
         return {
             cssClass: "status-inactive",
             text: "এই পণ্যটা এখনো এক্টিভ করা হয়নি!",
+            showLiveButton: false,
             icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`
         };
     }
 
-    // Condition 4: Approved + Subscription Valid + Active
     return {
         cssClass: "status-live",
         text: "এই পণ্যটা লাইভ আছে!",
+        showLiveButton: false,
         icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
     };
+}
+
+function updateProductInLocalState(productId, patchObj) {
+    const idx = state.products.findIndex((p) => p.id === productId);
+    if (idx !== -1) {
+        state.products[idx] = { ...state.products[idx], ...patchObj };
+    }
+    if (state.searchedProduct && state.searchedProduct.id === productId) {
+        state.searchedProduct = { ...state.searchedProduct, ...patchObj };
+    }
+
+    if (state.isSearchMode && state.searchedProduct) {
+        renderProductsList([state.searchedProduct]);
+    } else {
+        renderProductsList(state.products);
+    }
+}
+
+async function handleLiveProductClick(product) {
+    if (!product || !product.id) return;
+    if (state.activatingProductIds.has(product.id)) return;
+
+    const uid = verifyCurrentUid();
+    state.activatingProductIds.add(product.id);
+
+    if (state.isSearchMode && state.searchedProduct) {
+        renderProductsList([state.searchedProduct]);
+    } else {
+        renderProductsList(state.products);
+    }
+
+    try {
+        // Fresh read from supplyers/{uid} to verify latest profileUnlockedUntil
+        const supplierRef = doc(db, "supplyers", uid);
+        const supplierSnap = await getDoc(supplierRef);
+
+        if (!supplierSnap.exists()) {
+            showToast("সাপ্লায়ার তথ্য পাওয়া যায়নি।", "error");
+            return;
+        }
+
+        const freshSupplierData = supplierSnap.data();
+        state.supplierData = freshSupplierData;
+        renderSupplierHeaderAndStats();
+
+        const supplierUnlockedUntil = Number(freshSupplierData.profileUnlockedUntil) || 0;
+        const productUnlockedUntil = Number(product.profileUnlockedUntil) || 0;
+
+        // ২. সাপ্লায়ারের profileUnlockedUntil কি প্রোডাক্টের profileUnlockedUntil থেকে বড়?
+        if (supplierUnlockedUntil > productUnlockedUntil) {
+            const productRef = doc(db, "products", product.id);
+            await updateDoc(productRef, {
+                profileUnlockedUntil: supplierUnlockedUntil
+            });
+
+            updateProductInLocalState(product.id, {
+                profileUnlockedUntil: supplierUnlockedUntil
+            });
+
+            showToast("প্রোডাক্ট আবার লাইভ হয়ে গেছে!", "success");
+        } else {
+            // সাপ্লায়ারের নিজেরই মেয়াদ শেষ বা বড় নয়
+            showToast("আপনার সাবস্ক্রিপশনের মেয়াদ শেষ! সাবস্ক্রিপশন পেজে নেওয়া হচ্ছে...", "warning");
+            setTimeout(() => {
+                window.location.href = SUBSCRIPTION_PAGE_URL;
+            }, 900);
+        }
+
+    } catch (error) {
+        console.error("Live Product Update Error:", error);
+        showToast(
+            getBengaliErrorMessage(error, "পণ্য লাইভ করতে সমস্যা হয়েছে।"),
+            "error"
+        );
+    } finally {
+        state.activatingProductIds.delete(product.id);
+        if (state.isSearchMode && state.searchedProduct) {
+            renderProductsList([state.searchedProduct]);
+        } else {
+            renderProductsList(state.products);
+        }
+    }
 }
 
 // ==========================================
@@ -718,8 +796,12 @@ function createProductCardElement(product) {
         categoryImage: FALLBACK_IMAGE
     };
 
-    // Status Banner
+    // Status Banner & Live Button
     const statusInfo = determineProductStatus(product);
+    const isActivatingThis = state.activatingProductIds.has(product.id);
+
+    // ৩. নতুন ব্যাজ লজিক: supplyers/{uid} ও products এর profileUnlockedUntil হুবহু সমান হলে
+    const showSameUnlockedBadge = hasSameUnlockedUntilAsSupplier(product);
 
     // Approval & Active Badges
     const isApproved = product.approved === true;
@@ -780,10 +862,23 @@ function createProductCardElement(product) {
 
         <div class="card-body">
             <!-- Status Message Banner -->
-            <div class="product-status-banner ${statusInfo.cssClass}">
-                ${statusInfo.icon}
-                <span>${escapeHTML(statusInfo.text)}</span>
+            <div class="product-status-block">
+                <div class="product-status-banner ${statusInfo.cssClass}">
+                    ${statusInfo.icon}
+                    <span>${escapeHTML(statusInfo.text)}</span>
+                </div>
+                ${statusInfo.showLiveButton ? `
+                    <button type="button" class="btn btn-primary btn-sm live-now-btn" ${isActivatingThis ? "disabled" : ""}>
+                        ${isActivatingThis ? "লাইভ হচ্ছে..." : "লাইভ করুন"}
+                    </button>
+                ` : ""}
             </div>
+
+            ${showSameUnlockedBadge ? `
+                <div class="subscription-sync-badge">
+                    সাবস্ক্রিপশন কিনুন আপনার পণ্য এখনো লাইভ করা নেই!
+                </div>
+            ` : ""}
 
             <!-- Category & Approval -->
             <div class="card-meta-top">
@@ -836,8 +931,8 @@ function createProductCardElement(product) {
             </div>
         </div>
 
-        <!-- Card Actions -->
-        <div class="card-actions">
+        <!-- Card Actions (Edit + JSON Copy) -->
+        <div class="card-actions card-actions-two">
             <button type="button" class="action-btn edit-btn">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -846,22 +941,23 @@ function createProductCardElement(product) {
                 <span>এডিট</span>
             </button>
 
-            <button type="button" class="action-btn delete-btn">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                </svg>
-                <span>ডিলিট</span>
-            </button>
-
             <button type="button" class="action-btn json-btn" title="প্রোডাক্ট JSON কপি করুন">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                 </svg>
+                <span>JSON</span>
             </button>
         </div>
     `;
+
+    // Bind "লাইভ করুন" Button
+    const liveNowBtn = card.querySelector(".live-now-btn");
+    if (liveNowBtn) {
+        liveNowBtn.addEventListener("click", () => {
+            handleLiveProductClick(product);
+        });
+    }
 
     // Bind Thumbnail Switcher
     const mainImgEl = card.querySelector(".card-main-img");
@@ -909,11 +1005,6 @@ function createProductCardElement(product) {
     // Bind Edit Button
     card.querySelector(".edit-btn").addEventListener("click", () => {
         openEditModal(product);
-    });
-
-    // Bind Delete Button
-    card.querySelector(".delete-btn").addEventListener("click", () => {
-        openDeleteModal(product);
     });
 
     return card;
@@ -976,7 +1067,6 @@ function openEditModal(product) {
 
     selectCategoryInModal(product.categoryId || "");
 
-    // Render Variants Editor
     dom.variantsEditorContainer.innerHTML = "";
     const variants = Array.isArray(product.variants) ? product.variants : [];
     variants.forEach((v) => addVariantGroupToEditor(v.name, v.values));
@@ -1088,7 +1178,6 @@ async function handleEditFormSubmit(e) {
     const freeDelivery = Boolean(dom.editFreeDelivery.checked);
     const active = Boolean(dom.editActive.checked);
 
-    // Client-Side Validation
     if (!productId) {
         showToast("অবৈধ প্রোডাক্ট আইডি (Invalid Product Data)।", "error");
         return;
@@ -1122,7 +1211,6 @@ async function handleEditFormSubmit(e) {
         return;
     }
 
-    // Strict Payload: ONLY the 8 allowed fields. Never send uid, approved, images, createdAt.
     const allowedUpdatePayload = {
         productName,
         productDescription,
@@ -1143,20 +1231,7 @@ async function handleEditFormSubmit(e) {
         const productRef = doc(db, "products", productId);
         await updateDoc(productRef, allowedUpdatePayload);
 
-        // Update Local State & Re-render cleanly
-        const idx = state.products.findIndex((p) => p.id === productId);
-        if (idx !== -1) {
-            state.products[idx] = { ...state.products[idx], ...allowedUpdatePayload };
-        }
-        if (state.searchedProduct && state.searchedProduct.id === productId) {
-            state.searchedProduct = { ...state.searchedProduct, ...allowedUpdatePayload };
-        }
-
-        if (state.isSearchMode && state.searchedProduct) {
-            renderProductsList([state.searchedProduct]);
-        } else {
-            renderProductsList(state.products);
-        }
+        updateProductInLocalState(productId, allowedUpdatePayload);
 
         state.isUpdating = false;
         dom.saveEditBtn.disabled = false;
@@ -1181,140 +1256,7 @@ async function handleEditFormSubmit(e) {
 }
 
 // ==========================================
-// 10. PRODUCT DELETE SYSTEM (ATOMIC TRANSACTION)
-// ==========================================
-function openDeleteModal(product) {
-    const uid = verifyCurrentUid();
-    if (product.uid !== uid) {
-        showToast("আপনি শুধুমাত্র নিজের পণ্য ডিলিট করতে পারবেন।", "error");
-        return;
-    }
-
-    state.deleteTargetId = product.id;
-    dom.deleteTargetName.textContent = `${product.productName || "পণ্য"} (ID: ${product.id})`;
-    dom.deleteConfirmModal.classList.remove("hidden");
-}
-
-function closeDeleteModal() {
-    if (state.isDeleting) return;
-    state.deleteTargetId = null;
-    dom.deleteConfirmModal.classList.add("hidden");
-}
-
-async function executeAtomicProductDelete() {
-    if (state.isDeleting || !state.deleteTargetId) return;
-
-    const uid = verifyCurrentUid();
-    const productId = state.deleteTargetId;
-
-    state.isDeleting = true;
-    dom.confirmDeleteBtn.disabled = true;
-    dom.cancelDeleteBtn.disabled = true;
-    dom.deleteBtnSpinner.classList.remove("hidden");
-    dom.deleteBtnText.textContent = "ডিলিট হচ্ছে...";
-
-    try {
-        const productRef = doc(db, "products", productId);
-        const supplierRef = doc(db, "supplyers", uid);
-
-        await runTransaction(db, async (transaction) => {
-            // STEP 1: ALL READS FIRST (Mandatory in Firestore Transactions)
-            const productSnap = await transaction.get(productRef);
-            const supplierSnap = await transaction.get(supplierRef);
-
-            // STEP 2: VALIDATIONS
-            if (!productSnap.exists()) {
-                throw new Error("PRODUCT_ALREADY_DELETED");
-            }
-
-            const productData = productSnap.data();
-
-            if (productData.uid !== uid) {
-                throw new Error("UNAUTHORIZED_DELETE");
-            }
-
-            if (!supplierSnap.exists()) {
-                throw new Error("SUPPLIER_NOT_FOUND");
-            }
-
-            const supplierData = supplierSnap.data();
-            const isProductApproved = productData.approved === true;
-
-            const currentTotal = Number(supplierData.product) || 0;
-            const currentApprovedCount = Number(supplierData.activeProduct) || 0;
-
-            // Prevent negative counters
-            const nextTotal = Math.max(0, currentTotal - 1);
-            const nextApprovedCount = isProductApproved
-                ? Math.max(0, currentApprovedCount - 1)
-                : currentApprovedCount;
-
-            // STEP 3: ALL WRITES AFTER READS
-            transaction.delete(productRef);
-
-            const counterUpdates = {
-                product: nextTotal
-            };
-
-            if (isProductApproved) {
-                counterUpdates.activeProduct = nextApprovedCount;
-            }
-
-            transaction.update(supplierRef, counterUpdates);
-        });
-
-        // Transaction Succeeded: Update UI & Refresh Stats
-        state.products = state.products.filter((p) => p.id !== productId);
-        state.loadedIds.delete(productId);
-
-        if (state.isSearchMode && state.searchedProduct?.id === productId) {
-            state.searchedProduct = null;
-            clearProductSearch();
-        } else {
-            if (state.products.length === 0) {
-                dom.productsGrid.innerHTML = "";
-                showEmptyState("কোনো পণ্য পাওয়া যায়নি", "এই ফিল্টারে আপনার আর কোনো পণ্য নেই।");
-            } else {
-                renderProductsList(state.products);
-            }
-        }
-
-        state.isDeleting = false;
-        dom.confirmDeleteBtn.disabled = false;
-        dom.cancelDeleteBtn.disabled = false;
-        dom.deleteBtnSpinner.classList.add("hidden");
-        dom.deleteBtnText.textContent = "স্থায়ীভাবে ডিলিট করুন";
-
-        closeDeleteModal();
-        showToast("প্রোডাক্টটি স্থায়ীভাবে ডিলিট করা হয়েছে!", "success");
-
-        // Refresh Supplier Summary Statistics
-        await refreshSupplierStats();
-
-    } catch (error) {
-        console.error("Delete Transaction Error:", error);
-
-        let msg = "প্রোডাক্ট ডিলিট করতে ব্যর্থ হয়েছে (Delete Failed)।";
-        if (error.message === "PRODUCT_ALREADY_DELETED") {
-            msg = "এই প্রোডাক্টটি ইতিমধ্যেই ডিলিট করা হয়েছে (Product Already Deleted)।";
-        } else if (error.message === "UNAUTHORIZED_DELETE" || error.code === "permission-denied") {
-            msg = "অনুমতি নেই (Permission Denied): আপনি এই প্রোডাক্টটি ডিলিট করতে পারবেন না।";
-        } else {
-            msg = getBengaliErrorMessage(error, msg);
-        }
-
-        showToast(msg, "error");
-    } finally {
-        state.isDeleting = false;
-        dom.confirmDeleteBtn.disabled = false;
-        dom.cancelDeleteBtn.disabled = false;
-        dom.deleteBtnSpinner.classList.add("hidden");
-        dom.deleteBtnText.textContent = "স্থায়ীভাবে ডিলিট করুন";
-    }
-}
-
-// ==========================================
-// 11. UI STATE HELPERS & EVENT LISTENERS
+// 10. UI STATE HELPERS & EVENT LISTENERS
 // ==========================================
 function hideStateBoxes() {
     dom.errorStateBox.classList.add("hidden");
@@ -1335,13 +1277,11 @@ function showEmptyState(title, desc) {
     dom.emptyStateBox.classList.remove("hidden");
 }
 
-// Filter Chip Clicks
 dom.filterChips.forEach((chip) => {
     chip.addEventListener("click", () => {
         const selectedFilter = chip.dataset.filter;
         if (selectedFilter === state.activeFilter && !state.isSearchMode) return;
 
-        // If in search mode, exit search mode first
         if (state.isSearchMode) {
             state.isSearchMode = false;
             state.searchedProduct = null;
@@ -1353,18 +1293,15 @@ dom.filterChips.forEach((chip) => {
         dom.filterChips.forEach((c) => c.classList.remove("active"));
         chip.classList.add("active");
 
-        // Reset cursor and load first 20 for new filter
         state.activeFilter = selectedFilter;
         fetchProducts({ reset: true });
     });
 });
 
-// Load More ("আরও দেখুন") Button
 dom.loadMoreBtn.addEventListener("click", () => {
     fetchProducts({ reset: false });
 });
 
-// Retry Button
 dom.retryLoadBtn.addEventListener("click", () => {
     if (state.isSearchMode) {
         handleProductIdSearch(dom.searchProductIdInput.value);
@@ -1373,7 +1310,6 @@ dom.retryLoadBtn.addEventListener("click", () => {
     }
 });
 
-// Search Form Events
 dom.productSearchForm.addEventListener("submit", (e) => {
     e.preventDefault();
     handleProductIdSearch(dom.searchProductIdInput.value);
@@ -1390,7 +1326,6 @@ dom.searchProductIdInput.addEventListener("input", () => {
 dom.clearSearchBtn.addEventListener("click", clearProductSearch);
 dom.resetFromBannerBtn.addEventListener("click", clearProductSearch);
 
-// Category Dropdown Toggle
 dom.categoryTriggerBtn.addEventListener("click", () => {
     dom.categoryDropdownList.classList.toggle("hidden");
 });
@@ -1401,12 +1336,7 @@ document.addEventListener("click", (e) => {
     }
 });
 
-// Edit Modal Events
 dom.addVariantGroupBtn.addEventListener("click", () => addVariantGroupToEditor("", []));
 dom.closeEditModalBtn.addEventListener("click", closeEditModal);
 dom.cancelEditBtn.addEventListener("click", closeEditModal);
 dom.editProductForm.addEventListener("submit", handleEditFormSubmit);
-
-// Delete Modal Events
-dom.cancelDeleteBtn.addEventListener("click", closeDeleteModal);
-dom.confirmDeleteBtn.addEventListener("click", executeAtomicProductDelete);
