@@ -1030,6 +1030,7 @@ async function copyProductJsonToClipboard(product) {
         images: Array.isArray(product.images) ? product.images : [],
         active: Boolean(product.active),
         uid: product.uid,
+        profileUnlockedUntil: Number(product.profileUnlockedUntil) || 0,
         createdAt: formattedCreatedAt
     };
 
