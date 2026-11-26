@@ -199,69 +199,15 @@ function cleanField(val) {
   return str;
 }
 
-// Server Time Probe via system/server_time (No phone clock fallback!)
-async function getVerifiedServerCutoff(forceFreshProbe = false) {
-  const probeRef = doc(db, "system", "server_time");
-  const cacheKey = `paikarisell_server_probe_${state.user.uid}`;
-
-  if (!forceFreshProbe) {
-    try {
-      const cachedRaw = sessionStorage.getItem(cacheKey);
-      if (cachedRaw) {
-        const cached = JSON.parse(cachedRaw);
-        const nowLocalForTtlCheck = Date.now();
-        if (
-          cached &&
-          typeof cached.serverNowMs === "number" &&
-          typeof cached.cachedAtLocalMs === "number" &&
-          nowLocalForTtlCheck - cached.cachedAtLocalMs < PROBE_CACHE_TTL_MS
-        ) {
-          const serverNowMs = cached.serverNowMs;
-          const cutoffTimestamp = Timestamp.fromMillis(serverNowMs - THIRTY_DAYS_MS);
-          return { serverNowMs, cutoffTimestamp };
-        }
-      }
-    } catch {
-      // Ignore storage read errors and perform live probe
-    }
-  }
-
-  // Step 2: Write serverTimestamp() to system/server_time
-  await setDoc(probeRef, {
-    updatedAt: serverTimestamp(),
-    probedBy: state.user.uid
-  });
-
-  // Step 3: Read back system/server_time
-  const snap = await getDoc(probeRef);
-  if (!snap.exists()) {
-    throw new Error("SERVER_TIME_MISSING");
-  }
-
-  const data = snap.data();
-  const serverTs = data?.updatedAt;
-  if (!serverTs || typeof serverTs.toMillis !== "function") {
-    throw new Error("SERVER_TIMESTAMP_INVALID");
-  }
-
-  const serverNowMs = serverTs.toMillis();
+// Server Time - কোনো Rules / Collection / Document লাগবে না
+async function getVerifiedServerCutoff() {
+  // Firebase Auth সার্ভার থেকেই আসল সময় নিবো
+  // এইটার জন্য Firestore Rules লাগে না
+  const token = await state.user.getIdTokenResult(true);
+  const serverNowMs = new Date(token.issuedAtTime).getTime();
   const cutoffTimestamp = Timestamp.fromMillis(serverNowMs - THIRTY_DAYS_MS);
-
-  try {
-    sessionStorage.setItem(
-      cacheKey,
-      JSON.stringify({
-        serverNowMs,
-        cachedAtLocalMs: Date.now()
-      })
-    );
-  } catch {
-    // Ignore storage quota errors
-  }
-
   return { serverNowMs, cutoffTimestamp };
 }
-
 // Statistics Update (Uses Firestore Aggregation Count Query + Loaded Count)
 function updateStatisticsUI() {
   const loadedCount = state.loadedIds.size;
